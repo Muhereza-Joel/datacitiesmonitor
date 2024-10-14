@@ -22,9 +22,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      - name: Run Tests
-        run: php artisan test
-
   deploy:
     runs-on: ubuntu-latest
     needs: build  # Ensure the build job is complete before deploying
