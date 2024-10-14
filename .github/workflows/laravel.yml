@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # or your desired branch
+      - main  # Trigger the workflow on pushes to the main branch
 
 jobs:
   build:
@@ -35,9 +35,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy to Server
+        env:
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          ssh user@yourserver.com << 'EOF'
-            cd /path/to/your/project
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@datacities.tagbatwaha.com << 'EOF'
+            cd /home2/tagbatwa/datacities.tagbatwaha.com
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force

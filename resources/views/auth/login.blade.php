@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <div class="pt-0 text-center">
                             <h5 class="card-title pb-0 fs-4">{{ env('APP_NAME') }}</h5>
-                            <p class="small">{{__('Enter your username & password to login')}}</p>
+                            <p class="small">{{__('Enter your username & password to login.')}}</p>
                         </div>
 
                         <div id="invalid-login" class="alert alert-danger alert-dismissible fade d-none p-1" role="alert">
@@ -36,7 +36,7 @@
                             </div>
                             @endif
                             <div class="col-12">
-                                <label for="identifier" class="form-label">{{__('Username or Email')}}</label>
+                                <label for="identifier" class="form-label">{{__('Username or Email.')}}</label>
                                 <div class="input-group has-validation">
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" name="identifier" value="{{ old('identifier' )}}" id="yourUsername" required placeholder="Enter your username or email">
                                     @error('email')
@@ -48,7 +48,7 @@
                             </div>
 
                             <div class="col-12">
-                                <label for="yourPassword" class="form-label">Password</label>
+                                <label for="yourPassword" class="form-label">Password.</label>
                                 <div class="input-group has-validation">
                                     <div class="input-group">
                                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" id="yourPassword" required placeholder="Enter your password">
