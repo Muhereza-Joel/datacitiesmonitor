@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->uuid('organisation_id');
             $table->rememberToken();
             $table->timestamps();
-            $table->foreign('organisation_id')->references('id')->on('organisations');
+            
         });
     }
 
