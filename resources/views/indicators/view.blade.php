@@ -1,0 +1,337 @@
+@include('layouts.header')
+
+@include('layouts.topBar');
+
+@include('layouts.leftPane');
+
+<style>
+    .status-draft {
+        border-top: 8px solid #fc03a1;
+        border-left: 3px solid #fc03a1;
+    }
+
+    .status-review {
+        border-top: 8px solid #0a1157;
+        border-left: 3px solid #0a1157;
+    }
+
+    .status-public {
+        border-top: 8px solid green;
+        border-left: 3px solid green;
+    }
+
+    .status-archived {
+        border-top: 8px solid #1cc9be;
+        border-left: 3px solid #1cc9be;
+    }
+
+    .status-key {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .status-key span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-key .key-draft {
+        width: 20px;
+        height: 10px;
+        background-color: #fc03a1;
+    }
+
+    .status-key .key-review {
+        width: 20px;
+        height: 10px;
+        background-color: #0a1157;
+    }
+
+    .status-key .key-public {
+        width: 20px;
+        height: 10px;
+        background-color: green;
+    }
+
+    .status-key .key-archived {
+        width: 20px;
+        height: 10px;
+        background-color: #1cc9be;
+    }
+</style>
+
+<main id="main" class="main">
+
+    <div class="pagetitle mt-3">
+
+        <div class="d-flex">
+            <div class="text-start w-50">
+                <h1>Showing Indicator Details</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Indicators</li>
+                    </ol>
+                </nav>
+
+            </div>
+            <div class="text-end w-50 mt-2">
+                <div class="btn-group" role="group" aria-label="Administrator Actions">
+                    <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
+                    <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicator->id) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('indicator.responses', $indicator->id) }}">Indicator Responses</a>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- End Page Title -->
+
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <!-- Display validation errors -->
+    @if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <section class="section dashboard">
+        <div class="row g-2">
+            <div class="col-sm-8">
+
+                <div class="card">
+                    <div class="accordion" id="tocAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingToC">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToC" aria-expanded="true" aria-controls="collapseToC">
+                                    Theory of Change Details
+                                </button>
+                            </h2>
+                            <div id="collapseToC" class="accordion-collapse collapse" aria-labelledby="headingToC" data-bs-parent="#tocAccordion">
+                                <div class="accordion-body">
+                                    <p>{!! $indicator->theoryOfChange->description !!}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card mt-2 status-{{$indicator->status}}">
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="text-start w-50">
+                                <h5 class="mb-0">Indicator Details</h5>
+
+                            </div>
+                            <div class="text-end w-50">
+                                <small>Indicator Status</small>
+                                <span class="badge bg-info">{{ $indicator->status }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Indicator Category:</div>
+                            <div class="col-sm-8">{{ $indicator->category }} Indicator</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Indicator Name:</div>
+                            <div class="col-sm-8">{{ $indicator->name }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Indicator Title:</div>
+                            <div class="col-sm-8">{{ $indicator->indicator_title }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Indicator Definition:</div>
+                            <div class="col-sm-8">{{ $indicator->definition }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Data Source:</div>
+                            <div class="col-sm-8">{{ $indicator->data_source }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Data Collection Frequency:</div>
+                            <div class="col-sm-8">{{ $indicator->frequency }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Reporting:</div>
+                            <div class="col-sm-8">{{ $indicator->reporting }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <h5>Indicator Status Key</h5>
+                    <div class="status-key">
+                        <span>
+                            <div class="key-draft"></div> Draft
+                        </span>
+                        <span>
+                            <div class="key-review"></div> Review
+                        </span>
+                        <span>
+                            <div class="key-public"></div> Public
+                        </span>
+                        <span>
+                            <div class="key-archived"></div> Archived
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="card">
+                    <div class="card-header">Indicator Metrics</div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Baseline</div>
+                            <div class="col-sm-8">{{ $indicator->baseline }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Target</div>
+                            <div class="col-sm-8">{{ $indicator->target }}</div>
+                        </div>
+
+                        @if($indicator->current_state)
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Current State</div>
+                            <div class="col-sm-8">{{ $indicator->current_state }}</div>
+                        </div>
+                        @endif
+
+                        @if($indicator->qualitative_progress)
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Quantitative Progress</div>
+                            <div class="col-sm-8">{{ $indicator->qualitative_progress }}</div>
+                        </div>
+                        @endif
+
+                        @if($indicator->qualitative_progress)
+                        <div class="row mb-3">
+                            <div class="col-sm-4 font-weight-bold">Qualitative Progress</div>
+                            <div class="col-sm-8">{{ $indicator->qualitative_progress }}</div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="card my-2">
+                    <div class="card-body">
+                        <button class="btn btn-primary btn-sm mt-2" id="archiveIndicatorBtn">Move Indicator To Archive</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="archiveModalLabel">Move Indicator to Archive</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="archiveForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="archiveSelect" class="form-label">Select Archive</label>
+                            <select class="form-select" id="archiveSelect" name="archive_id" required>
+                                <option value="" disabled selected>Select an archive</option>
+                                <!-- Archive options will be populated here via AJAX -->
+                            </select>
+                        </div>
+                        <input type="hidden" name="indicator_id" id="indicatorId">
+                        <button type="submit" class="btn btn-primary btn-sm">Move to Archive</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main><!-- End #main -->
+
+@include('layouts.footer')
+
+<script>
+    $(document).ready(function() {
+        const $archiveModal = $('#archiveModal');
+        const $archiveSelect = $('#archiveSelect');
+        const $indicatorId = $('#indicatorId');
+
+        // Fetch archives when the button is clicked
+        $('#archiveIndicatorBtn').click(function() {
+            // Replace this URL with your endpoint that returns archives
+            $.ajax({
+                url: '/organisation/archives', // Ensure this endpoint returns a JSON array of archives
+                method: 'GET',
+                success: function(data) {
+                    // Clear existing options
+                    $archiveSelect.empty().append('<option value="" disabled selected>Select an archive</option>');
+
+                    // Populate the select box with archive options
+                    $.each(data, function(index, archive) {
+                        $archiveSelect.append(new Option(archive.title, archive.id)); // Assuming 'id' and 'title' exist
+                    });
+
+                    // Set the indicator ID (you may need to set this value before opening the modal)
+                    $indicatorId.val("{{ $indicator->id }}"); // Set the indicator ID here
+                    $archiveModal.modal('show'); // Show the modal
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching archives:', error);
+                }
+            });
+        });
+
+        // Handle form submission
+        $('#archiveForm').submit(function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const formData = $(this).serialize();
+            const archiveId = $archiveSelect.val();
+            const indicatorId = $indicatorId.val();
+            const url = `/archives/${archiveId}/move-indicator/${indicatorId}`; // Adjust URL based on your routes
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                success: function(data) {
+                    Toastify({
+                        text: "Indicator Archived Successfully",
+                        duration: 3000,
+                        gravity: 'bottom', // Position the toast at the bottom
+                        position: 'left', // Align toast to the left
+                        backgroundColor: '#28a745',
+                    }).showToast();
+
+                    setTimeout(function() {
+                        window.location.replace('/archives');
+                    }, 1500);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error moving indicator to archive:', error);
+                    alert('Failed to move indicator: ' + error.responseText);
+                }
+            });
+        });
+    });
+</script>
