@@ -62,7 +62,9 @@ class LoginController extends Controller
             $user = Auth::user();
 
             $organization = $user->organization; // Assuming a relationship like `belongsTo` exists in User model
+            $profile = $user->profile; // Assuming a relationship like `belongsTo` exists in User model
             session(['organization' => $organization]);
+            session(['profile' => $profile]);
 
        
             $otherOrganizations = Organisation::where('id', '!=', $user->organisation->id)->get();

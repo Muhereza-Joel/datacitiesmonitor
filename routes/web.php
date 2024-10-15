@@ -7,6 +7,7 @@ use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ThoeryOfChangeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,6 +58,9 @@ Route::post('/archives/{archive_id}/move-indicator/{indicator_id}', [ArchivesCon
 Route::get('/archives/indicator/{id}', [ArchivesController::class, 'getIndicator'])->name('archives.indicator.details');
 Route::get('/archives/indicator/{id}/responses', [ArchivesController::class, 'getResponsesForIndicator'])->name('archives.indicator.responses');
 
+Route::get('/profile', [UserProfileController::class, 'showProfile'])->name('profile.show');
+Route::patch('/profile/update/photo', [UserProfileController::class, 'updatePhoto'])->name('profile.update.photo');
+Route::post('/profile/update/profile', [UserProfileController::class, 'updateProfile'])->name('profile.update.profile');
 
 // Catch-all route for non-existing routes
 Route::fallback(function () {

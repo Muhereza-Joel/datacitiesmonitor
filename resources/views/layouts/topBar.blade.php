@@ -22,7 +22,7 @@
     <ul class="d-flex align-items-center">
       <li class="nav-item dropdown pe-3">
         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-          <img src="{{  asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="40px" height="40px" style="object-fit: cover;">
+          <img src="{{ isset(Auth::user()->profile->image_url) ? asset(Auth::user()->profile->image_url) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="40px" height="40px" style="object-fit: cover; border: 2px solid #fff">
           <span class="d-none d-md-block dropdown-toggle px-2">Hello, {{ Auth::user()->name }}</span>
         </a><!-- End Profile Image Icon -->
 
@@ -36,7 +36,7 @@
           </li>
 
           <li>
-            <a class="dropdown-item d-flex align-items-center justify-content-start" href="{{ url('auth/user/profile/', null, true) }}">
+            <a class="dropdown-item d-flex align-items-center justify-content-start" href="{{ route('profile.show') }}">
               <i class="bi bi-person"></i>
               <span>Your Profile</span>
             </a>
