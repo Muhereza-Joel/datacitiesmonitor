@@ -19,9 +19,9 @@
 
             </div>
             <div class="text-end w-50 pt-3">
-                @can('create', Auth::user())
+                @if(Gate::allows('create', App\Models\TheoryOfChange::class))
                 <a href="{{ route('theory.create') }}" class="btn btn-primary btn-sm">Create New ToC</a>
-                @endcan
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->
