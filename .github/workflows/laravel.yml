@@ -38,6 +38,8 @@ jobs:
         run: |
           sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@datacities.tagbatwaha.com << 'EOF'
             cd /home2/tagbatwa/datacities.tagbatwaha.com
+            # Stash any local changes before pulling
+            git stash || true
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
