@@ -90,8 +90,12 @@
       <div style="border-radius: 50%;" class="d-flex align-self-center justify-content-end w-50">
         @if($indicatorId != null)
         <div class="btn-group" role="group" aria-label="Administrator Actions">
+          @if(Gate::allows('create', App\Models\Response::class))
           <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add More Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicatorId) }}"><i class="bi bi-plus-circle"></i> Add More Responses</a>
+          @endif
+          @if(Gate::allows('create', App\Models\Indicator::class))
           <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicatorId) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
+          @endif
           <a href="{{ route('indicators.show', $indicatorId) }}" class="btn btn-primary btn-sm px-3">Indicator Details</a>
 
         </div>
@@ -148,18 +152,22 @@
                   Select Action
                 </button>
                 <div class="dropdown-menu" aria-labelledby="actionDropdown">
+                  @if(Gate::allows('create', $response))
                   <a href="{{ route('indicators.response.edit', $response->id) }}" class="dropdown-item">
                     <i class="bi bi-pencil"></i> Edit Response
                   </a>
                   <a href="#add-files" id="add-file" class="dropdown-item" data-response-id="{{$response['id']}}" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
                     <i class="bi bi-paperclip"></i> Add Files
                   </a>
+                  @endif
                   <a href="#reponse-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
                     <i class="bi bi-file-earmark"></i> Response Files
                   </a>
+                  @if(Gate::allows('delete', $response))
                   <a href="" class="dropdown-item text-danger" id="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $response->id }}">
                     <i class="bi bi-trash"></i> Delete Response
                   </a>
+                  @endif
                 </div>
               </div>
 

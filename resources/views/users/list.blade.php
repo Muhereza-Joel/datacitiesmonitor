@@ -19,7 +19,9 @@
 
             </div>
             <div class="text-end w-50 pt-3">
+                @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
                 <a href="{{ route('organisation.user.create') }}" class="btn btn-primary btn-sm">Add New Organisation User</a>
+                @endif
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Add New User</a>
             </div>
         </div>
@@ -89,7 +91,7 @@
                         </tbody>
                     </table>
                     <!-- End Table with stripped rows -->
-                     <!-- Pagination links -->
+                    <!-- Pagination links -->
                     <div class="d-flex justify-content-center">
                         {{ $users->links('pagination::bootstrap-4') }} <!-- Use Bootstrap 4 Pagination -->
                     </div>

@@ -94,7 +94,7 @@
                     <div class="card-body">
                         <form action="{{ route('indicators.index') }}" method="GET" class="d-flex align-items-center gap-3">
                             <div class="form-group mt-2">
-                                
+
                                 <select class="form-select" id="status" name="status">
                                     <option value="">Status</option>
                                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -104,7 +104,7 @@
                                 </select>
                             </div>
                             <div class="form-group mt-2">
-                                
+
                                 <select class="form-select" id="qualitative_progress" name="qualitative_progress">
                                     <option value="">Qualitative Progress</option>
                                     <option value="on track" {{ request('qualitative_progress') == 'on track' ? 'selected' : '' }}>On Track</option>
@@ -115,7 +115,7 @@
                                 </select>
                             </div>
                             <div class="form-group mt-2">
-                                
+
                                 <input autocomplete="off" type="text" class="form-control" id="category" name="category" value="{{ request('category') }}" placeholder="Enter category">
                             </div>
                             <div class="form-group pt-3">
@@ -143,7 +143,9 @@
             </div>
             <div class="col-sm-2">
                 <div class="text-end pt-2">
+                    @if(Gate::allows('create', App\Models\Indicator::class))
                     <a href="{{ route('indicators.create') }}" style="border-radius: 70px !important;" class="btn btn-primary btn-sm py-3 px-3">Create Indicator</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -183,13 +185,17 @@
 
                         </div>
                         <div class="text-end w-25">
-
+                            @if(Gate::allows('update', $indicator))
                             <a href="{{ route('indicators.edit', $indicator->id) }}" class="icon" title="Edit Indicator">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            @endif
+
+                            @if(Gate::allows('delete', $indicator))
                             <a href="" class="icon" title="Delete Indicator">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -200,12 +206,17 @@
                     <div class="card-footer p-0 py-2">
 
                         <div class="text-start">
+                            @if(Gate::allows('create', App\Models\Response::class))
                             <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
+                            @endif
+
+
                             <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
+
                         </div>
                     </div>
                 </div>

@@ -19,7 +19,9 @@
 
             </div>
             <div class="text-end w-50 pt-3">
+                @can('create', Auth::user())
                 <a href="{{ route('theory.create') }}" class="btn btn-primary btn-sm">Create New ToC</a>
+                @endcan
             </div>
         </div>
     </div><!-- End Page Title -->
@@ -51,11 +53,16 @@
                         <div class="d-flex">
 
                             <div class="w-50 text-start">
-                                ToC {{$loop->iteration}} for <span class="badge bg-secondary text-light">{{ $theory->organisation->name }}</span> 
+                                ToC {{$loop->iteration}} for <span class="badge bg-secondary text-light">{{ $theory->organisation->name }}</span>
                             </div>
+
+                            @if(Gate::allows('delete', $theory))
                             <div class="w-50 text-end">
                                 <a href="" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}">Delete</a>
                             </div>
+                            @endif
+
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -78,9 +85,18 @@
                             </div>
                         </div>
 
+
+
+                        @if(Gate::allows('view', $theory))
                         <a href="{{ route('theory.indicators', $theory->id) }}" class="btn btn-link btn-sm fw-bold">View Connected Indicators <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
+                        @endif
+                        @if(Gate::allows('create', $theory))
                         <a href="{{ route('theory.indicators.create', $theory->id) }}" class="btn btn-link btn-sm fw-bold">Create New Indicator from ToC <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
+                        @endif
+
+                        @if(Gate::allows('update', $theory))
                         <a href="{{ route('theory.edit', $theory->id) }}" class="btn btn-link btn-sm fw-bold">Edit ToC Details <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
+                        @endif
                     </div>
                 </div>
                 <div class="modal fade" id="deleteModal{{ $theory->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $theory->id }}" aria-hidden="true">

@@ -79,10 +79,16 @@
             </div>
             <div class="text-end w-50 mt-2">
                 <div class="btn-group" role="group" aria-label="Administrator Actions">
+                    @if(Gate::allows('create', App\Models\Response::class))
                     <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
-                    <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicator->id) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
-                    <a class="btn btn-primary btn-sm" href="{{ route('indicator.responses', $indicator->id) }}">Indicator Responses</a>
+                    @endif
 
+                    @if(Gate::allows('update', Auth::user(), $indicator))
+                    <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicator->id) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
+                    @endif
+
+                    <a class="btn btn-primary btn-sm" href="{{ route('indicator.responses', $indicator->id) }}">Indicator Responses</a>
+                    
                 </div>
 
             </div>
@@ -229,11 +235,13 @@
                     </div>
                 </div>
 
+                @if(Gate::allows('create', App\Models\Archive::class))
                 <div class="card my-2">
                     <div class="card-body">
                         <button class="btn btn-primary btn-sm mt-2" id="archiveIndicatorBtn">Move Indicator To Archive</button>
                     </div>
                 </div>
+                @endif
 
             </div>
         </div>

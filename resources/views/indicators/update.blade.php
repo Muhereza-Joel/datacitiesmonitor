@@ -20,7 +20,9 @@
             </div>
             <div class="text-end w-50 pt-2">
                 <div>
+                    @if(Gate::allows('create', App\Models\Response::class))
                     <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
+                    @endif
                     <a href="{{ route('indicators.show', $indicator->id) }}" class="btn btn-primary btn-sm px-3">Indicator Details</a>
                     <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-primary btn-sm px-3">View Indicator Responses</a>
                 </div>
@@ -164,7 +166,10 @@
                             <input type="hidden" value="{{$myOrganisation->id}}" name="organisation_id">
 
                             <div class="text-start">
+                
+                                @if(Gate::allows('create', $indicator))
                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -177,7 +182,7 @@
                         Indicator Status
                         <span class="badge bg-info text-light">{{ $indicator->status }}</span>
                     </div>
-                    
+
                     <div class="card-body">
                         <form action="{{ route('indicators.status.update', $indicator->id) }}" method="POST">
                             @csrf
@@ -201,7 +206,9 @@
                                     <option value="not started" {{ $indicator->qualitative_progress == 'not started' ? 'selected' : '' }}>Not Started</option>
                                 </select>
                             </div>
+                            @if(Gate::allows('create', $indicator))
                             <button type="submit" class="btn btn-primary btn-sm">Update Indicator</button>
+                            @endif
                         </form>
                     </div>
                 </div>
