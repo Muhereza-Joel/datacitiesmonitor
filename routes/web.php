@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchivesController;
 use App\Http\Controllers\IndicatorController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrganisationController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SearchController;
@@ -63,6 +64,8 @@ Route::patch('/profile/update/photo', [UserProfileController::class, 'updatePhot
 Route::post('/profile/update/profile', [UserProfileController::class, 'updateProfile'])->name('profile.update.profile');
 Route::post('/password/check', [UserProfileController::class, 'checkCurrentPassword'])->name('password.check');
 Route::patch('/password/update', [UserProfileController::class, 'updatePassword'])->name('password.update');
+
+Route::resource('logs', LogController::class);
 
 // Catch-all route for non-existing routes
 Route::fallback(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserActionPerformed;
 use App\Models\Indicator;
 use App\Models\Organisation;
 use App\Models\TheoryOfChange;
@@ -210,6 +211,8 @@ class IndicatorController extends Controller
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
+
+        event(new UserActionPerformed(Auth::user(), 'Updated indicator', 'Indicator', $id));
 
         return redirect()->back()->with(['success' => 'Indicator Updated Successfully', 'myOrganisation' => $myOrganisation, 'theories' => $theories]);
     }

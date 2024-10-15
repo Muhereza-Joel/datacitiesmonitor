@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserLoggedIn;
+use App\Events\UserLoggedOut;
 use App\Http\Controllers\Controller;
 use App\Models\Organisation;
 use App\Providers\RouteServiceProvider;
@@ -58,7 +60,7 @@ class LoginController extends Controller
 
         // Attempt to log the user in
         if (Auth::attempt([$field => $request->input('identifier'), 'password' => $request->input('password')])) {
-          
+
             $user = Auth::user();
 
             $organization = $user->organization; // Assuming a relationship like `belongsTo` exists in User model
@@ -66,16 +68,33 @@ class LoginController extends Controller
             session(['organization' => $organization]);
             session(['profile' => $profile]);
 
-       
+
             $otherOrganizations = Organisation::where('id', '!=', $user->organisation->id)->get();
             session(['other_organizations' => $otherOrganizations]);
 
-          
+            event(new UserLoggedIn(Auth::user()));
+
+
             return redirect()->intended($this->redirectTo);
         }
 
         // If authentication fails, redirect back with an error
         return back()->withInput($request->only('identifier'))
             ->withErrors(['identifier' => 'The provided credentials do not match our records.']);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        if ($user) {
+            // Trigger the UserLoggedOut event before logging out
+            event(new UserLoggedOut($user));
+        }
+
+        Auth::logout(); // Log the user out
+
+        // Optionally, invalidate the session or redirect
+        return redirect('/'); // Redirect to your desired location after logout
     }
 }
