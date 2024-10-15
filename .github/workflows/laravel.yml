@@ -38,11 +38,19 @@ jobs:
         run: |
           sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@datacities.tagbatwaha.com << 'EOF'
             cd /home2/tagbatwa/datacities.tagbatwaha.com
+            
             # Stash any local changes before pulling
             git stash || true
             git pull origin main
+            
+            # Install dependencies
             composer install --no-dev --optimize-autoloader
+            
+            # Run migrations
             php artisan migrate --force
+            
+            # Import the Indicator model to build the search index
+            php artisan tntsearch:import Indicator
             
             # Clear cache for views and configurations
             php artisan view:clear
@@ -52,5 +60,6 @@ jobs:
             # Re-cache the routes and views
             php artisan route:cache
             php artisan view:cache
+            
             exit
           EOF
