@@ -61,6 +61,8 @@ Route::get('/archives/indicator/{id}/responses', [ArchivesController::class, 'ge
 Route::get('/profile', [UserProfileController::class, 'showProfile'])->name('profile.show');
 Route::patch('/profile/update/photo', [UserProfileController::class, 'updatePhoto'])->name('profile.update.photo');
 Route::post('/profile/update/profile', [UserProfileController::class, 'updateProfile'])->name('profile.update.profile');
+Route::post('/password/check', [UserProfileController::class, 'checkCurrentPassword'])->name('password.check');
+Route::patch('/password/update', [UserProfileController::class, 'updatePassword'])->name('password.update');
 
 // Catch-all route for non-existing routes
 Route::fallback(function () {

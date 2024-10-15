@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use App\Models\User;
+use App\Rules\AgeRule;
+use App\Rules\NinRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserProfileController extends Controller
 {
@@ -62,9 +65,62 @@ class UserProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'string|max:100',
-            'about' => 'string',
-            'about' => 'string',
+            'user_id' => 'required|string|max:255|exists:users,id',
+            'name' => 'required|string|max:100',
+            'about' => 'required|string',
+            'company' => 'required|string',
+            'job' => 'required|string',
+            'nin' => ['required', 'string', 'max:14', new NinRule()],
+            'email' => 'required|string|email',
+            'gender' => 'required|in:male,female,other', // Replace with actual enum values
+            'dob' => ['required', 'date', new AgeRule()],
+            'country' => 'required|string',
+            'district' => 'required|string',
+            'village' => 'required|string',
+            'phone' => 'required|string',
         ]);
+
+        // Find the profile by user_id, or create a new instance if not found
+        $profile = Profile::firstOrNew(['user_id' => $request->user_id]);
+
+        // Update the profile with the validated data
+        $profile->fill($validated);
+        $profile->save();
+
+        return redirect()->back()->with(['success' => 'Profile Updated Successfully']);
+    }
+
+    public function checkCurrentPassword(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        // Check if the provided password matches the authenticated user's password
+        $user = Auth::user();
+        if (Hash::check($request->password, $user->password)) {
+            return response()->json(['exists' => true]);
+        }
+
+        return response()->json(['exists' => false]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8', // Ensure new password has at least 8 characters
+        ]);
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Update the password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['success' => true]);
     }
 }
