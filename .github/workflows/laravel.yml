@@ -50,7 +50,7 @@ jobs:
             php artisan migrate --force
             
             # Import the Indicator model to build the search index
-            php artisan tntsearch:import Indicator
+            php artisan tntsearch:import App\\Models\\Indicator
             
             # Clear cache for views and configurations
             php artisan view:clear
