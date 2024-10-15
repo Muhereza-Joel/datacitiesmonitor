@@ -46,15 +46,3 @@ jobs:
             php artisan view:cache
             exit
           EOF
-
-      - name: Deploy to Server - Opendata Analytics
-        env:
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME_OPENDATA }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD_OPENDATA }}
-        run: |
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@datacities.opendata-analytics.org << 'EOF'
-            cd /home1/opendata/datacities.opendata-analytics.org  
-            git pull origin main
-            
-            exit
-          EOF
