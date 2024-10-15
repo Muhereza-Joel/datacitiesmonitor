@@ -41,7 +41,13 @@ jobs:
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
+            
+            # Clear cache for views and configurations
+            php artisan view:clear
+            php artisan cache:clear
             php artisan config:cache
+            
+            # Re-cache the routes and views
             php artisan route:cache
             php artisan view:cache
             exit
