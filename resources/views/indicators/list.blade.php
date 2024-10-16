@@ -181,7 +181,7 @@
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-75">
                             @if($indicator->category === "None")
-                            <span class="badge bg-warning text-light">Un Categorised</span>
+                            <span class="badge bg-success text-light">Un Categorised</span>
                             @else
                             <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
 
