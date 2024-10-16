@@ -180,7 +180,13 @@
                 <div class="card p-2 status-{{ strtolower($indicator->status) }}">
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-75">
-                            <span class="badge bg-primary text-light">{{$indicator->category}} indicator</span>
+                            @if($indicator->category === "None")
+                            <span class="badge bg-warning text-light">Un Categorised</span>
+                            @else
+                            <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
+
+                            @endif
+                           
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
 
                         </div>
