@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserActionPerformed;
+use App\Jobs\IndexIndicatorJob;
 use App\Models\Indicator;
 use App\Models\Organisation;
 use App\Models\TheoryOfChange;
@@ -18,35 +19,40 @@ class IndicatorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-{
-    $pageTitle = "All Indicators";
-    $currentUser = Auth::user();
-    $organisation_id = $currentUser->organisation_id;
+    {
+        $pageTitle = "All Indicators";
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
 
-    // Start the query with the base conditions
-    $query = Indicator::with('theoryOfChange')->where('organisation_id', $organisation_id);
+        // Start the query with the base conditions
+        $query = Indicator::with('theoryOfChange')->where('organisation_id', $organisation_id);
 
-    // Apply filters if they are present in the request
-    if ($request->filled('status')) {
-        $query->where('status', $request->input('status'));
+        // Apply filters if they are present in the request
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('qualitative_progress')) {
+            $query->where('qualitative_progress', $request->input('qualitative_progress'));
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', 'like', '%' . $request->input('category') . '%');
+        }
+
+        // Order the results by created_at
+        $query->orderBy('created_at', 'desc'); // Change 'desc' to 'asc' for ascending order
+
+        // Paginate the filtered results
+        $indicators = $query->paginate(12);
+
+        // Add each indicator to the TNTSearch index if not already indexed
+        foreach ($indicators as $indicator) {
+            IndexIndicatorJob::dispatch($indicator);
+        }
+
+        return view('indicators.list', compact('pageTitle', 'indicators'));
     }
-
-    if ($request->filled('qualitative_progress')) {
-        $query->where('qualitative_progress', $request->input('qualitative_progress'));
-    }
-
-    if ($request->filled('category')) {
-        $query->where('category', 'like', '%' . $request->input('category') . '%');
-    }
-
-    // Order the results by created_at
-    $query->orderBy('created_at', 'desc'); // Change 'desc' to 'asc' for ascending order
-
-    // Paginate the filtered results
-    $indicators = $query->paginate(12);
-
-    return view('indicators.list', compact('pageTitle', 'indicators'));
-}
 
 
 
@@ -238,29 +244,28 @@ class IndicatorController extends Controller
             'status' => 'string|required|in:draft,review,public,archived',
             'qualitative_progress' => 'string|required|in:on track,at risk,off track,completed,not started',
         ]);
-    
+
         // Use a transaction to ensure atomic updates
         DB::beginTransaction();
-    
+
         try {
             $indicator = Indicator::findOrFail($id);
             $indicator->status = $validated['status'];
             $indicator->qualitative_progress = $validated['qualitative_progress'];
             $indicator->save();
-    
+
             // Update the status of the corresponding responses
             $indicator->responses()->update(['status' => $validated['status']]);
-    
+
             // Commit the transaction if everything goes well
             DB::commit();
-    
+
             return redirect()->back()->with(['success' => 'Indicator Status Updated Successfully']);
         } catch (\Exception $e) {
             // Rollback the transaction if there's an error
             DB::rollBack();
-    
+
             return redirect()->back()->withErrors(['error' => 'Failed to update Indicator Status: ' . $e->getMessage()]);
         }
     }
-    
 }
