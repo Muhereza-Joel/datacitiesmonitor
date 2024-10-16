@@ -83,4 +83,18 @@ class LoginController extends Controller
             ->withErrors(['identifier' => 'The provided credentials do not match our records.']);
     }
 
+    public function logout(Request $request)
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        if ($user) {
+            // Trigger the UserLoggedOut event before logging out
+            event(new UserLoggedOut($user));
+        }
+
+        Auth::logout(); // Log the user out
+
+        // Optionally, invalidate the session or redirect
+        return redirect('/'); // Redirect to your desired location after logout
+    }
 }

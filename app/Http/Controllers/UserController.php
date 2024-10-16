@@ -17,11 +17,16 @@ class UserController extends Controller
     public function index()
     {
         $pageTitle = 'Users';
-        // Eager load organizations
-        $users = User::with('organisation')->paginate(25);
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
+
+        // Load users for the current user's organization
+        $users = User::with('organisation')
+            ->where('organisation_id', $organisation_id)
+            ->paginate(25);
+
         return view('users.list', compact('pageTitle', 'users'));
     }
-
 
 
     /**
