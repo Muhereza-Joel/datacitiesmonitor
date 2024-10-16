@@ -200,7 +200,7 @@
                     </div>
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
-                        <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
                     </div>
 
                     <div class="card-footer p-0 py-2">
