@@ -24,9 +24,19 @@ jobs:
 
           # Connect to the server using the private key
           ssh -o StrictHostKeyChecking=no -i private_key $SERVER_USERNAME@datacities.opendata-analytics.org << 'EOF'
-            cd /home1/opendata/deploy/datacities.opendata-analytics.org
+            # Define the project directory
+            PROJECT_DIR="/home1/opendata/datacities.opendata-analytics.org"
+
+            # Check if the project directory exists
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              # Clone the repository if it doesn't exist
+              git clone https://github.com/Muhereza-Joel/datacitiesmonitor.git "$PROJECT_DIR"
+            fi
             
-            # Deployment steps for the server
+            # Navigate to the project directory
+            cd "$PROJECT_DIR"
+
+            # Stash any local changes before pulling
             git stash || true
             git pull origin main
             
