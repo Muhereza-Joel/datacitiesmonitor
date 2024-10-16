@@ -36,7 +36,7 @@
                             </div>
                             @endif
                             <div class="col-12">
-                                <label for="identifier" class="form-label">{{__('Username or Email.')}}</label>
+                                <label for="identifier" class="form-label">{{__('Username or Email')}}</label>
                                 <div class="input-group has-validation">
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" name="identifier" value="{{ old('identifier' )}}" id="yourUsername" required placeholder="Enter your username or email">
                                     @error('email')
