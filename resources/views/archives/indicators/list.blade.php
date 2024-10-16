@@ -128,7 +128,8 @@
                         <a href="{{ route('archives.indicator.details', $indicator->indicator_id) }}" class="two-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
                         <div class="text-muted mt-1">
                             <!-- Format the created_at date using Carbon -->
-                            <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
+                            <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->timezone('Africa/Nairobi')->format('M d, Y \a\t g:i a') }}</small>
+
                         </div>
                     </div>
 
