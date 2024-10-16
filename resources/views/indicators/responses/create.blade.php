@@ -57,8 +57,8 @@
 
                             <div class="form-group my-2">
                                 <label for="">Enter current state</label>
-                                <small class="text-danger"> (Must be a whole number)</small>
-                                <input required id="current" name="current" type="number" class="form-control">
+                                <small class="text-danger">Can be a floating number with a decimal point</small>
+                                <input required id="current" name="current" type="number" step="0.1" class="form-control">
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
                             <div class="form-group my-2">
