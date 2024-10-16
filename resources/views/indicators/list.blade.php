@@ -176,7 +176,7 @@
             <p>No Indicators found...</p>
             @else
             @foreach($indicators as $indicator)
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="card p-2 status-{{ strtolower($indicator->status) }}">
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-75">
