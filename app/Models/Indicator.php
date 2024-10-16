@@ -57,6 +57,14 @@ class Indicator extends Model
                 $model->id = Uuid::uuid4();
             }
         });
+
+        static::created(function ($indicator) {
+            $indicator->searchable();
+        });
+
+        static::updated(function ($indicator) {
+            $indicator->searchable();
+        });
     }
 
     // Calculate quantitative progress if not manually updated
