@@ -62,17 +62,22 @@
                         </div>
                         <div class="text-end w-50">
 
+                            @if(Gate::allows('update', $indicator))
                             <a href="{{ route('indicators.edit', $indicator->id) }}" class="icon" title="Edit Indicator">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            @endif
+
+                            @if(Gate::allows('delete', $indicator))
                             <a href="" class="icon" title="Delete Indicator">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
-                        <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
                         <div class="text-muted mt-1">
                             <!-- Format the created_at date using Carbon -->
                             <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
@@ -82,9 +87,13 @@
                     <div class="card-footer p-0 py-2">
 
                         <div class="text-start">
+                            @if(Gate::allows('create', App\Models\Response::class))
                             <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
+                            @endif
+
+
                             <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
