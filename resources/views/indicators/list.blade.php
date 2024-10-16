@@ -186,7 +186,7 @@
                             <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
 
                             @endif
-                           
+
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
 
                         </div>
@@ -207,6 +207,10 @@
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
                         <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <div class="text-muted mt-1">
+                            <!-- Format the created_at date using Carbon -->
+                            <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
+                        </div>
                     </div>
 
                     <div class="card-footer p-0 py-2">
