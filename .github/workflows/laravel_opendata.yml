@@ -1,0 +1,32 @@
+name: Deploy to Opendata Analytics Server
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.OPENDATA_SERVER_SSH_KEY }}
+
+      - name: Deploy to Another Server
+        env:
+          SERVER_USERNAME: ${{ secrets.OPENDATA_SERVER_USERNAME }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@datacities.opendata-analytics.org/ << 'EOF'
+            cd /home1/opendata/deploy/datacities.opendata-analytics.org
+            
+            # Deployment steps for the other server
+            git stash || true
+            git pull origin main
+            
+          EOF
