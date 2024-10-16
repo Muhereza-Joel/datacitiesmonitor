@@ -19,7 +19,7 @@
 
             </div>
             <div class="text-end w-50 pt-2">
-               
+
             </div>
 
         </div>
@@ -46,11 +46,18 @@
             <p>No Indicators found...</p>
             @else
             @foreach($results as $indicator)
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="card p-2">
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-50">
-                            Category <span class="badge bg-primary text-light">{{$indicator->category}}</span>
+                            @if($indicator->category === "None")
+                            <span class="badge bg-success text-light">Un Categorised</span>
+                            @else
+                            <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
+
+                            @endif
+
+                            <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
 
                         </div>
                         <div class="text-end w-50">
@@ -66,6 +73,10 @@
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
                         <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <div class="text-muted mt-1">
+                            <!-- Format the created_at date using Carbon -->
+                            <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
+                        </div>
                     </div>
 
                     <div class="card-footer p-0 py-2">
