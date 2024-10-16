@@ -46,6 +46,11 @@ class IndicatorController extends Controller
         // Paginate the filtered results
         $indicators = $query->paginate(12);
 
+        // Add each indicator to the TNTSearch index if not already indexed
+        foreach ($indicators as $indicator) {
+            IndexIndicatorJob::dispatch($indicator);
+        }
+
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }
 
