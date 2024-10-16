@@ -1,0 +1,52 @@
+name: Deploy to Opendata Analytics Server
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Opendata Analytics Server
+        env:
+          SERVER_USERNAME: ${{ secrets.OPENDATA_SERVER_USERNAME }}
+          SERVER_PRIVATE_KEY: ${{ secrets.OPENDATA_SERVER_SSH_KEY }}
+        run: |
+          # Create a temporary SSH key file
+          echo "$SERVER_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+
+          # Connect to the server using the private key
+          ssh -o StrictHostKeyChecking=no -i private_key $SERVER_USERNAME@datacities.opendata-analytics.org << 'EOF'
+            # Define the project directory
+            PROJECT_DIR="/home1/opendata/datacities.opendata-analytics.org"
+
+            # Check if the project directory exists
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              # Clone the repository if it doesn't exist
+              git clone https://github.com/Muhereza-Joel/datacitiesmonitor.git "$PROJECT_DIR"
+            fi
+            
+            # Navigate to the project directory
+            cd "$PROJECT_DIR"
+
+            # Stash any local changes before pulling
+            git stash || true
+            git pull origin main
+            
+            # Optional: Add other steps like installing dependencies, clearing cache, etc.
+            # composer install --no-dev --optimize-autoloader
+            # php artisan migrate --force
+            # php artisan cache:clear
+            
+            exit
+          EOF
+
+          # Clean up the temporary key file
+          rm private_key
