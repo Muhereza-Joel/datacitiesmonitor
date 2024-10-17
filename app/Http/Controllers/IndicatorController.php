@@ -25,7 +25,7 @@ class IndicatorController extends Controller
         $organisation_id = $currentUser->organisation_id;
 
         // Start the query with the base conditions
-        $query = Indicator::with('theoryOfChange')->where('organisation_id', $organisation_id);
+        $query = Indicator::with('theoryOfChange', 'organisation')->where('organisation_id', $organisation_id);
 
         // Apply filters if they are present in the request
         if ($request->filled('status')) {

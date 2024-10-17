@@ -180,6 +180,7 @@
                 <div class="card p-2 status-{{ strtolower($indicator->status) }}">
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-75">
+                            <img src="{{ asset($indicator->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
                             @if($indicator->category === "None")
                             <span class="badge bg-success text-light">Un Categorised</span>
                             @else
