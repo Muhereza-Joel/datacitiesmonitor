@@ -48,7 +48,7 @@ class IndicatorController extends Controller
         $query->orderBy('created_at', 'desc'); // Change 'desc' to 'asc' for ascending order
     
         // Paginate the filtered results
-        $indicators = $query->paginate(12);
+        $indicators = $query->paginate(24);
     
         // Add each indicator to the TNTSearch index if not already indexed
         foreach ($indicators as $indicator) {
