@@ -32,7 +32,7 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                        <img src="{{ isset($userDetails->image_url) ? asset($userDetails->image_url) : asset('assets/img/avatar.png') }}" alt="Profile" class="rounded-circle" width="350px" height="350px">
+                        <img src="{{ isset($userDetails->profile->image_url) ? asset($userDetails->profile->image_url) : asset('assets/img/avatar.png') }}" alt="Profile" class="rounded-circle" width="350px" height="350px">
 
 
                     </div>
