@@ -65,7 +65,7 @@
 
                                 <div class="row my-4">
                                     <div class="col-lg-3 col-md-4 label fw-bold text-dark">Full Name</div>
-                                    <div class="col-lg-9 col-md-8 text-dark">{{$userDetails['name'] ?? 'N/A'}}</div>
+                                    <div class="col-lg-9 col-md-8 text-dark">{{$userDetails->profile['name'] ?? 'N/A'}}</div>
                                 </div>
                                 <div class="row my-4">
                                     <div class="col-lg-3 col-md-4 label fw-bold text-dark">Date of Birth</div>
