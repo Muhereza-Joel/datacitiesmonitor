@@ -123,20 +123,7 @@
                                 <a href="{{ route('indicators.index') }}" class="btn btn-secondary btn-sm">Reset</a>
                             </div>
                         </form>
-                        <div class="status-key pt-1 pb-0">
-                            <span>
-                                <div class="key-draft"></div> Draft
-                            </span>
-                            <span>
-                                <div class="key-review"></div> Review
-                            </span>
-                            <span>
-                                <div class="key-public"></div> Public
-                            </span>
-                            <span>
-                                <div class="key-archived"></div> Archived
-                            </span>
-                        </div>
+
                     </div>
                 </div>
 
@@ -167,7 +154,20 @@
         </ul>
     </div>
     @endif
-
+    <div class="status-key text-center pt-1 pb-0">
+        <span>
+            <div class="key-draft"></div> Draft
+        </span>
+        <span>
+            <div class="key-review"></div> Review
+        </span>
+        <span>
+            <div class="key-public"></div> Public
+        </span>
+        <span>
+            <div class="key-archived"></div> Archived
+        </span>
+    </div>
     <section class="section dashboard">
         <div class="row g-2">
 
@@ -184,11 +184,14 @@
                             @if($indicator->category === "None")
                             <span class="badge bg-success text-light">Un Categorised</span>
                             @else
-                            <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
+                            <span class="badge bg-primary text-light">{{ $indicator->category }} indicator</span>
 
                             @endif
 
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
+                            <span class="badge bg-light text-primary">
+                                {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
+                            </span>
 
                         </div>
                         <div class="text-end w-25">
@@ -207,11 +210,12 @@
                     </div>
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
-                        <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
                         <div class="text-muted mt-1">
                             <!-- Format the created_at date using Carbon -->
-                            <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
+                            <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>
+
                     </div>
 
                     <div class="card-footer p-0 py-2">
@@ -227,6 +231,12 @@
                             <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
+
+                            @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
+                            <span class="badge bg-light text-primary">
+                                Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
+                            </span>
+                            @endif
 
                         </div>
                     </div>
