@@ -52,13 +52,14 @@
                     <div class="card-title fw-bold ms-2">
                         <div class="d-flex">
 
-                            <div class="w-50 text-start">
-                                ToC {{$loop->iteration}} for <span class="badge bg-secondary text-light">{{ $theory->organisation->name }}</span>
+                            <div class="w-75 text-start">
+                                <img src="{{ asset($theory->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                                ToC has {{ $theory->indicators_count }} Indicators
                             </div>
 
                             @if(Gate::allows('delete', $theory))
-                            <div class="w-50 text-end">
-                                <a href="" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}">Delete</a>
+                            <div class="w-25 text-end">
+                                <a href="" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}"><i class="bi bi-trash text-danger"></i></a>
                             </div>
                             @endif
 

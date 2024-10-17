@@ -48,14 +48,25 @@
             <p>No Indicators found...</p>
             @else
             @foreach($indicators as $indicator)
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="card p-2">
                     <div class="card-title fw-bold ms-2 d-flex">
-                        <div class="text-start w-50">
-                            Category <span class="badge bg-primary text-light">{{$indicator->category}}</span>
+                        <div class="text-start w-75">
+                            <img src="{{ asset($indicator->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                            @if($indicator->category === "None")
+                            <span class="badge bg-success text-light">Un Categorised</span>
+                            @else
+                            <span class="badge bg-primary text-light">{{ $indicator->category }} indicator</span>
+
+                            @endif
+
+                            <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
+                            <span class="badge bg-light text-primary">
+                                {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
+                            </span>
 
                         </div>
-                        <div class="text-end w-50">
+                        <div class="text-end w-25">
 
                             <a href="{{ route('indicators.edit', $indicator->id) }}" class="icon" title="Edit Indicator">
                                 <i class="bi bi-pencil-square"></i>
@@ -67,7 +78,11 @@
                     </div>
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
-                        <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h5 fw-bold">{{ $indicator->name }}</a>
+                        <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
+                        <div class="text-muted mt-1">
+                            <!-- Format the created_at date using Carbon -->
+                            <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
+                        </div>
                     </div>
 
                     <div class="card-footer p-0 py-2">

@@ -20,10 +20,17 @@ class ThoeryOfChangeController extends Controller
         $pageTitle = "Theories of Change";
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
-        $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
+
+        // Fetch theories of change with the organisation and indicator count
+        $theories = TheoryOfChange::with('organisation')
+            ->withCount('indicators') // Include the count of related indicators
+            ->where('organisation_id', $organisation_id)
+            ->get();
 
         return view('theory.list', compact('pageTitle', 'theories'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -140,10 +147,17 @@ class ThoeryOfChangeController extends Controller
         $pageTitle = "All Indicators linked to ToC";
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
-        $indicators = Indicator::with('theoryOfChange')->where('theory_of_change_id', $id)->where('organisation_id', $organisation_id)->paginate(25);
+
+        // Fetch indicators with the related Theory of Change and response count
+        $indicators = Indicator::with('theoryOfChange')
+            ->withCount('responses') // Include the count of related responses
+            ->where('theory_of_change_id', $id)
+            ->where('organisation_id', $organisation_id)
+            ->paginate(25);
 
         return view('theory.connectedIndicators', compact('pageTitle', 'indicators'));
     }
+
 
     public function createIndicatorUsingToC($id)
     {

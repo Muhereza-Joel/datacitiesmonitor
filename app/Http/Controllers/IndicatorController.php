@@ -23,42 +23,43 @@ class IndicatorController extends Controller
         $pageTitle = "All Indicators";
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
-    
+
         // Start the query with the base conditions
-        $query = Indicator::with(['theoryOfChange', 'organisation', 'responses' => function ($query) {
-            $query->latest()->limit(1); // Eager load the latest response
-        }])
-        ->withCount('responses') // Add response count
-        ->where('organisation_id', $organisation_id);
-    
+        $query = Indicator::with(['theoryOfChange', 'organisation'])
+            ->withCount('responses') // Add response count
+            ->where('organisation_id', $organisation_id);
+
         // Apply filters if they are present in the request
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
-    
+
         if ($request->filled('qualitative_progress')) {
             $query->where('qualitative_progress', $request->input('qualitative_progress'));
         }
-    
+
         if ($request->filled('category')) {
             $query->where('category', 'like', '%' . $request->input('category') . '%');
         }
-    
+
         // Order the results by created_at
         $query->orderBy('created_at', 'desc'); // Change 'desc' to 'asc' for ascending order
-    
+
         // Paginate the filtered results
         $indicators = $query->paginate(24);
-    
+
+        // Load the latest response's created_at for each indicator
+        $indicators->load(['responses' => function ($query) {
+            $query->select('indicator_id', 'created_at')->latest()->limit(1);
+        }]);
+
         // Add each indicator to the TNTSearch index if not already indexed
         foreach ($indicators as $indicator) {
             IndexIndicatorJob::dispatch($indicator);
         }
-    
+
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }
-    
-
 
 
     /**
