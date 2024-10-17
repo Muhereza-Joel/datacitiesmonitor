@@ -180,7 +180,7 @@
                                             <div class="row mb-3">
                                                 <label for="about" class="col-md-4 col-lg-3 col-form-label text-secondary">About</label>
                                                 <div class="col-md-8 col-lg-9">
-                                                    <textarea required id="about-textarea" name="about" class="form-control" style="height: 150px" placeholder="Brief info about yourself">{{ old('about', $userDetails->profile['about'] ?? '') }}</textarea>
+                                                    <textarea id="about-textarea" name="about" class="form-control" style="height: 150px" placeholder="Brief info about yourself">{{ old('about', $userDetails->profile['about'] ?? '') }}</textarea>
 
                                                 </div>
                                             </div>
