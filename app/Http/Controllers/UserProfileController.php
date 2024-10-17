@@ -67,7 +67,7 @@ class UserProfileController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|string|max:255|exists:users,id',
             'name' => 'required|string|max:100',
-            'about' => 'string',
+            'about' => 'nullable|string',
             'company' => 'required|string',
             'job' => 'required|string',
             'nin' => ['required', 'string', 'max:14', new NinRule()],
