@@ -90,42 +90,38 @@
             </div>
             <div class="col-sm-8 pt-2">
                 <!-- Filter Section -->
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{{ route('indicators.index') }}" method="GET" class="d-flex align-items-center gap-3">
-                            <div class="form-group mt-2">
+                <form action="{{ route('indicators.index') }}" method="GET" class="d-flex align-items-center gap-3">
+                    <div class="form-group mt-2">
 
-                                <select class="form-select" id="status" name="status">
-                                    <option value="">Status</option>
-                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                    <option value="review" {{ request('status') == 'review' ? 'selected' : '' }}>Review</option>
-                                    <option value="public" {{ request('status') == 'public' ? 'selected' : '' }}>Public</option>
-                                    <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
-                                </select>
-                            </div>
-                            <div class="form-group mt-2">
-
-                                <select class="form-select" id="qualitative_progress" name="qualitative_progress">
-                                    <option value="">Qualitative Progress</option>
-                                    <option value="on track" {{ request('qualitative_progress') == 'on track' ? 'selected' : '' }}>On Track</option>
-                                    <option value="at risk" {{ request('qualitative_progress') == 'at risk' ? 'selected' : '' }}>At Risk</option>
-                                    <option value="off track" {{ request('qualitative_progress') == 'off track' ? 'selected' : '' }}>Off Track</option>
-                                    <option value="completed" {{ request('qualitative_progress') == 'completed' ? 'selected' : '' }}>Completed</option>
-                                    <option value="not started" {{ request('qualitative_progress') == 'not started' ? 'selected' : '' }}>Not Started</option>
-                                </select>
-                            </div>
-                            <div class="form-group mt-2">
-
-                                <input autocomplete="off" type="text" class="form-control" id="category" name="category" value="{{ request('category') }}" placeholder="Enter category">
-                            </div>
-                            <div class="form-group pt-3">
-                                <button type="submit" class="btn btn-primary btn-sm mt-0">Filter</button>
-                                <a href="{{ route('indicators.index') }}" class="btn btn-secondary btn-sm">Reset</a>
-                            </div>
-                        </form>
-
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Status</option>
+                            <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                            <option value="review" {{ request('status') == 'review' ? 'selected' : '' }}>Review</option>
+                            <option value="public" {{ request('status') == 'public' ? 'selected' : '' }}>Public</option>
+                            <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                        </select>
                     </div>
-                </div>
+                    <div class="form-group mt-2">
+
+                        <select class="form-select" id="qualitative_progress" name="qualitative_progress">
+                            <option value="">Qualitative Progress</option>
+                            <option value="on track" {{ request('qualitative_progress') == 'on track' ? 'selected' : '' }}>On Track</option>
+                            <option value="at risk" {{ request('qualitative_progress') == 'at risk' ? 'selected' : '' }}>At Risk</option>
+                            <option value="off track" {{ request('qualitative_progress') == 'off track' ? 'selected' : '' }}>Off Track</option>
+                            <option value="completed" {{ request('qualitative_progress') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="not started" {{ request('qualitative_progress') == 'not started' ? 'selected' : '' }}>Not Started</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+
+                        <input autocomplete="off" type="text" class="form-control" id="category" name="category" value="{{ request('category') }}" placeholder="Enter category">
+                    </div>
+                    <div class="form-group pt-3">
+                        <button type="submit" class="btn btn-primary btn-sm mt-0">Filter</button>
+                        <a href="{{ route('indicators.index') }}" class="btn btn-secondary btn-sm">Reset</a>
+                    </div>
+                </form>
+                
 
             </div>
             <div class="col-sm-2">
