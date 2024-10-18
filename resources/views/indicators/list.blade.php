@@ -206,74 +206,81 @@
                             <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>
 
-                        <div class="mt-3">
-                            <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
-                                @php
-                                // Calculate positions with adjustments for closely placed markers
-                                $isIncreasing = $indicator->baseline < $indicator->target;
-                                    $hasResponses = $indicator->responses->isNotEmpty();
 
-                                    // Normalize the range to avoid very small intervals and ensure it doesn't break when values are close
-                                    $minValue = min($indicator->baseline, $indicator->target);
-                                    $range = max(abs($indicator->target - $indicator->baseline), 1); // Avoid zero or very small range
+                        <div>
+                            <div class="mt-3">
 
-                                    $baselinePosition = (($indicator->baseline - $minValue) / $range) * 100;
-                                    $currentPosition = (($indicator->current - $minValue) / $range) * 100;
-                                    $targetPosition = (($indicator->target - $minValue) / $range) * 100;
+                                <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
+                                    @php
+                                    // Calculate positions with adjustments for closely placed markers
+                                    $isIncreasing = $indicator->baseline < $indicator->target;
+                                        $hasResponses = $indicator->responses->isNotEmpty();
 
-                                    // Ensure minimum spacing between markers if baseline and current are too close
-                                    $minSpacing = 2; // Minimum percentage spacing
-                                    if (abs($baselinePosition - $currentPosition) < $minSpacing) {
-                                        $currentPosition=$baselinePosition + $minSpacing;
-                                        }
-                                        if (abs($currentPosition - $targetPosition) < $minSpacing) {
-                                        $targetPosition=$currentPosition + $minSpacing;
-                                        }
-                                        @endphp
+                                        // Normalize the range to avoid very small intervals and ensure it doesn't break when values are close
+                                        $minValue = min($indicator->baseline, $indicator->target);
+                                        $range = max(abs($indicator->target - $indicator->baseline), 1); // Avoid zero or very small range
 
-                                        <!-- Faint Shade from Baseline to Current (Only for Increasing direction or if it has responses) -->
-                                        @if ($isIncreasing || $hasResponses)
-                                        <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $currentPosition }}%; right: {{ $isIncreasing ? 100 - $currentPosition : 100 - $baselinePosition }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
-                                        @endif
+                                        $baselinePosition = (($indicator->baseline - $minValue) / $range) * 100;
+                                        $currentPosition = (($indicator->current - $minValue) / $range) * 100;
+                                        $targetPosition = (($indicator->target - $minValue) / $range) * 100;
 
-                                        <!-- Baseline Marker -->
-                                        <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
-                                        <!-- Current State Marker -->
-                                        <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
-                                        <!-- Target Marker -->
-                                        <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
-                            </div>
+                                        // Ensure minimum spacing between markers if baseline and current are too close
+                                        $minSpacing = 2; // Minimum percentage spacing
+                                        if (abs($baselinePosition - $currentPosition) < $minSpacing) {
+                                            $currentPosition=$baselinePosition + $minSpacing;
+                                            }
+                                            if (abs($currentPosition - $targetPosition) < $minSpacing) {
+                                            $targetPosition=$currentPosition + $minSpacing;
+                                            }
+                                            @endphp
 
-                            <!-- Horizontal Arrow Indicating Progress Direction -->
-                            <div style="position: relative; margin-top: 5px;">
-                                <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $targetPosition }}%; right: {{ $isIncreasing ? 100 - $targetPosition : 100 - $baselinePosition }}%; height: 0; border-top: 2px solid {{ $isIncreasing ? 'green' : 'red' }};">
-                                    <div style="position: absolute; {{ $isIncreasing ? 'right: 0;' : 'left: 0;' }} top: -5px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid {{ $isIncreasing ? 'green' : 'red' }};">
+                                            <!-- Faint Shade from Baseline to Current (Only for Increasing direction or if it has responses) -->
+                                            @if ($isIncreasing || $hasResponses)
+                                            <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $currentPosition }}%; right: {{ $isIncreasing ? 100 - $currentPosition : 100 - $baselinePosition }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
+                                            @endif
+
+                                            <!-- Baseline Marker -->
+                                            <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
+
+                                            <!-- Current State Marker -->
+                                            <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
+
+                                            <!-- Target Marker -->
+                                            <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+                                </div>
+
+
+                                <!-- Horizontal Arrow Indicating Progress Direction -->
+                                <div style="position: relative; margin-top: 5px;">
+                                    <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $targetPosition }}%; right: {{ $isIncreasing ? 100 - $targetPosition : 100 - $baselinePosition }}%; height: 0; border-top: 2px solid {{ $isIncreasing ? 'green' : 'red' }};">
+                                        <div style="position: absolute; {{ $isIncreasing ? 'right: 0;' : 'left: 0;' }} top: -5px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid {{ $isIncreasing ? 'green' : 'red' }};">
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="px-1" style="position: relative; margin-top: 15px;">
+                                    <div style="position: relative; height: 10px;">
+                                        <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
+
+                                        @php
+                                        // Set start and end values for the loop
+                                        $start = min($indicator->baseline, $indicator->target);
+                                        $end = max($indicator->baseline, $indicator->target);
+                                        $step = ($end - $start) / 10;
+                                        $formatDecimals = $step < 1; // Add decimal points if the step is less than 1
+                                            @endphp
+
+                                            @for ($i=$start; $i <=$end; $i +=$step)
+                                            <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
+                                    </div>
+                                    <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
+                                        {{ $formatDecimals ? number_format($i, 1) : number_format($i, 0) }}
+                                    </div>
+                                    @endfor
+                                </div>
                             </div>
 
-                            <!-- Ruler with Tick Marks -->
-                            <div class="px-1" style="position: relative; margin-top: 15px;">
-                                <div style="position: relative; height: 10px;">
-                                    <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
-                                    @php
-                                    // Set start and end values for the loop
-                                    $start = min($indicator->baseline, $indicator->target);
-                                    $end = max($indicator->baseline, $indicator->target);
-                                    $step = ($end - $start) / 10;
-                                    $formatDecimals = $step < 1; // Add decimal points if the step is less than 1
-                                        @endphp
-
-                                        @for ($i=$start; $i <=$end; $i +=$step)
-                                        <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
-                                </div>
-                                <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
-                                    {{ $formatDecimals ? number_format($i, 1) : number_format($i, 0) }}
-                                </div>
-                                @endfor
-                            </div>
                         </div>
-
 
                         <div class="d-flex justify-content-between mt-2 pt-3">
                             <div style="text-align: center;">
@@ -291,36 +298,39 @@
                         </div>
                     </div>
 
-                    <div class="card-footer p-0 py-2">
-                        <div class="text-start">
-                            @if(Gate::allows('create', App\Models\Response::class))
-                            <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
-                                <i class="bi bi-box-arrow-in-up-right ms-2"></i>
-                            </a>
-                            @endif
-                            <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
-                                <i class="bi bi-box-arrow-in-up-right ms-2"></i>
-                            </a>
-                            @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
-                            <span class="badge bg-light text-primary">
-                                Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
-                            </span>
-                            @endif
-                        </div>
+
+                </div>
+
+                <div class="card-footer p-0 py-2">
+                    <div class="text-start">
+                        @if(Gate::allows('create', App\Models\Response::class))
+                        <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
+                            <i class="bi bi-box-arrow-in-up-right ms-2"></i>
+                        </a>
+                        @endif
+                        <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
+                            <i class="bi bi-box-arrow-in-up-right ms-2"></i>
+                        </a>
+                        @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
+                        <span class="badge bg-light text-primary">
+                            Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
+                        </span>
+                        @endif
                     </div>
                 </div>
             </div>
-
         </div>
 
         @endforeach
+        </div>
+
         @endif
         <!-- Pagination links -->
         <div class="d-flex justify-content-center">
             {{ $indicators->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
         </div>
 
-        </div>
+
     </section>
 
 </main><!-- End #main -->
