@@ -209,25 +209,39 @@
                         <div class="mt-3">
                             <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
                                 @php
-                                // Calculate the positions based on the progress direction
+                                // Calculate positions with adjustments for closely placed markers
                                 $isIncreasing = $indicator->baseline < $indicator->target;
-                                    $hasResponses = $indicator->responses->isNotEmpty(); // Check if the indicator has any responses
-                                    $baselinePosition = ($indicator->baseline - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
-                                    $currentPosition = ($indicator->current - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
-                                    $targetPosition = ($indicator->target - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
-                                    @endphp
+                                    $hasResponses = $indicator->responses->isNotEmpty();
 
-                                    <!-- Faint Shade from Baseline to Current (Only for Increasing direction or if it has responses) -->
-                                    @if ($isIncreasing || $hasResponses)
-                                    <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $currentPosition }}%; right: {{ $isIncreasing ? 100 - $currentPosition : 100 - $baselinePosition }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
-                                    @endif
+                                    // Normalize the range to avoid very small intervals and ensure it doesn't break when values are close
+                                    $minValue = min($indicator->baseline, $indicator->target);
+                                    $range = max(abs($indicator->target - $indicator->baseline), 1); // Avoid zero or very small range
 
-                                    <!-- Baseline Marker -->
-                                    <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
-                                    <!-- Current State Marker -->
-                                    <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
-                                    <!-- Target Marker -->
-                                    <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+                                    $baselinePosition = (($indicator->baseline - $minValue) / $range) * 100;
+                                    $currentPosition = (($indicator->current - $minValue) / $range) * 100;
+                                    $targetPosition = (($indicator->target - $minValue) / $range) * 100;
+
+                                    // Ensure minimum spacing between markers if baseline and current are too close
+                                    $minSpacing = 2; // Minimum percentage spacing
+                                    if (abs($baselinePosition - $currentPosition) < $minSpacing) {
+                                        $currentPosition=$baselinePosition + $minSpacing;
+                                        }
+                                        if (abs($currentPosition - $targetPosition) < $minSpacing) {
+                                        $targetPosition=$currentPosition + $minSpacing;
+                                        }
+                                        @endphp
+
+                                        <!-- Faint Shade from Baseline to Current (Only for Increasing direction or if it has responses) -->
+                                        @if ($isIncreasing || $hasResponses)
+                                        <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $currentPosition }}%; right: {{ $isIncreasing ? 100 - $currentPosition : 100 - $baselinePosition }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
+                                        @endif
+
+                                        <!-- Baseline Marker -->
+                                        <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
+                                        <!-- Current State Marker -->
+                                        <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
+                                        <!-- Target Marker -->
+                                        <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
                             </div>
 
                             <!-- Horizontal Arrow Indicating Progress Direction -->
@@ -246,17 +260,20 @@
                                     // Set start and end values for the loop
                                     $start = min($indicator->baseline, $indicator->target);
                                     $end = max($indicator->baseline, $indicator->target);
-                                    @endphp
+                                    $step = ($end - $start) / 10;
+                                    $formatDecimals = $step < 1; // Add decimal points if the step is less than 1
+                                        @endphp
 
-                                    @for ($i = $start; $i <= $end; $i +=(($end - $start) / 10))
+                                        @for ($i=$start; $i <=$end; $i +=$step)
                                         <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
                                 </div>
                                 <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
-                                    {{ number_format($i, 0) }}
+                                    {{ $formatDecimals ? number_format($i, 1) : number_format($i, 0) }}
                                 </div>
                                 @endfor
                             </div>
                         </div>
+
 
                         <div class="d-flex justify-content-between mt-2 pt-3">
                             <div style="text-align: center;">
@@ -272,7 +289,6 @@
                                 <small>Target</small>
                             </div>
                         </div>
-                        
                     </div>
 
                     <div class="card-footer p-0 py-2">
@@ -296,6 +312,7 @@
             </div>
 
         </div>
+
         @endforeach
         @endif
         <!-- Pagination links -->
