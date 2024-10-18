@@ -222,12 +222,7 @@
                         </div>
                         @endif
 
-                        @if($indicator->qualitative_progress)
-                        <div class="row mb-3">
-                            <div class="col-sm-4 font-weight-bold">Qualitative Progress</div>
-                            <div class="col-sm-8">{{ $indicator->qualitative_progress }}</div>
-                        </div>
-                        @endif
+                        
                     </div>
                 </div>
 
