@@ -31,7 +31,6 @@
             }
             @endphp
 
-
             <!-- Faint Shade from Baseline to Current (For both directions) -->
             <div style="position: absolute; left: {{ min($baselinePosition, $currentPosition) }}%; right: {{ 100 - max($baselinePosition, $currentPosition) }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
 
@@ -43,35 +42,34 @@
 
             <!-- Target Marker -->
             <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+
+            <!-- Horizontal Yellow Line for Decreasing Value -->
+            @if ($current < $target)
+                <div style="position: absolute; left: {{ $currentPosition }}%; right: {{ 100 - $baselinePosition }}%; height: 2px; background-color: yellow; top: 8px;">
     </div>
+    @endif
+</div>
 
-    <!-- Horizontal Arrow Indicating Progress Direction -->
-    <div style="position: relative; margin-top: 5px;">
-        <div style="position: absolute; left: {{ $baselinePosition }}%; right: {{ 100 - $targetPosition }}%; height: 0; border-top: 2px solid {{ $baseline < $target ? 'green' : 'red' }};">
-            <div style="position: absolute; {{ $baseline < $target ? 'right: 0;' : 'left: 0;' }} top: -5px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid {{ $baseline < $target ? 'green' : 'red' }};"></div>
-        </div>
+<div class="px-1" style="position: relative; margin-top: 15px;">
+    <div style="position: relative; height: 10px;">
+        <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
+
+        @php
+        // Set start and end values for the loop
+        $start = min($baseline, $current, $target);
+        $end = max($baseline, $current, $target);
+        $step = ($end - $start) / 10;
+        $formatDecimals = $step < 1; // Add decimal points if the step is less than 1
+            @endphp
+
+            @for ($i=$start; $i <=$end; $i +=$step)
+            <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
     </div>
-
-    <div class="px-1" style="position: relative; margin-top: 15px;">
-        <div style="position: relative; height: 10px;">
-            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
-
-            @php
-            // Set start and end values for the loop
-            $start = min($baseline, $current, $target);
-            $end = max($baseline, $current, $target);
-            $step = ($end - $start) / 10;
-            $formatDecimals = $step < 1; // Add decimal points if the step is less than 1
-                @endphp
-
-                @for ($i=$start; $i <=$end; $i +=$step)
-                <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
-        </div>
-        <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
-            {{ $formatDecimals ? number_format($i, 1) : number_format($i, 0) }}
-        </div>
-        @endfor
+    <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
+        {{ $formatDecimals ? number_format($i, 1) : number_format($i, 0) }}
     </div>
+    @endfor
+</div>
 </div>
 
 <div class="d-flex justify-content-between mt-2 pt-3">
