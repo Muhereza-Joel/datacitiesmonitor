@@ -148,15 +148,27 @@ class ThoeryOfChangeController extends Controller
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
 
-        // Fetch indicators with the related Theory of Change and response count
-        $indicators = Indicator::with('theoryOfChange')
+        // Start the query with the base conditions
+        $query = Indicator::with(['theoryOfChange', 'responses']) // Eager load Theory of Change and responses
             ->withCount('responses') // Include the count of related responses
             ->where('theory_of_change_id', $id)
-            ->where('organisation_id', $organisation_id)
+            ->where('organisation_id', $organisation_id);
+
+        // Order by response count first (descending), then by created_at for the indicators
+        $indicators = $query->orderBy('responses_count', 'desc') // Indicators with responses first
+            ->orderBy('created_at', 'desc') // Then order by creation date
             ->paginate(25);
+
+        // Iterate through each indicator to set the current value from the last response
+        foreach ($indicators as $indicator) {
+            // Check if there are responses and set the latest current value
+            $latestResponse = $indicator->responses->sortByDesc('created_at')->first(); // Get the latest response
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Assuming 'current' is the attribute
+        }
 
         return view('theory.connectedIndicators', compact('pageTitle', 'indicators'));
     }
+
 
 
     public function createIndicatorUsingToC($id)

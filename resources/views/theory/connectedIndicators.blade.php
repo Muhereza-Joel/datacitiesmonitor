@@ -83,6 +83,9 @@
                             <!-- Format the created_at date using Carbon -->
                             <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>
+                        @if($indicator->responses_count > 0)
+                            @include('layouts.ruller')
+                        @endif
                     </div>
 
                     <div class="card-footer p-0 py-2">

@@ -201,7 +201,7 @@
 
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
-                        <a href="{{ route('indicators.show', $indicator->id) }}" class="one-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
+                        <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
                         <div class="text-muted mt-1">
                             <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>

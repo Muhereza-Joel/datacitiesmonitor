@@ -206,53 +206,9 @@
 
           <div class="mt-3">
             <h6>Progress Towards Target for Indicator</h6>
-            <strong>Progress based on current state:</strong> {{ $response['progress'] }}%
+            <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
 
-
-            <!-- Scale Representation with Ruler -->
-            <div class="mt-3">
-              <div style="position: relative; height: 30px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
-                <!-- Baseline Marker -->
-                <div style="position: absolute; left: 0; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
-                <!-- Progress Bar (Faint Blue) -->
-                <div style="position: absolute; left: 6px; width: {{ $response['progress'] }}%; height: 100%; background-color: rgba(0, 0, 255, 0.3); border-radius: 3px;" title="Progress"></div>
-                <!-- Current State Marker -->
-                <div style="position: absolute; left: {{ (($response['current'] - $response->indicator['baseline']) / ($response->indicator['target'] - $response->indicator['baseline'])) * 100 }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
-                <!-- Target Marker -->
-                <div style="position: absolute; right: 0; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
-              </div>
-
-              <!-- Ruler with Tick Marks -->
-              <div class="px-1" style="position: relative; margin-top: 5px;">
-                <div style="position: relative; height: 10px;">
-                  <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
-                  @for ($i = $response->indicator['baseline']; $i <= $response->indicator['target']; $i += (($response->indicator['target'] - $response->indicator['baseline']) / 10))
-                    <div style="position: absolute; left: {{ (($i - $response->indicator['baseline']) / ($response->indicator['target'] - $response->indicator['baseline'])) * 100 }}%; height: 15px; border-left: 1px solid #aaa;"></div>
-                    <div style="position: absolute; left: {{ (($i - $response->indicator['baseline']) / ($response->indicator['target'] - $response->indicator['baseline'])) * 100 }}%; top: 15px; transform: translateX(-50%);">
-                      {{ number_format($i, 0) }}
-                    </div>
-                    @endfor
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-between mt-4 pt-3">
-                <div style="text-align: center;">
-                  <span style="color: rgba(0, 0, 255, 0.5);">{{ $response->indicator['baseline'] }}</span><br>
-                  <small>Baseline</small>
-                </div>
-                <div style="text-align: center;">
-                  <span style="color: green;">{{ $response['current'] }}</span><br>
-                  <small>Current State</small>
-                </div>
-                <div style="text-align: center;">
-                  <span style="color: red;">{{ $response->indicator['target'] }}</span><br>
-                  <small>Target</small>
-                </div>
-              </div>
-              <div class="text-center mt-2" style="color: #666;">
-                <span>Progress: <strong>{{ $response['progress'] }}%</strong></span>
-              </div>
-            </div>
+            @include('layouts.rullerTwo')
           </div>
         </div>
 
