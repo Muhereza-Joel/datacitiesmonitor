@@ -43,8 +43,8 @@ class IndicatorController extends Controller
             $query->where('category', 'like', '%' . $request->input('category') . '%');
         }
 
-        // Order the results by created_at
-        $query->orderBy('created_at', 'desc'); // Change 'desc' to 'asc' for ascending order
+        // Order the results: those with at least one response first, then by created_at
+        $query->orderByRaw('CASE WHEN responses_count > 0 THEN 0 ELSE 1 END, created_at DESC');
 
         // Paginate the filtered results
         $indicators = $query->paginate(24);
@@ -61,14 +61,8 @@ class IndicatorController extends Controller
             $query->select('indicator_id', 'created_at')->latest()->limit(1);
         }]);
 
-        // Add each indicator to the TNTSearch index if not already indexed
-        // foreach ($indicators as $indicator) {
-        //     IndexIndicatorJob::dispatch($indicator);
-        // }
-
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }
-
 
     /**
      * Show the form for creating a new resource.
