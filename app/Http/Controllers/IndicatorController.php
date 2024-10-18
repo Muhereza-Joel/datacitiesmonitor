@@ -49,15 +49,22 @@ class IndicatorController extends Controller
         // Paginate the filtered results
         $indicators = $query->paginate(24);
 
+        // Iterate through each indicator to set the current value from the last response
+        foreach ($indicators as $indicator) {
+            // Check if there is a response and set the current value
+            $latestResponse = $indicator->responses->first();
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Assuming 'value' is the attribute for current
+        }
+
         // Load the latest response's created_at for each indicator
         $indicators->load(['responses' => function ($query) {
             $query->select('indicator_id', 'created_at')->latest()->limit(1);
         }]);
 
         // Add each indicator to the TNTSearch index if not already indexed
-        foreach ($indicators as $indicator) {
-            IndexIndicatorJob::dispatch($indicator);
-        }
+        // foreach ($indicators as $indicator) {
+        //     IndexIndicatorJob::dispatch($indicator);
+        // }
 
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }

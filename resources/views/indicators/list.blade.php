@@ -121,7 +121,7 @@
                         <a href="{{ route('indicators.index') }}" class="btn btn-secondary btn-sm">Reset</a>
                     </div>
                 </form>
-                
+
 
             </div>
             <div class="col-sm-2">
@@ -165,30 +165,25 @@
         </span>
     </div>
     <section class="section dashboard">
+        @if($indicators->isEmpty())
+        <p class="alert alert-info">No Indicators found...</p>
+        @else
         <div class="row g-2">
-
-
-            @if($indicators->isEmpty())
-            <p class="alert alert-info">No Indicators found...</p>
-            @else
             @foreach($indicators as $indicator)
             <div class="col-sm-6">
                 <div class="card p-2 status-{{ strtolower($indicator->status) }}">
-                    <div class="card-title  ms-2 d-flex">
+                    <div class="card-title ms-2 d-flex">
                         <div class="text-start w-75">
                             <img src="{{ asset($indicator->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
                             @if($indicator->category === "None")
                             <span class="badge bg-success text-light">Un Categorised</span>
                             @else
                             <span class="badge bg-primary text-light">{{ $indicator->category }} indicator</span>
-
                             @endif
-
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
                             <span class="badge bg-light text-primary">
                                 {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
                             </span>
-
                         </div>
                         <div class="text-end w-25">
                             @if(Gate::allows('update', $indicator))
@@ -196,7 +191,6 @@
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             @endif
-
                             @if(Gate::allows('delete', $indicator))
                             <a href="" class="icon" title="Delete Indicator">
                                 <i class="bi bi-trash text-danger"></i>
@@ -204,48 +198,110 @@
                             @endif
                         </div>
                     </div>
+
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
                         <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
                         <div class="text-muted mt-1">
-                            <!-- Format the created_at date using Carbon -->
                             <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>
 
+                        <div class="mt-3">
+                            <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
+                                @php
+                                // Calculate the positions based on the progress direction
+                                $isIncreasing = $indicator->baseline < $indicator->target;
+                                    $hasResponses = $indicator->responses->isNotEmpty(); // Check if the indicator has any responses
+                                    $baselinePosition = ($indicator->baseline - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
+                                    $currentPosition = ($indicator->current - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
+                                    $targetPosition = ($indicator->target - min($indicator->baseline, $indicator->target)) / abs($indicator->target - $indicator->baseline) * 100;
+                                    @endphp
+
+                                    <!-- Faint Shade from Baseline to Current (Only for Increasing direction or if it has responses) -->
+                                    @if ($isIncreasing || $hasResponses)
+                                    <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $currentPosition }}%; right: {{ $isIncreasing ? 100 - $currentPosition : 100 - $baselinePosition }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
+                                    @endif
+
+                                    <!-- Baseline Marker -->
+                                    <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
+                                    <!-- Current State Marker -->
+                                    <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
+                                    <!-- Target Marker -->
+                                    <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+                            </div>
+
+                            <!-- Horizontal Arrow Indicating Progress Direction -->
+                            <div style="position: relative; margin-top: 5px;">
+                                <div style="position: absolute; left: {{ $isIncreasing ? $baselinePosition : $targetPosition }}%; right: {{ $isIncreasing ? 100 - $targetPosition : 100 - $baselinePosition }}%; height: 0; border-top: 2px solid {{ $isIncreasing ? 'green' : 'red' }};">
+                                    <div style="position: absolute; {{ $isIncreasing ? 'right: 0;' : 'left: 0;' }} top: -5px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid {{ $isIncreasing ? 'green' : 'red' }};">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ruler with Tick Marks -->
+                            <div class="px-1" style="position: relative; margin-top: 15px;">
+                                <div style="position: relative; height: 10px;">
+                                    <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; border-top: 1px solid #aaa;"></div>
+                                    @php
+                                    // Set start and end values for the loop
+                                    $start = min($indicator->baseline, $indicator->target);
+                                    $end = max($indicator->baseline, $indicator->target);
+                                    @endphp
+
+                                    @for ($i = $start; $i <= $end; $i +=(($end - $start) / 10))
+                                        <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; height: 15px; border-left: 1px solid #aaa;">
+                                </div>
+                                <div style="position: absolute; left: {{ (($i - $start) / ($end - $start)) * 100 }}%; top: 15px; transform: translateX(-50%);">
+                                    {{ number_format($i, 0) }}
+                                </div>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2 pt-3">
+                            <div style="text-align: center;">
+                                <span style="color: rgba(0, 0, 255, 0.5);">{{ $indicator->baseline }}</span><br>
+                                <small>Baseline</small>
+                            </div>
+                            <div style="text-align: center;">
+                                <span style="color: green;">{{ $indicator->current }}</span><br>
+                                <small>Current State</small>
+                            </div>
+                            <div style="text-align: center;">
+                                <span style="color: red;">{{ $indicator->target }}</span><br>
+                                <small>Target</small>
+                            </div>
+                        </div>
+                        
                     </div>
 
                     <div class="card-footer p-0 py-2">
-
                         <div class="text-start">
                             @if(Gate::allows('create', App\Models\Response::class))
                             <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
                             @endif
-
-
                             <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
-
                             @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
                             <span class="badge bg-light text-primary">
                                 Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
                             </span>
                             @endif
-
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            @endforeach
-            @endif
-            <!-- Pagination links -->
-            <div class="d-flex justify-content-center">
-                {{ $indicators->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
-            </div>
+        </div>
+        @endforeach
+        @endif
+        <!-- Pagination links -->
+        <div class="d-flex justify-content-center">
+            {{ $indicators->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
+        </div>
 
         </div>
     </section>
