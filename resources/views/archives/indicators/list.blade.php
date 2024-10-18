@@ -107,7 +107,7 @@
 
 
             @if($indicators->isEmpty())
-            <p>No Indicators found...</p>
+            <span class="alert alert-info">No Indicators found...</span>
             @else
             @foreach($indicators as $indicator)
             <div class="col-sm-6">

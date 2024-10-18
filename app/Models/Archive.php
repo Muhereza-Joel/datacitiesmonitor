@@ -41,7 +41,7 @@ class Archive extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function organization()
+    public function organisation()
     {
         return $this->belongsTo(Organisation::class);
     }

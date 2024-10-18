@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group( function(){
 
     Route::resource('/archives', ArchivesController::class)->middleware('role:admin,user');;
     Route::get('/organisation/archives', [ArchivesController::class, 'getArchives'])->name('organisation.archives.get'); 
+    Route::get('/publications/{id}/listing', [IndicatorController::class, 'getOrganisationPublications'])->name('organisation.publications');
     
     Route::post('/archives/{archive_id}/move-indicator/{indicator_id}', [ArchivesController::class, 'moveArchivedIndicatorToArchive'])->name('archives.moveIndicator');
     Route::get('/archives/indicator/{id}', [ArchivesController::class, 'getIndicator'])->name('archives.indicator.details');

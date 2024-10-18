@@ -706,9 +706,8 @@ h6 {
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #222;
-  background: #f6f9ff;
-  /* background: #05333e; */
+  color: #ffffff;
+  background: #135f8f;
 }
 
 .sidebar-nav .nav-link.collapsed i {

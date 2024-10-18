@@ -9,21 +9,18 @@
     <div class="pagetitle">
         <div class="d-flex">
             <div class="text-start w-50">
-                <h1>Showing All Archives</h1>
+                <h1>{{ $organisation->name }} publications for archives</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Archives</li>
+                        <li class="breadcrumb-item active">Publications</li>
                     </ol>
                 </nav>
 
             </div>
-            <div class="text-end w-50 pt-2">
-                <div>
-                    <a href="{{ route('archives.create') }}" style="border-radius: 70px !important;" class="btn btn-primary btn-sm py-3 px-3">Create Archive</a>
-                </div>
-            </div>
+            <div class="text-end w-50 pt-3">
 
+            </div>
         </div>
     </div><!-- End Page Title -->
 
@@ -44,10 +41,10 @@
 
     <section class="section dashboard">
         <div class="row g-1">
-            @if($archives->isEmpty())
+            @if($items->isEmpty())
             <span class="alert alert-info">No archives found</span>
             @else
-            @foreach($archives as $archive)
+            @foreach($items as $archive)
             <div class="col-sm-4">
                 <div class="card p-2">
                     <div class="card-title">
@@ -57,12 +54,7 @@
                                 <span class="badge bg-primary text-light mx-2">Status: {{ $archive->status}}</span>
                             </div>
                             <div class="text-end w-50">
-                                <a href="{{ route('archives.edit', $archive->id) }}" class="icon" title="Edit Archive">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a href="" class="icon" title="Delete Indicator" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $archive->id }}">
-                                    <i class="bi bi-trash text-danger"></i>
-                                </a>
+
                             </div>
                         </div>
                     </div>
@@ -87,36 +79,19 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <h6>Created On: {{ $archive->created_at }}</h6>
+                        <h6>Created On: {{ \Carbon\Carbon::parse($archive->created_at)->format('F j, Y \a\t g:ia') }}</h6>
                     </div>
+
+
+
                 </div>
-                <div class="modal fade" id="deleteModal{{ $archive->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $archive->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel{{ $archive->id }}">Confirm Deletion</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to delete this archive?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                                <form action="{{ route('archives.destroy', $archive->id) }}" method="POST" id="delete-form{{ $archive->id }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete-form{{ $archive->id }}').submit();">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             @endforeach
             @endif
             <!-- Pagination links -->
             <div class="d-flex justify-content-center">
-                {{ $archives->links('pagination::bootstrap-4') }} <!-- Use Bootstrap 4 Pagination -->
+                {{ $items->links('pagination::bootstrap-4') }} <!-- Use Bootstrap 4 Pagination -->
             </div>
         </div>
     </section>
@@ -126,7 +101,5 @@
 @include('layouts.footer')
 
 <script>
-    $(document).ready(function() {
 
-    })
 </script>

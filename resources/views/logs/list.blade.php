@@ -63,8 +63,8 @@
                                 <strong>User:</strong> {{ $log->user->name ?? 'Unknown User' }} <br>
                                 <strong>Action:</strong> {{ $log->action }} <br>
                                 <strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }}) <br>
-                                <strong>IP Address:</strong> {{ $log->ip_address }} <br>
-                                <strong>Timestamp:</strong> {{ $log->created_at }}
+                                <strong>Associated IP Address:</strong> {{ $log->ip_address }} <br>
+                                <strong>Timestamp:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }}
                             </div>
                             <div class="text-end">
                                 <a href="#" class="icon" title="View Details" data-bs-toggle="modal" data-bs-target="#viewLogModal{{ $log->id }}">

@@ -44,7 +44,7 @@
     <section class="section dashboard">
         <div class="row g-1">
             @if($theories->isEmpty())
-            <p>No Theories found...</p>
+            <div class="alert alert-info">No Theories found...</div>
             @else
             @forelse($theories as $theory)
             <div class="col-sm-4">
@@ -62,7 +62,6 @@
                                 <a href="" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}"><i class="bi bi-trash text-danger"></i></a>
                             </div>
                             @endif
-
 
                         </div>
                     </div>
@@ -85,8 +84,6 @@
                                 </div>
                             </div>
                         </div>
-
-
 
                         @if(Gate::allows('view', $theory))
                         <a href="{{ route('theory.indicators', $theory->id) }}" class="btn btn-link btn-sm fw-bold">View Connected Indicators <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
@@ -123,12 +120,12 @@
                 </div>
 
             </div>
-
             @empty
             <div class="alert alert-info">No Theories found...</div>
             @endforelse
             @endif
         </div>
+
     </section>
 
 </main><!-- End #main -->

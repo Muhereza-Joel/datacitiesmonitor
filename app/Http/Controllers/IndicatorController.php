@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UserActionPerformed;
 use App\Jobs\IndexIndicatorJob;
+use App\Models\Archive;
 use App\Models\Indicator;
 use App\Models\Organisation;
 use App\Models\TheoryOfChange;
@@ -273,5 +274,38 @@ class IndicatorController extends Controller
 
             return redirect()->back()->withErrors(['error' => 'Failed to update Indicator Status: ' . $e->getMessage()]);
         }
+    }
+
+    public function getOrganisationPublications($id)
+    {
+        $pageTitle = "Publications";
+        $type = request('type', 'public_indicators'); // Default to 'public_indicators'
+
+        // Fetch the organisation
+        $organisation = Organisation::find($id);
+
+        if (!$organisation) {
+            return redirect()->back()->with('error', 'Organisation not found.');
+        }
+
+        // Query based on the type
+        if ($type == 'archives') {
+            // Use Archive model for archived items
+            $items = Archive::with('organisation')
+                ->where('organisation_id', $id)
+                ->whereIn('access_level', ['public'])
+                ->paginate(25);
+            $view = 'organisations.listArchives'; // View for archives
+        } else {
+            // Use Indicator model for public indicators
+            $items = Indicator::with('organisation')
+                ->where('organisation_id', $id)
+                ->where('status', 'public')
+                ->withCount('responses') // Add response count
+                ->paginate(25);
+            $view = 'organisations.listPublicIndicators'; // View for public indicators
+        }
+
+        return view($view, compact('pageTitle', 'items', 'organisation', 'type'));
     }
 }
