@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 Auth::routes();
 // In routes/web.php
-Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('password.update');
+Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('user.update.password');
 
 
 Route::middleware(['auth'])->group( function(){
