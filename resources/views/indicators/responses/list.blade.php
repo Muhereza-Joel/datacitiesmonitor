@@ -156,7 +156,7 @@
                   <a href="{{ route('indicators.response.edit', $response->id) }}" class="dropdown-item">
                     <i class="bi bi-pencil"></i> Edit Response
                   </a>
-                  <a href="#add-files" id="add-file" class="dropdown-item" data-response-id="{{$response['id']}}" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
+                  <a href="#add-files" id="add-file" class="dropdown-item" data-response-id="{{$response['id']}}" data-indicator-id="{{ $response->indicator->id }}" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
                     <i class="bi bi-paperclip"></i> Add Files
                   </a>
                   @endif
@@ -233,6 +233,7 @@
             </div>
             <div class="modal-body">
               Are you sure you want to delete this response?
+              <div class="alert alert-warning p-2 mt-2">Note that this action will delete this response. Please continue with caution because the action is undoable</div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
@@ -253,23 +254,7 @@
   </section>
 </main><!-- End #main -->
 
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark" id="confirmDeleteModalLabel">Confirm Your Action</h5>
-      </div>
-      <div class="modal-body">
-        <h6 class="text-dark">Are you sure you want to execute this action?</h6>
-        <div class="alert alert-warning p-2 mt-2">Note that this action will delete this response. Please continue with caution because the action is undoable</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" id="cancel-btn" data-dismiss="modal">Cancel</button>
-        <button type="button" id="confirmDeleteBtn" class="btn btn-danger btn-sm">Yes, Delete Response</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <div class="modal fade lg" id="fileUploadModal" size="md" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -325,27 +310,6 @@
 
 <script>
   $(document).ready(function() {
-    $('#responses-table').on('click', '#delete-btn', function(event) {
-      event.preventDefault();
-      var removeUrl = $(this).attr('href');
-      $('#confirmDeleteModal').modal('show');
-      $('#cancel-btn').click(function() {
-        $('#confirmDeleteModal').modal('hide');
-      });
-      $('#confirmDeleteModal').on('click', '#confirmDeleteBtn', function() {
-        $.post(removeUrl, function(response) {
-          Toastify({
-            text: response.message || 'Record Deleted Successfully',
-            duration: 2000,
-            gravity: 'bottom',
-            backgroundColor: 'green',
-          }).showToast();
-          setTimeout(function() {
-            window.location.reload();
-          }, 3000);
-        });
-      });
-    });
 
     $('#responses-table').on('click', '#view-files', function() {
       const responseId = $(this).data('response-id');
@@ -476,12 +440,21 @@
 
 <script>
   $(document).ready(function() {
+    // Set up CSRF token for AJAX requests
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
     let selectedFiles = [];
     let responseId = null;
+    let indicatorId = null;
 
     $('#fileUploadModal').on('show.bs.modal', function(event) {
       const button = $(event.relatedTarget); // Button that triggered the modal
       responseId = button.data('response-id'); // Extract info from data-* attributes
+      indicatorId = button.data('indicator-id'); // Extract info from data-* attributes
     });
 
     // Handle file selection
@@ -589,10 +562,11 @@
       // Perform AJAX upload
       const formData = new FormData();
       validFiles.forEach(file => formData.append('files[]', file));
-      formData.append('responseId', responseId);
+      formData.append('response_id', responseId);
+      formData.append('indicator_id', indicatorId);
 
       $.ajax({
-        url: '/file-upload/',
+        url: "{{ route('files.store')}}",
         type: 'POST',
         data: formData,
         processData: false,
@@ -608,7 +582,7 @@
         },
         error: function(jqXHR, textStatus, errorThrown) {
           Toastify({
-            text: jqXHR.responseJSON.error || 'Filled to upload files.',
+            text: jqXHR.responseJSON.error || 'Failed to upload files.',
             duration: 5000,
             gravity: 'bottom',
             position: 'left',

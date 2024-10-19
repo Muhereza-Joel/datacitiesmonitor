@@ -80,4 +80,9 @@ class ArchivedIndicator extends Model
     {
         return $this->belongsTo(Archive::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(Files::class, 'indicator_id', 'indicator_id');
+    }
 }

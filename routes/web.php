@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchivesController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\FilesController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrganisationController;
@@ -72,6 +73,7 @@ Route::middleware(['auth'])->group( function(){
     Route::patch('/password/update', [UserProfileController::class, 'updatePassword'])->name('password.update');
     
     Route::resource('logs', LogController::class)->middleware('role:admin');
+    Route::resource('/files', FilesController::class);
     
 } );
 
