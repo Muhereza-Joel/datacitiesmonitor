@@ -34,7 +34,7 @@ class ResetPasswordController extends Controller
 
     public function update(Request $request)
     {
-        // Use the $request instance for validation
+        // Validate the incoming request data
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
