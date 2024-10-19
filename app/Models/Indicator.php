@@ -113,4 +113,9 @@ class Indicator extends Model
     {
         return $this->belongsTo(Organisation::class, 'organisation_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(Files::class);
+    }
 }

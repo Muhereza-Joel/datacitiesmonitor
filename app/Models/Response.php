@@ -78,4 +78,9 @@ class Response extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(Files::class);
+    }
 }

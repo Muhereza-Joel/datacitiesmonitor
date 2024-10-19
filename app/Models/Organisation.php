@@ -43,4 +43,9 @@ class Organisation extends Model
     {
         return $this->hasMany(Archive::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(Files::class);
+    }
 }
