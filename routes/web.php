@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchivesController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrganisationController;
@@ -27,6 +28,9 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+// In routes/web.php
+Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('password.update');
+
 
 Route::middleware(['auth'])->group( function(){
 
