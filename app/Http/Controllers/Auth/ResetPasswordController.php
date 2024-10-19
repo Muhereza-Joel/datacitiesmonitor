@@ -7,7 +7,8 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+
 
 class ResetPasswordController extends Controller
 {
@@ -33,6 +34,7 @@ class ResetPasswordController extends Controller
 
     public function update(Request $request)
     {
+        // Use the $request instance for validation
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
