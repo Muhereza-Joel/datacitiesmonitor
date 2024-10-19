@@ -28,13 +28,13 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/register', function () {
-    return redirect('/'); // Redirect to home or any other route
-});
 
 
 Auth::routes();
 // In routes/web.php
+Route::get('/register', function () {
+    return redirect('/'); // Redirect to home or any other route
+});
 Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('user.update.password');
 
 
