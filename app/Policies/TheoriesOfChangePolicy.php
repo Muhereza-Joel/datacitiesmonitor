@@ -41,7 +41,7 @@ class TheoriesOfChangePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['admin']);
     }
 
     /**
