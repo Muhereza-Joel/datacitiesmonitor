@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group( function(){
     
     Route::resource('logs', LogController::class)->middleware('role:admin');
     Route::resource('/files', FilesController::class);
+    Route::get('/response/files/{responseId}', [FilesController::class, 'getResponseFiles'])->name('reponse.files');
     
 } );
 

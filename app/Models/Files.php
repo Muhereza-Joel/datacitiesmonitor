@@ -11,6 +11,10 @@ class Files extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'uuid';
+
     protected $fillable = [
         'id',
         'response_id',
@@ -25,12 +29,15 @@ class Files extends Model
     ];
 
 
+    // Automatically generate UUID when creating
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            $model->id = (string) Uuid::uuid4();
+            if (!$model->id) {
+                $model->id = Uuid::uuid4();
+            }
         });
     }
 
@@ -48,5 +55,4 @@ class Files extends Model
     {
         return $this->belongsTo(Indicator::class);
     }
-    
 }

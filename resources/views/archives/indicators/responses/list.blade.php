@@ -132,110 +132,113 @@
         </span>
       </div>
 
-      @foreach($responses as $response)
-      <div class="card mb-3 status-{{ strtolower($response['status']) }}">
-        <div class="card-header">
-          <div class="d-flex">
-            <div class="text-start w-50">
-              <span class="badge bg-success">{{ $response['response_tag_label'] }} from <br></span>
-              {{ $response->user['name'] }}
-
-            </div>
-            <div class="text-end w-50">
-              <div class="dropdown">
-                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select Action
-                </button>
-                <div class="dropdown-menu" aria-labelledby="actionDropdown">
-                  <a href="{{ route('archives.show', $response->indicator->archive_id) }}" class="dropdown-item">
-                    <i class="bi bi-arrow-left-circle"></i> Go Back To Archive
-                  </a>
-                  <a href="{{ route('archives.indicator.details', $indicatorId) }}" class="dropdown-item">
-                    <i class="bi bi-info-circle"></i> Indicator Details
-                  </a>
-                  <a href="#response-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
-                    <i class="bi bi-file-earmark"></i> Response Files
-                  </a>
-
-
-                </div>
+      <div id="responses-table">
+        @foreach($responses as $response)
+        <div class="card mb-3 status-{{ strtolower($response['status']) }}">
+          <div class="card-header">
+            <div class="d-flex">
+              <div class="text-start w-50">
+                <span class="badge bg-success">{{ $response['response_tag_label'] }} from <br></span>
+                {{ $response->user['name'] }}
+  
               </div>
-
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="accordion mt-2" id="accordionExample{{$response['id']}}">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="heading{{$response['id']}}">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$response['id']}}" aria-expanded="false" aria-controls="collapse{{$response['id']}}">
-                  <strong class="h5">Indicator title: {{ $response->indicator['indicator_title'] }}</strong>
-                </button>
-              </h2>
-              <div id="collapse{{$response['id']}}" class="accordion-collapse collapse" aria-labelledby="heading{{$response['id']}}" data-bs-parent="#accordionExample{{$response['id']}}">
-                <div class="accordion-body">
-                  @php
-                  $notesContent = trim(strip_tags($response['notes'], '<p><br>'));
-                    $lessonsContent = trim(strip_tags($response['lessons'], '
-                  <p><br>'));
-                    $recommendationsContent = trim(strip_tags($response['recommendations'], '
-                  <p><br>'));
-                    @endphp
-
-                    @if(!empty($notesContent) && $notesContent !== '
-                  <p><br></p>')
-                  <h5 class="text-success">Notes Taken</h5>
-                  <p class="text-success">{!! $response['notes'] !!}</p>
-                  <hr>
-                  @endif
-
-                  @if(!empty($lessonsContent) && $lessonsContent !== '<p><br></p>')
-                  <h5 class="text-success">Lessons Learnt</h5>
-                  <p class="text-success">{!! $response['lessons'] !!}</p>
-                  <hr>
-                  @endif
-
-                  @if(!empty($recommendationsContent) && $recommendationsContent !== '<p><br></p>')
-                  <h5 class="text-success">Recommendations</h5>
-                  <p class="text-success">{!! $response['recommendations'] !!}</p>
-                  @endif
+              <div class="text-end w-50">
+                <div class="dropdown">
+                  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Action
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="actionDropdown">
+                    <a href="{{ route('archives.show', $response->indicator->archive_id) }}" class="dropdown-item">
+                      <i class="bi bi-arrow-left-circle"></i> Go Back To Archive
+                    </a>
+                    <a href="{{ route('archives.indicator.details', $indicatorId) }}" class="dropdown-item">
+                      <i class="bi bi-info-circle"></i> Indicator Details
+                    </a>
+                    <a href="#response-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
+                      <i class="bi bi-file-earmark"></i> Response Files
+                    </a>
+  
+  
+                  </div>
                 </div>
+  
               </div>
             </div>
           </div>
-
-          <div class="mt-3">
-            <h6>Progress Towards Target for Indicator</h6>
-            <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
-
-            @include('layouts.rullerTwo')
+          <div class="card-body">
+            <div class="accordion mt-2" id="accordionExample{{$response['id']}}">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{$response['id']}}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$response['id']}}" aria-expanded="false" aria-controls="collapse{{$response['id']}}">
+                    <strong class="h5">Indicator title: {{ $response->indicator['indicator_title'] }}</strong>
+                  </button>
+                </h2>
+                <div id="collapse{{$response['id']}}" class="accordion-collapse collapse" aria-labelledby="heading{{$response['id']}}" data-bs-parent="#accordionExample{{$response['id']}}">
+                  <div class="accordion-body">
+                    @php
+                    $notesContent = trim(strip_tags($response['notes'], '<p><br>'));
+                      $lessonsContent = trim(strip_tags($response['lessons'], '
+                    <p><br>'));
+                      $recommendationsContent = trim(strip_tags($response['recommendations'], '
+                    <p><br>'));
+                      @endphp
+  
+                      @if(!empty($notesContent) && $notesContent !== '
+                    <p><br></p>')
+                    <h5 class="text-success">Notes Taken</h5>
+                    <p class="text-success">{!! $response['notes'] !!}</p>
+                    <hr>
+                    @endif
+  
+                    @if(!empty($lessonsContent) && $lessonsContent !== '<p><br></p>')
+                    <h5 class="text-success">Lessons Learnt</h5>
+                    <p class="text-success">{!! $response['lessons'] !!}</p>
+                    <hr>
+                    @endif
+  
+                    @if(!empty($recommendationsContent) && $recommendationsContent !== '<p><br></p>')
+                    <h5 class="text-success">Recommendations</h5>
+                    <p class="text-success">{!! $response['recommendations'] !!}</p>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="mt-3">
+              <h6>Progress Towards Target for Indicator</h6>
+              <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
+  
+              @include('layouts.rullerTwo')
+            </div>
+          </div>
+  
+        </div>
+        <div class="modal fade" id="deleteModal{{ $response->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $response->id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ $response->id }}">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete this response?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ route('indicators.response.destroy', $response->id) }}" method="POST" id="delete-form{{ $response->id }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete-form{{ $response->id }}').submit();">Delete</button>
+                </form>
+              </div>
+  
+            </div>
           </div>
         </div>
+        @endforeach
 
       </div>
-      <div class="modal fade" id="deleteModal{{ $response->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $response->id }}" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ $response->id }}">Confirm Deletion</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Are you sure you want to delete this response?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-              <form action="{{ route('indicators.response.destroy', $response->id) }}" method="POST" id="delete-form{{ $response->id }}">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete-form{{ $response->id }}').submit();">Delete</button>
-              </form>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      @endforeach
 
     </div>
 
@@ -314,6 +317,13 @@
 
 <script>
   $(document).ready(function() {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+
     $('#responses-table').on('click', '#delete-btn', function(event) {
       event.preventDefault();
       var removeUrl = $(this).attr('href');
@@ -342,7 +352,7 @@
 
       // Make an AJAX request to fetch files for the given response ID
       $.ajax({
-        url: `/response/files/?response_id=${responseId}`,
+        url: `/response/files/${responseId}`,
         method: 'GET',
         success: function(data) {
           const filesSection = $('#files-section');
@@ -363,26 +373,37 @@
           data.files.forEach(file => {
             const fileNameWithoutExtension = file.original_name.split('.').slice(0, -1).join('.');
             const fileExtension = file.original_name.split('.').pop();
-            const cleanedUrl = `{/uploads/files/${file.unique_name}`;
+            const cleanedUrl = `{{asset('uploads/files/${file.name}')}}`;
+            const fileSize = (file.size / 1024).toFixed(2) + ' KB'; // Convert size to KB
+
+            // Create the file link
             const fileLink = $('<a></a>')
               .attr('href', cleanedUrl)
-              .text(`${file.original_name} (Added on: ${file.date_added} at ${file.time_added})`)
-              .addClass('alert-link p-3')
+              .text(file.original_name)
+              .addClass('alert-link text-primary')
               .on('click', function(event) {
                 event.preventDefault(); // Prevent navigation
-
                 // Trigger download via JavaScript
                 downloadFile(cleanedUrl, file.original_name);
               });
 
+            // Create the file info (size and added time)
+            const fileInfo = $('<div></div>')
+              .addClass('file-info')
+              .html(`
+            <small class="text-muted">Size: ${fileSize}</small><br>
+            <small class="text-muted">Added on: ${moment(file.created_at).format('MMMM Do YYYY')} at ${moment(file.created_at).format('h:mm A')}</small>
+        `);
 
+            // Create the delete button
+            const deleteUrl = `{{ route('files.destroy', ':id') }}`.replace(':id', file.id);
             const removeButton = $('<button></button>')
               .text('Delete')
-              .addClass('btn btn-danger btn-sm float-right')
+              .addClass('btn btn-danger btn-sm')
               .on('click', function() {
                 // Remove file logic here
                 $.ajax({
-                  url: `{/file-remove/?response_id=${responseId}&file_id=${file.id}`,
+                  url: deleteUrl,
                   type: 'DELETE',
                   success: function(response) {
                     // Remove the file link from the list
@@ -401,11 +422,19 @@
                 });
               });
 
+            // Create a container for file details (link and info)
+            const fileDetailsContainer = $('<div></div>')
+              .addClass('d-flex flex-column')
+              .append(fileLink)
+              .append(fileInfo);
+
+            // Create the list item and append file details on the left and delete button on the right
             const listItem = $('<div></div>')
               .addClass('list-group-item d-flex justify-content-between align-items-center')
-              .append(fileLink)
+              .append(fileDetailsContainer)
               .append(removeButton);
 
+            // Append the list item to the list
             panel.find('.list-group').append(listItem);
           });
 
@@ -427,195 +456,6 @@
       }
     });
 
-    $('#dropArea').on('dragover', function(event) {
-      event.preventDefault(); // Prevent default behavior
-      $(this).addClass('drag-active');
-    });
 
-    $('#dropArea').on('dragleave drop', function(event) {
-      event.preventDefault();
-      $(this).removeClass('drag-active').empty();
-    });
-
-    $('#dropArea').on('drop', function(event) {
-      event.preventDefault();
-      var files = event.originalEvent.dataTransfer.files;
-      if (files.length > 0) {
-        var fileType = files[0].type;
-        var fileName = files[0].name; // Get the file name
-        var iconHtml = ''; // Default icon
-        if (fileType.includes('word') || fileType.includes('document')) {
-          iconHtml = '<i class="bi bi-file-word file-icon h1"></i> ';
-        } else if (fileType.includes('excel') || fileType.includes('spreadsheet')) {
-          iconHtml = '<i class="bi bi-file-excel file-icon h1"></i> ';
-        } else if (fileType.includes('pdf')) {
-          iconHtml = '<i class="bi bi-file-pdf file-icon h1"></i> ';
-        } else if (fileType.includes('image')) {
-          iconHtml = '<i class="bi bi-file-image file-icon h1"></i> ';
-        }
-        $('#dropArea').html(iconHtml + fileName); // Insert the icon HTML and file name
-      }
-    });
-
-    $('#fileUploadModal').on('hidden.bs.modal', function() {
-      $('#dropArea').empty();
-    });
-  });
-</script>
-
-<script>
-  $(document).ready(function() {
-    let selectedFiles = [];
-    let responseId = null;
-
-    $('#fileUploadModal').on('show.bs.modal', function(event) {
-      const button = $(event.relatedTarget); // Button that triggered the modal
-      responseId = button.data('response-id'); // Extract info from data-* attributes
-    });
-
-    // Handle file selection
-    function handleFiles(files) {
-      for (let file of files) {
-        selectedFiles.push(file);
-        displayFile(file);
-      }
-      updateFileInput();
-    }
-
-    // Display file in the selected files container
-    function displayFile(file) {
-      const fileType = file.type;
-      let iconHtml = '';
-      if (fileType.includes('word') || fileType.includes('document')) {
-        iconHtml = '<i class="bi bi-file-word file-icon h1"></i>';
-      } else if (fileType.includes('excel') || fileType.includes('spreadsheet')) {
-        iconHtml = '<i class="bi bi-file-excel file-icon h1"></i>';
-      } else if (fileType.includes('pdf')) {
-        iconHtml = '<i class="bi bi-file-pdf file-icon h1"></i>';
-      } else if (fileType.includes('image')) {
-        iconHtml = '<i class="bi bi-file-image file-icon h1"></i>';
-      } else {
-        iconHtml = '<i class="bi bi-file-earmark file-icon h1"></i>';
-      }
-
-      const fileBox = `
-      <div class="file-box" data-file-name="${file.name}">
-        ${iconHtml} <span>${file.name}</span>
-        <button type="button" class="btn btn-danger btn-sm remove-file-btn">Remove</button>
-      </div>`;
-      $('#selectedFilesContainer').append(fileBox);
-    }
-
-    // Handle file removal
-    $('#selectedFilesContainer').on('click', '.remove-file-btn', function() {
-      const fileName = $(this).closest('.file-box').data('file-name');
-      selectedFiles = selectedFiles.filter(file => file.name !== fileName);
-      $(this).closest('.file-box').remove();
-      updateFileInput();
-    });
-
-    // Handle drag and drop
-    $('#dropArea').on('dragover', function(event) {
-      event.preventDefault();
-      $(this).addClass('drag-active');
-    });
-
-    $('#dropArea').on('dragleave drop', function(event) {
-      event.preventDefault();
-      $(this).removeClass('drag-active');
-    });
-
-    $('#dropArea').on('drop', function(event) {
-      event.preventDefault();
-      const files = event.originalEvent.dataTransfer.files;
-      handleFiles(files);
-    });
-
-    // Handle file input selection
-    $('#fileInput').on('change', function(event) {
-      const files = event.target.files;
-      handleFiles(files);
-    });
-
-    // Update the file input with the current selected files
-    function updateFileInput() {
-      const dataTransfer = new DataTransfer();
-      selectedFiles.forEach(file => dataTransfer.items.add(file));
-      $('#fileInput')[0].files = dataTransfer.files;
-    }
-
-    // Handle upload button click
-    $('#uploadButton').on('click', function() {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-      const validFiles = selectedFiles.filter(file => allowedTypes.includes(file.type));
-
-      if (validFiles.length === 0) {
-        Toastify({
-          text: 'No valid files selected. Only images, PDF, Word, and Excel files are allowed.',
-          duration: 5000,
-          gravity: 'bottom',
-          position: 'left',
-          backgroundColor: '#f44336',
-        }).showToast();
-
-        return;
-      }
-
-      if (validFiles.length !== selectedFiles.length) {
-        Toastify({
-          text: 'Some files are not allowed, please remove them. Only images, PDF, Word, and Excel files are allowed.',
-          duration: 5000,
-          gravity: 'bottom',
-          position: 'left',
-          backgroundColor: '#f44336',
-        }).showToast();
-
-        return;
-      }
-      const fileLinks = selectedFiles.map(file => URL.createObjectURL(file));
-      $('#fileLinksInput').val(JSON.stringify(fileLinks));
-
-      // Perform AJAX upload
-      const formData = new FormData();
-      validFiles.forEach(file => formData.append('files[]', file));
-      formData.append('responseId', responseId);
-
-      $.ajax({
-        url: '/file-upload/',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          Toastify({
-            text: response.message || 'Files Added Successfully.',
-            duration: 5000,
-            gravity: 'bottom',
-            position: 'left',
-            backgroundColor: '#28a745',
-          }).showToast();
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          Toastify({
-            text: jqXHR.responseJSON.error || 'Filled to upload files.',
-            duration: 5000,
-            gravity: 'bottom',
-            position: 'left',
-            backgroundColor: '#f44336',
-          }).showToast();
-        }
-      });
-
-      console.log(fileLinks); // For debugging
-    });
-    // Clear selected files when the modal is closed
-    $('#fileUploadModal').on('hidden.bs.modal', function() {
-      selectedFiles = [];
-      responseId = null;
-      $('#selectedFilesContainer').empty();
-      $('#fileLinksInput').val('');
-      $('#fileInput').val('');
-      $('#dropArea').removeClass('drag-active');
-    });
   });
 </script>
