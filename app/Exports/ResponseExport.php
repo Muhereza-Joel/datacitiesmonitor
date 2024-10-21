@@ -7,7 +7,6 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -70,15 +69,15 @@ class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function columnWidths(): array
     {
         return [
-            'A' => 10,   // Response ID
-            'B' => 15,   // Indicator ID
+            'A' => 50,   // Response ID
+            'B' => 50,   // Indicator ID
             'C' => 30,   // Organisation Name
             'D' => 25,   // Respondent Name
             'E' => 15,   // Current Status
             'F' => 30,   // Percentage Progress From Baseline
-            'G' => 50,   // Notes
-            'H' => 50,   // Lessons
-            'I' => 50,   // Recommendations
+            'G' => 150,   // Notes
+            'H' => 150,   // Lessons
+            'I' => 150,   // Recommendations
             'J' => 20,   // Status
             'K' => 25,   // Response Added On
             'L' => 25,   // Response Was Last Updated On
@@ -87,10 +86,6 @@ class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithS
 
     public function styles(Worksheet $sheet)
     {
-        // Set a fixed width for columns and enable wrap text
-        foreach (range('A', 'L') as $column) {
-            $sheet->getColumnDimension($column)->setWidth(-1); // Set width to 20, adjust as needed
-        }
 
         // Wrap text for all cells and set alignment
         $sheet->getStyle('A1:L1000')->getAlignment()->setWrapText(true);
