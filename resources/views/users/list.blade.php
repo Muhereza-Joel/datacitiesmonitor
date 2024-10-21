@@ -37,7 +37,7 @@
                         <thead>
                             <tr>
                                 <th>Organisation</th>
-                                <th>Full Name</th>
+                                <th>Username</th>
                                 <th>Email</th>
                                 <th>Prevellage</th>
                                 <th>Address</th>

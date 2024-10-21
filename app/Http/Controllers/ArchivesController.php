@@ -95,7 +95,7 @@ class ArchivesController extends Controller
             return redirect()->back()->withErrors(['error' => 'No indicators found in this archive.']);
         }
 
-        return view('archives.indicators.list', compact('pageTitle', 'indicators','archive'));
+        return view('archives.indicators.list', compact('pageTitle', 'indicators', 'archive'));
     }
 
 
@@ -233,9 +233,10 @@ class ArchivesController extends Controller
 
     public function getArchives()
     {
-        $archives = Archive::all(); // Adjust as needed
+        $archives = Archive::where('status', 'active')->get(); 
         return response()->json($archives);
     }
+
 
     public function getIndicator($id)
     {
@@ -257,7 +258,7 @@ class ArchivesController extends Controller
             ->orderBy('created_at')  // Then order by created_at for each user
             ->get();
 
-            // dd($responses);
+        // dd($responses);
 
         // Initialize variables for row number calculation
         $currentUserId = null;

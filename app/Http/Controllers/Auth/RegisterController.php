@@ -55,6 +55,10 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
+    public function showRegistrationForm()
+    {
+        return redirect('/login'); // Redirect to home or any other desired route
+    }
 
     /**
      * Create a new user instance after a valid registration.

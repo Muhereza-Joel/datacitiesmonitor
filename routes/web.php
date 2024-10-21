@@ -30,11 +30,8 @@ Route::get('/', function () {
 
 
 
-Auth::routes();
-// In routes/web.php
-Route::get('/register', function () {
-    return redirect('/'); // Redirect to home or any other route
-});
+Auth::routes(['register' => false]);
+
 Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('user.update.password');
 
 
@@ -63,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-    Route::resource('/archives', ArchivesController::class)->middleware('role:admin,user');;
+    Route::resource('/archives', ArchivesController::class)->middleware('role:admin,user,viewer');
     Route::get('/organisation/archives', [ArchivesController::class, 'getArchives'])->name('organisation.archives.get');
     Route::get('/publications/{id}/listing', [IndicatorController::class, 'getOrganisationPublications'])->name('organisation.publications');
 

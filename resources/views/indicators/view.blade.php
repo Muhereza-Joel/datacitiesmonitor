@@ -121,7 +121,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingToC">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToC" aria-expanded="true" aria-controls="collapseToC">
-                                    Theory of Change Details
+                                    Click To View Theory of Change Details
                                 </button>
                             </h2>
                             <div id="collapseToC" class="accordion-collapse collapse" aria-labelledby="headingToC" data-bs-parent="#tocAccordion">
@@ -239,7 +239,7 @@
                 @if(Gate::allows('create', App\Models\Archive::class))
                 <div class="card my-2">
                     <div class="card-body">
-                        <button class="btn btn-primary btn-sm mt-2" id="archiveIndicatorBtn">Move Indicator To Archive</button>
+                        <button class="btn btn-primary btn-sm mt-2" {{ $indicator->status !== 'archived' ? 'disabled' : ''}} id="archiveIndicatorBtn">Move Indicator To Archive</button>
                     </div>
                 </div>
                 @endif

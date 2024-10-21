@@ -191,6 +191,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             @endif
+                            
                             @if(Gate::allows('delete', $indicator))
                             <a href="" class="icon" title="Delete Indicator">
                                 <i class="bi bi-trash text-danger"></i>

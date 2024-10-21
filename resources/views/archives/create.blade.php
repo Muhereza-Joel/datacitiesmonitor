@@ -73,7 +73,9 @@
                                 </select>
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
+                            @if(Gate::allows('create', \App\Models\Archive::class))
                             <button class="btn btn-primary btn-sm my-2">Save</button>
+                            @endif
                         </form>
 
                     </div>

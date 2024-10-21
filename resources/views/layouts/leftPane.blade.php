@@ -17,14 +17,14 @@ $other_organizations = session('other_organizations');
 
     <li class="nav-item">
       <a class="nav-link" href="{{ route('dashboard') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Dashboard') }}</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a class="nav-link" href="{{ route('theory.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Theories of Change') }}</span>
       </a>
     </li>
@@ -32,7 +32,7 @@ $other_organizations = session('other_organizations');
 
     <li class="nav-item">
       <a class="nav-link" href="{{ route('indicators.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Indicators') }}</span>
       </a>
     </li>
@@ -41,7 +41,7 @@ $other_organizations = session('other_organizations');
     @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
     <li class="nav-item">
       <a class="nav-link" href="{{ route('organisations.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Organisations') }}</span>
       </a>
     </li>
@@ -49,25 +49,26 @@ $other_organizations = session('other_organizations');
 
     <li class="nav-item">
       <a class="nav-link" href="{{ route('archives.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Archives') }}</span>
       </a>
     </li>
-
-    <li class="nav-item mt-3">
+    
+    @if( Auth::user()->role === 'admin')
+    <li class="nav-item">
       <a class="nav-link" href="{{ route('users.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Users') }}</span>
       </a>
     </li>
 
-
     <li class="nav-item">
       <a class="nav-link" href="{{ route('logs.index') }}">
-        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('User Activity') }}</span>
       </a>
     </li>
+    @endif
 
     
     <li class="nav-heading">Publications</li>
@@ -78,17 +79,17 @@ $other_organizations = session('other_organizations');
     @if (!str_starts_with($row->name, 'Administrator'))
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#org-nav-{{ $row->id }}" data-bs-toggle="collapse" href="#" aria-expanded="false">
-      <img src="{{ isset($row->organisation->logo) ? asset($row->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">{{ $row->name }}</span><i class="bi bi-chevron-down ms-auto"></i>
+      <img src="{{ isset($row->logo) ? asset($row->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">{{ $row->name }}</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="org-nav-{{ $row->id }}" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+      <ul id="org-nav-{{ $row->id }}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
           <a href="{{ route('organisation.publications', [$row->id, 'type' => 'public_indicators']) }}">
-            <i class="bi bi-circle"></i><span>Public Indicators</span>
+            <i class="bi bi-circle bg-light"></i><span>Public Indicators</span>
           </a>
         </li>
         <li>
           <a href="{{ route('organisation.publications', [$row->id, 'type' => 'archives']) }}">
-            <i class="bi bi-circle"></i><span>Archives</span>
+            <i class="bi bi-circle bg-light"></i><span>Archives</span>
           </a>
         </li>
       </ul>

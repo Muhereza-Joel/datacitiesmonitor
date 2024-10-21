@@ -20,7 +20,9 @@
             </div>
             <div class="text-end w-50 pt-2">
                 <div>
+                    @if(Gate::allows('create', \App\Models\Archive::class))
                     <a href="{{ route('archives.create') }}" style="border-radius: 70px !important;" class="btn btn-primary btn-sm py-3 px-3">Create Archive</a>
+                    @endif
                 </div>
             </div>
 
@@ -57,12 +59,17 @@
                                 <span class="badge bg-primary text-light mx-2">Status: {{ $archive->status}}</span>
                             </div>
                             <div class="text-end w-50">
+                                @if(Gate::allows('update', $archive))
                                 <a href="{{ route('archives.edit', $archive->id) }}" class="icon" title="Edit Archive">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                @endif
+
+                                @if(Gate::allows('delete', $archive))
                                 <a href="" class="icon" title="Delete Indicator" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $archive->id }}">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
+                                @endif
                             </div>
                         </div>
                     </div>
