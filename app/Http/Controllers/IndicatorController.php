@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UserActionPerformed;
 use App\Exports\IndicatorsExport;
+use App\Exports\ResponseExport;
 use App\Exports\SingleIndicatorExport;
 use App\Jobs\IndexIndicatorJob;
 use App\Models\Archive;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use ZipArchive;
 
 class IndicatorController extends Controller
 {
@@ -316,12 +318,56 @@ class IndicatorController extends Controller
     // Export all indicators with their responses
     public function exportAllWithResponses()
     {
-        return Excel::download(new IndicatorsExport, 'all_indicators_with_responses.xlsx');
+        return Excel::download(new IndicatorsExport, 'all_indicators_with_responses.csv');
     }
 
     // Export a single indicator with its responses
     public function exportSingleWithResponses($id)
     {
-        return Excel::download(new SingleIndicatorExport($id), 'indicator_' . $id . '_with_responses.xlsx');
+        return Excel::download(new SingleIndicatorExport($id), 'indicator_' . $id . '_with_responses.csv');
+    }
+
+    public function exportIndicatorAndResponses($indicatorId)
+    {
+        // Prepare the export objects
+        $indicatorExport = new SingleIndicatorExport($indicatorId);
+        $responsesExport = new ResponseExport($indicatorId);
+
+        // Define the directory and ensure it exists
+        $archiveDir = storage_path("app/public/archives/");
+        if (!file_exists($archiveDir)) {
+            mkdir($archiveDir, 0777, true); // Create the directory if it doesn't exist
+        }
+
+        // Create the zip file
+        $zipFileName = $archiveDir . "indicator_responses_$indicatorId.zip";
+        $zip = new ZipArchive();
+
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            // Export indicator to a file in the 'public' disk
+            $indicatorFileName = "indicator_$indicatorId.xlsx";
+            Excel::store($indicatorExport, $indicatorFileName, 'public');
+            $indicatorPath = storage_path("app/public/$indicatorFileName"); // Ensure correct path
+            if (file_exists($indicatorPath)) {
+                $zip->addFile($indicatorPath, $indicatorFileName);
+            }
+
+            // Export responses to a file in the 'public' disk
+            $responsesFileName = "responses_$indicatorId.xlsx";
+            Excel::store($responsesExport, $responsesFileName, 'public');
+            $responsesPath = storage_path("app/public/$responsesFileName"); // Ensure correct path
+            if (file_exists($responsesPath)) {
+                $zip->addFile($responsesPath, $responsesFileName);
+            }
+
+            // Close the zip file after adding files
+            $zip->close();
+
+            // Return the zip file as a download
+            return response()->download($zipFileName)->deleteFileAfterSend(true);
+        } else {
+            // Error: could not create zip file
+            return response()->json(['error' => 'Could not create zip file'], 500);
+        }
     }
 }

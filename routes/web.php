@@ -82,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/response/files/{responseId}', [FilesController::class, 'getResponseFiles'])->name('reponse.files');
 
     Route::get('/indicators/export', [IndicatorController::class, 'exportAllWithResponses'])->name('indicators.export.all');
-    Route::get('/indicators/{id}/export', [IndicatorController::class, 'exportSingleWithResponses'])->name('indicators.export.single');
+    Route::get('/indicators/{id}/export', [IndicatorController::class, 'exportIndicatorAndResponses'])->name('indicators.export.single');
 });
 
 
