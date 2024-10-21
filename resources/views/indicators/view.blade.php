@@ -89,7 +89,7 @@
                     @endif
 
                     <a class="btn btn-primary btn-sm" href="{{ route('indicator.responses', $indicator->id) }}">Indicator Responses</a>
-                    
+
                 </div>
 
             </div>
@@ -151,7 +151,13 @@
 
                         <div class="row mb-3">
                             <div class="col-sm-4 font-weight-bold">Indicator Category:</div>
-                            <div class="col-sm-8">{{ $indicator->category }} Indicator</div>
+                            <div class="col-sm-8">
+                                @if($indicator->category === "None")
+                                <span class="badge bg-success text-light">Un Categorised</span>
+                                @else
+                                <span class="badge bg-primary text-light">{{ $indicator->category }} indicator</span>
+                                @endif
+                            </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-4 font-weight-bold">Indicator Name:</div>
