@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserActionPerformed;
+use App\Exports\IndicatorsExport;
+use App\Exports\SingleIndicatorExport;
 use App\Jobs\IndexIndicatorJob;
 use App\Models\Archive;
 use App\Models\Indicator;
@@ -11,6 +13,7 @@ use App\Models\TheoryOfChange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IndicatorController extends Controller
 {
@@ -308,5 +311,17 @@ class IndicatorController extends Controller
         }
 
         return view($view, compact('pageTitle', 'items', 'organisation', 'type'));
+    }
+
+    // Export all indicators with their responses
+    public function exportAllWithResponses()
+    {
+        return Excel::download(new IndicatorsExport, 'all_indicators_with_responses.xlsx');
+    }
+
+    // Export a single indicator with its responses
+    public function exportSingleWithResponses($id)
+    {
+        return Excel::download(new SingleIndicatorExport($id), 'indicator_' . $id . '_with_responses.xlsx');
     }
 }

@@ -67,8 +67,8 @@
     <div class="pagetitle mt-3">
 
         <div class="d-flex">
-            <div class="text-start w-50">
-                <h1>Showing Indicator Details</h1>
+            <div class="text-start w-25">
+                <h1>Indicator Details</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -77,10 +77,11 @@
                 </nav>
 
             </div>
-            <div class="text-end w-50 mt-2">
-                <div class="btn-group" role="group" aria-label="Administrator Actions">
+            <div class="text-end w-75 mt-2">
+                <div class="btn-group g-1" role="group" aria-label="Administrator Actions">
                     @if(Gate::allows('create', App\Models\Response::class))
-                    <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
+                    <a href="{{ route('indicators.export.single', $indicator->id) }}" class="btn btn-primary btn-sm">Export As Excel</a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
                     @endif
 
                     @if(Gate::allows('update', Auth::user(), $indicator))
