@@ -10,9 +10,7 @@
 
         <div class="alert alert-warning mt-2 px-3 py-1">
             <h5>Welcome back, {{ Auth::User()->name }}</h5>
-            <h6 class="fw-bold">| modifying data is allowed to only members of this organisation. Non-members can only view data.</h6>
             <hr>
-           
             <h2>Your are a member of  {{ $myOrganisation->name }}</h2>
 
         </div>
