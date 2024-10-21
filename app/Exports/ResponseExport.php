@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithColumnWidths
+class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithColumnWidths
 {
     protected $indicatorId;
 
@@ -70,9 +70,18 @@ class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function columnWidths(): array
     {
         return [
-            'G' => 200,
-            'H' => 200,            
-            'I' => 200,            
+            'A' => 10,   // Response ID
+            'B' => 15,   // Indicator ID
+            'C' => 30,   // Organisation Name
+            'D' => 25,   // Respondent Name
+            'E' => 15,   // Current Status
+            'F' => 30,   // Percentage Progress From Baseline
+            'G' => 50,   // Notes
+            'H' => 50,   // Lessons
+            'I' => 50,   // Recommendations
+            'J' => 20,   // Status
+            'K' => 25,   // Response Added On
+            'L' => 25,   // Response Was Last Updated On
         ];
     }
 
