@@ -8,9 +8,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithColumnWidths
 {
     protected $indicatorId;
 
@@ -66,11 +67,20 @@ class ResponseExport implements FromCollection, WithHeadings, WithMapping, WithS
         ];
     }
 
+    public function columnWidths(): array
+    {
+        return [
+            'G' => 200,
+            'H' => 200,            
+            'I' => 200,            
+        ];
+    }
+
     public function styles(Worksheet $sheet)
     {
         // Set a fixed width for columns and enable wrap text
         foreach (range('A', 'L') as $column) {
-            $sheet->getColumnDimension($column)->setWidth(10); // Set width to 20, adjust as needed
+            $sheet->getColumnDimension($column)->setWidth(-1); // Set width to 20, adjust as needed
         }
 
         // Wrap text for all cells and set alignment
