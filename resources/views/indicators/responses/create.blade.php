@@ -176,7 +176,7 @@
                             <br>
                             <div class="text-start">
                                 <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Submit Response</button>
-                                <button id="discardData" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
+                                <button id="discardData" type="button" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
                             </div>
                             @endif
                         </form>
@@ -254,11 +254,19 @@
 
         // Function to update the progress bar UI
         function updateProgressUI(progress) {
+            // Check if progress is a valid number
+            if (isNaN(progress)) {
+                console.error("Progress is not a number: ", progress);
+                progress = 0; // Set to 0 as a fallback
+            }
+
+            // Ensure progress is a valid number before updating UI
             $('#progress').val(progress.toFixed(1)); // Update the progress input field
-            $('#progress-bar').css('width', progress.toFixed(1) + '%'); // Update progress bar width
+            $('#progress-bar').css('width', progress + '%'); // Update progress bar width
             $('#progress-bar').attr('aria-valuenow', progress.toFixed(1)); // Update ARIA attribute
             $('#progress-bar').text(progress.toFixed(1) + '%'); // Update progress bar text
         }
+
 
         // Function to show toast notifications for errors
         var toastInstance = null; // Track the toast instance
@@ -479,35 +487,7 @@
                         }
                     }
 
-                    // Validate restored `current` value
-                    var current = parseFloat(savedData['current']);
-                    if (!isNaN(current)) {
-                        var validMin, validMax;
-                        var isIncreasing = direction === 'increasing';
-
-                        if (isIncreasing) {
-                            validMin = Math.min(baseline, target);
-                            validMax = Math.max(baseline, target);
-                        } else {
-                            validMin = Math.min(target, baseline);
-                            validMax = Math.max(target, baseline);
-                        }
-
-                        if (current < validMin || current > validMax) {
-                            // Mark `current` as invalid if it falls outside the valid range
-                            $('#current').addClass('is-invalid');
-                            updateProgressUI(0); // Reset progress bar to 0%
-                            showToast("Current state must be between " + validMin + " and " + validMax + ". Please adjust the value.", '#ff8282');
-                        } else {
-                            $('#current').removeClass('is-invalid');
-                            updateProgressUI(savedData['progress']); // Restore the valid progress bar UI
-                        }
-                    }
-
-                    // Restore progress bar value
-                    $('#progress-bar').css('width', savedData['progress'].toString() + '%');
-                    $('#progress-bar').attr('aria-valuenow', savedData['progress']);
-                    $('#progress-bar').text(savedData['progress'] + '%');
+                    
 
                     // Restore Quill editor content
                     var quillEditors = {
@@ -529,10 +509,14 @@
         }
 
 
-        $('#discardData').click(function() {
-            event.preventDefault();
+        $('#discardData').click(function(event) {
+            event.preventDefault(); // Pass event to prevent default action
+            alert('Deleted');
 
+            // Remove the local storage item
             localStorage.removeItem('monitorresponsedata' + indicatorId);
+
+            // Show toast notification
             Toastify({
                 text: "Response data discarded successfully!",
                 duration: 3000,
@@ -541,10 +525,12 @@
                 backgroundColor: '#ff8282',
             }).showToast();
 
+            // Optionally reload the page after a delay
             setTimeout(function() {
                 window.location.reload();
             }, 3000);
         });
+
 
     });
 </script>

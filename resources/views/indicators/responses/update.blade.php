@@ -165,7 +165,7 @@
                             <br>
                             <div class="text-start">
                                 <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Update Response Details</button>
-                                <button id="discardData" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
+                                <button id="discardData" type="button" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
                             </div>
                             @endif
                         </form>
@@ -494,30 +494,6 @@
                         }
                     }
 
-                    // Validate restored `current` value
-                    var current = parseFloat(savedData['current']);
-                    if (!isNaN(current)) {
-                        var validMin, validMax;
-                        var isIncreasing = direction === 'increasing';
-
-                        if (isIncreasing) {
-                            validMin = Math.min(baseline, target);
-                            validMax = Math.max(baseline, target);
-                        } else {
-                            validMin = Math.min(target, baseline);
-                            validMax = Math.max(target, baseline);
-                        }
-
-                        if (current < validMin || current > validMax) {
-                            // Mark `current` as invalid if it falls outside the valid range
-                            $('#current').addClass('is-invalid');
-                            updateProgressUI(0); // Reset progress bar to 0%
-                            showToast("Current state must be between " + validMin + " and " + validMax + ". Please adjust the value.", '#ff8282');
-                        } else {
-                            $('#current').removeClass('is-invalid');
-                            updateProgressUI(savedData['progress']); // Restore the valid progress bar UI
-                        }
-                    }
 
                     // Restore progress bar value
                     $('#progress-bar').css('width', savedData['progress'].toString() + '%');
