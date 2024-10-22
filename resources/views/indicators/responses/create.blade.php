@@ -71,7 +71,7 @@
 
                                 <!-- Current Progress Section -->
                                 <div class="form-group mb-3">
-                                    <label for="progress">Current Progress</label>
+                                    <label for="progress">Current Progress From Baseline</label>
                                     <input required id="progress" name="progress" readonly type="text" class="form-control">
                                     <div class="invalid-feedback">Progress cannot be empty.</div>
                                 </div>

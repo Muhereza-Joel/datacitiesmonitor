@@ -62,7 +62,7 @@
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
                             <div class="form-group my-2">
-                                <label for="">Current Progress</label>
+                                <label for="">Current Progress From Baseline</label>
                                 <input required id="progress" name="progress" readonly type="number" class="form-control">
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
