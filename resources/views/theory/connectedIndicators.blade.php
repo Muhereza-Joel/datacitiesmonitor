@@ -43,6 +43,20 @@
         </ul>
     </div>
     @endif
+    <div class="status-key text-center pt-1 pb-0">
+        <span>
+            <div class="key-draft"></div> Draft
+        </span>
+        <span>
+            <div class="key-review"></div> Review
+        </span>
+        <span>
+            <div class="key-public"></div> Public
+        </span>
+        <span>
+            <div class="key-archived"></div> Archived
+        </span>
+    </div>
 
     <section class="section dashboard">
         <div class="row g-2">
@@ -51,7 +65,7 @@
             @else
             @foreach($indicators as $indicator)
             <div class="col-sm-6">
-                <div class="card p-2">
+                <div class="card p-2 status-{{ strtolower($indicator->status) }}">
                     <div class="card-title fw-bold ms-2 d-flex">
                         <div class="text-start w-75">
                             <img src="{{ asset($indicator->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">

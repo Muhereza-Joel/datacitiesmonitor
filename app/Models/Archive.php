@@ -46,7 +46,7 @@ class Archive extends Model
         return $this->belongsTo(Organisation::class);
     }
 
-    public function archivedIndicators()
+    public function indicators()
     {
         return $this->hasMany(ArchivedIndicator::class);
     }

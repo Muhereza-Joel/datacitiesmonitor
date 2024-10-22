@@ -63,8 +63,9 @@ class ArchivedIndicator extends Model
 
     public function responses()
     {
-        return $this->hasMany(ArchivedResponse::class);
+        return $this->hasMany(ArchivedResponse::class, 'indicator_id', 'indicator_id'); // Use 'indicator_id' as the foreign key
     }
+
 
     public function theoryOfChange()
     {

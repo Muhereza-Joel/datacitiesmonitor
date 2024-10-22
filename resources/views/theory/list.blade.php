@@ -68,6 +68,7 @@
                     <div class="card-body">
                         <small class="text-success">Title</small>
                         <h4 class="two-line-truncate">{{ $theory->title }}</h4>
+                        <h6>Created On: {{ $theory->created_at->format('M d, Y \a\t g:ia') }}</h6>
 
                         <div class="accordion" id="accordionToC{{$loop->iteration}}">
                             <div class="accordion-item">

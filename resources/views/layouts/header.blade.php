@@ -94,6 +94,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .one-line-truncate {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -103,7 +104,7 @@
       text-overflow: ellipsis;
     }
 
-    .pagetitle{
+    .pagetitle {
       background-color: #ffffff;
       margin-bottom: 8px;
       padding: 4px 8px;
@@ -144,6 +145,77 @@
       /* Increase button size */
       border-radius: 5px;
       /* Optional: rounded corners for button */
+    }
+  </style>
+
+  <style>
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .status-draft {
+      /* border-top: 10px solid #fc03a1; */
+      border-left: 5px solid #fc03a1;
+    }
+
+    .status-review {
+      /* border-top: 10px solid #0a1157; */
+      border-left: 5px solid #0a1157;
+    }
+
+    .status-public {
+      /* border-top: 10px solid green; */
+      border-left: 5px solid green;
+    }
+
+    .status-archived {
+      /* border-top: 10px solid #1cc9be; */
+      border-left: 5px solid #1cc9be;
+    }
+
+    .status-key {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .status-key span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-key .key-draft {
+      width: 20px;
+      height: 10px;
+      background-color: #fc03a1;
+    }
+
+    .status-key .key-review {
+      width: 20px;
+      height: 10px;
+      background-color: #0a1157;
+    }
+
+    .status-key .key-public {
+      width: 20px;
+      height: 10px;
+      background-color: green;
+    }
+
+    .status-key .key-archived {
+      width: 20px;
+      height: 10px;
+      background-color: #1cc9be;
+    }
+
+    .drag-active {
+      border: 2px dashed #28a745;
+      /* Change border color */
+      background-color: #f0f0f0;
+      /* Light background */
+      /* Add more styles as needed */
     }
   </style>
 

@@ -24,10 +24,16 @@ class ArchivesController extends Controller
         $pageTitle = "All Archives";
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
-        $archives = Archive::where('organisation_id', $organisation_id)->paginate(25);
+
+        // Load archives with organization data and count of indicators
+        $archives = Archive::with('organisation') // Eager load organization data
+            ->withCount('indicators') // Count indicators in each archive
+            ->where('organisation_id', $organisation_id)
+            ->paginate(25);
 
         return view('archives.list', compact('pageTitle', 'archives'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -86,8 +92,16 @@ class ArchivesController extends Controller
         $archive = Archive::findOrFail($id);
 
         // Retrieve the indicators from the archived_indicators table where the archive_id matches the given id
-        $indicators = ArchivedIndicator::where('archive_id', $id)
+        $indicators = ArchivedIndicator::with([
+            'theoryOfChange',
+            'responses' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Order responses by the latest
+            }
+        ])
+            ->withCount('responses') // Add response count
+            ->where('archive_id', $id)
             ->where('organisation_id', $organisation_id) // Ensure it belongs to the current organization
+            ->orderByDesc('responses_count') // Sort by responses count in descending order
             ->paginate(25);
 
         // If no archived indicators are found, you can handle that as needed
@@ -95,8 +109,18 @@ class ArchivesController extends Controller
             return redirect()->back()->withErrors(['error' => 'No indicators found in this archive.']);
         }
 
+        // Add the 'current' value from the latest response to each indicator
+        $indicators->getCollection()->transform(function ($indicator) {
+            // Manually fetch the latest response based on 'created_at' in ascending order
+            $latestResponse = $indicator->responses->sortBy('created_at')->last();
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Add latest 'current' value
+            return $indicator;
+        });
+
+
         return view('archives.indicators.list', compact('pageTitle', 'indicators', 'archive'));
     }
+
 
 
     /**
@@ -233,7 +257,7 @@ class ArchivesController extends Controller
 
     public function getArchives()
     {
-        $archives = Archive::where('status', 'active')->get(); 
+        $archives = Archive::where('status', 'active')->get();
         return response()->json($archives);
     }
 

@@ -65,7 +65,7 @@ class IndicatorPolicy
      */
     public function delete(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['admin']) && in_array($indicator->status, ['draft', 'review']);
     }
 
     /**

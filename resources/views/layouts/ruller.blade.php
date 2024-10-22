@@ -32,7 +32,7 @@
             @endphp
 
             <!-- Faint Shade from Baseline to Current (For both directions) -->
-            <div style="position: absolute; left: {{ min($baselinePosition, $currentPosition) }}%; right: {{ 100 - max($baselinePosition, $currentPosition) }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Shaded Area"></div>
+            <div style="position: absolute; left: {{ min($baselinePosition, $currentPosition) }}%; right: {{ 100 - max($baselinePosition, $currentPosition) }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Progress From Baseline"></div>
 
             <!-- Baseline Marker -->
             <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
@@ -43,11 +43,7 @@
             <!-- Target Marker -->
             <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
 
-            <!-- Horizontal Yellow Line for Decreasing Value -->
-            @if ($current < $target)
-                <div style="position: absolute; left: {{ $currentPosition }}%; right: {{ 100 - $baselinePosition }}%; height: 2px; background-color: yellow; top: 8px;">
-    </div>
-    @endif
+           
 </div>
 
 <div class="px-1" style="position: relative; margin-top: 15px;">

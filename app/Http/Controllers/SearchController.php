@@ -17,13 +17,25 @@ class SearchController extends Controller
         $searchResults = Indicator::search($query)->get(); // Use get() to retrieve all search results
 
         // Filter the results based on the organization and eager load relationships
-        $results = Indicator::with(['theoryOfChange', 'organisation', 'responses' => function ($query) {
-            $query->latest()->limit(1); // Eager load the latest response
-        }])
+        $results = Indicator::with([
+            'theoryOfChange',
+            'organisation',
+            'responses' => function ($query) {
+                $query->latest()->limit(1); // Eager load the latest response
+            }
+        ])
             ->withCount('responses') // Add response count
             ->whereIn('id', $searchResults->pluck('id')) // Filter results by IDs from the search
             ->where('organisation_id', Auth::user()->organisation_id) // Filter by organization
-            ->paginate(24); // Adjust pagination as needed
+            ->orderByDesc('responses_count') // Sort by responses count in descending order
+            ->paginate(24); // Paginate the sorted results
+
+        // Map the results to include the 'current' value from the latest response
+        $results->getCollection()->transform(function ($indicator) {
+            $latestResponse = $indicator->responses->first();
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Add latest 'current' value
+            return $indicator;
+        });
 
         return view('search.results', compact('pageTitle', 'results'));
     }

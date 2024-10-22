@@ -50,15 +50,18 @@
             <span class="alert alert-info">No archives found</span>
             @else
             @foreach($archives as $archive)
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="card p-2">
-                    <div class="card-title">
-                        <div class="d-flex">
-                            <div class="d-flex ms-2 text-start w-50">
-                                <span class="badge bg-secondary text-light">Visibility: {{ $archive->access_level}}</span>
-                                <span class="badge bg-primary text-light mx-2">Status: {{ $archive->status}}</span>
+                    <div class="mb-2">
+                        <div class="d-flex fw-bold">
+                            <div class="w-75 text-start">
+                                <img src="{{ asset($archive->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                                <span class="badge bg-primary text-light">{{ $archive->access_level}} and {{ $archive->status}}</span>
+                                <span class="text-primary">Archive has {{ $archive->indicators_count }} Indicators</span>
+
                             </div>
-                            <div class="text-end w-50">
+
+                            <div class="w-25 text-end">
                                 @if(Gate::allows('update', $archive))
                                 <a href="{{ route('archives.edit', $archive->id) }}" class="icon" title="Edit Archive">
                                     <i class="bi bi-pencil-square"></i>
@@ -94,7 +97,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <h6>Created On: {{ $archive->created_at }}</h6>
+                        <h6>Created On: {{ $archive->created_at->format('M d, Y \a\t g:ia') }}</h6>
                     </div>
                 </div>
                 <div class="modal fade" id="deleteModal{{ $archive->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $archive->id }}" aria-hidden="true">
