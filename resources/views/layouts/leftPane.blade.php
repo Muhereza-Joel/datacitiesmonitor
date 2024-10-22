@@ -54,7 +54,7 @@ $other_organizations = session('other_organizations');
       </a>
     </li>
     
-    @if( Auth::user()->role === 'admin')
+    @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
     <li class="nav-item">
       <a class="nav-link" href="{{ route('users.index') }}">
         <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">

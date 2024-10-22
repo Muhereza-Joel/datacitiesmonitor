@@ -18,7 +18,7 @@ class TheoriesOfChangePolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -30,7 +30,7 @@ class TheoriesOfChangePolicy
      */
     public function view(User $user, TheoryOfChange $theoryOfChange)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -41,7 +41,7 @@ class TheoriesOfChangePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**
@@ -53,7 +53,7 @@ class TheoriesOfChangePolicy
      */
     public function update(User $user, TheoryOfChange $theoryOfChange)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -65,7 +65,7 @@ class TheoriesOfChangePolicy
      */
     public function delete(User $user, TheoryOfChange $theoryOfChange)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**
@@ -77,7 +77,7 @@ class TheoriesOfChangePolicy
      */
     public function restore(User $user, TheoryOfChange $theoryOfChange)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**

@@ -40,7 +40,7 @@
                         <form action="{{ route('theory.update', $toc->id ) }}" method="post" class="form needs-validation" novalidate>
                             @csrf <!-- Add CSRF token for form submission -->
                             @method('PUT')
-                            <p class="my-2">The ToC you create will belong to <span class="badge bg-warning">{{ $myOrganisation->name}}</span> organisation</p>
+                            
                             <hr>
                             <div class="form-group my-2">
                                 <label for="title">Title</label>

@@ -28,12 +28,19 @@ class IndicatorController extends Controller
     {
         $pageTitle = "All Indicators";
         $currentUser = Auth::user();
-        $organisation_id = $currentUser->organisation_id;
 
         // Start the query with the base conditions
         $query = Indicator::with(['theoryOfChange', 'organisation'])
-            ->withCount('responses') // Add response count
-            ->where('organisation_id', $organisation_id);
+            ->withCount('responses'); // Add response count
+
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // If the user is root, do not filter by organization
+        } else {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('organisation_id', $organisation_id);
+        }
 
         // Apply filters if they are present in the request
         if ($request->filled('status')) {
@@ -68,6 +75,7 @@ class IndicatorController extends Controller
 
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }
+
 
     /**
      * Show the form for creating a new resource.

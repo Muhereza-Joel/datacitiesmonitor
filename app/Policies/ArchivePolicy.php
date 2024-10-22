@@ -19,7 +19,7 @@ class ArchivePolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -31,7 +31,7 @@ class ArchivePolicy
      */
     public function view(User $user, Archive $archive)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -42,7 +42,7 @@ class ArchivePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -54,7 +54,7 @@ class ArchivePolicy
      */
     public function update(User $user, Archive $archive)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -66,7 +66,7 @@ class ArchivePolicy
      */
     public function delete(User $user, Archive $archive)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**
@@ -78,7 +78,7 @@ class ArchivePolicy
      */
     public function restore(User $user, Archive $archive)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**

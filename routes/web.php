@@ -49,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/indicators/response/update', [ResponseController::class, 'updateResponse'])->name('indicators.response.update');
     Route::delete('/indicators/response/delete/{id}', [ResponseController::class, 'deleteResponse'])->name('indicators.response.destroy');
     Route::get('/indicators/{id}/responses', [ResponseController::class, 'getResponsesForIndicator'])->name('indicator.responses');
-    Route::resource('/users', UserController::class)->middleware('role:admin,user');
+    Route::resource('/users', UserController::class)->middleware('role:root,admin,user');
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -60,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-    Route::resource('/archives', ArchivesController::class)->middleware('role:admin,user,viewer');
+    Route::resource('/archives', ArchivesController::class)->middleware('role:root,admin,user,viewer');
     Route::get('/organisation/archives', [ArchivesController::class, 'getArchives'])->name('organisation.archives.get');
     Route::get('/publications/{id}/listing', [IndicatorController::class, 'getOrganisationPublications'])->name('organisation.publications');
 
@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/password/check', [UserProfileController::class, 'checkCurrentPassword'])->name('password.check');
     Route::patch('/password/update', [UserProfileController::class, 'updatePassword'])->name('password.update');
 
-    Route::resource('logs', LogController::class)->middleware('role:admin');
+    Route::resource('logs', LogController::class)->middleware('role:root,admin');
     Route::resource('/files', FilesController::class);
     Route::get('/response/files/{responseId}', [FilesController::class, 'getResponseFiles'])->name('reponse.files');
 
@@ -88,6 +88,5 @@ Route::middleware(['auth'])->group(function () {
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
-Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

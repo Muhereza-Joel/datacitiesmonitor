@@ -23,16 +23,26 @@ class ArchivesController extends Controller
     {
         $pageTitle = "All Archives";
         $currentUser = Auth::user();
-        $organisation_id = $currentUser->organisation_id;
 
-        // Load archives with organization data and count of indicators
-        $archives = Archive::with('organisation') // Eager load organization data
-            ->withCount('indicators') // Count indicators in each archive
-            ->where('organisation_id', $organisation_id)
-            ->paginate(25);
+        // Start the query for archives with organization data and count of indicators
+        $query = Archive::with('organisation') // Eager load organization data
+            ->withCount('indicators'); // Count indicators in each archive
+
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // If the user is root, do not filter by organization
+        } else {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('organisation_id', $organisation_id);
+        }
+
+        // Paginate the results
+        $archives = $query->paginate(25);
 
         return view('archives.list', compact('pageTitle', 'archives'));
     }
+
 
 
     /**

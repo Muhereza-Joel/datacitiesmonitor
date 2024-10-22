@@ -118,7 +118,9 @@
                         <div class="mb-3">
                             <label for="userRole" class="form-label">Role</label>
                             <select class="form-select" id="userRole" name="role" required>
+                                @if(Auth::user()->role === 'root')
                                 <option value="admin">Administrator</option>
+                                @endif
                                 <option value="user">User</option>
                                 <option value="viewer">Viewer</option>
                             </select>

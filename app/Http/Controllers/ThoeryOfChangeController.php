@@ -19,17 +19,24 @@ class ThoeryOfChangeController extends Controller
     {
         $pageTitle = "Theories of Change";
         $currentUser = Auth::user();
-        $organisation_id = $currentUser->organisation_id;
 
-        // Fetch theories of change with the organisation and indicator count
-        $theories = TheoryOfChange::with('organisation')
-            ->withCount('indicators') // Include the count of related indicators
-            ->where('organisation_id', $organisation_id)
-            ->get();
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // Fetch all theories of change if the role is root
+            $theories = TheoryOfChange::with('organisation')
+                ->withCount('indicators') // Include the count of related indicators
+                ->get();
+        } else {
+            // Fetch theories of change for the current user's organization
+            $organisation_id = $currentUser->organisation_id;
+            $theories = TheoryOfChange::with('organisation')
+                ->withCount('indicators') // Include the count of related indicators
+                ->where('organisation_id', $organisation_id)
+                ->get();
+        }
 
         return view('theory.list', compact('pageTitle', 'theories'));
     }
-
 
 
     /**

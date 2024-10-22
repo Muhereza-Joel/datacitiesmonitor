@@ -38,17 +38,27 @@ class LogController extends Controller
                 break;
         }
 
-        // Fetch logs filtered by the organisation_id through the users table and the specified date range
-        $logs = UserActionLog::with('user')
-            ->whereHas('user', function ($query) use ($organisation_id) {
-                $query->where('organisation_id', $organisation_id);
-            })
+        // Start the query for logs
+        $query = UserActionLog::with('user')
             ->where('created_at', '>=', $startDate)
-            ->orderBy('created_at', 'desc')
-            ->paginate(24);
+            ->orderBy('created_at', 'desc');
+
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // If the user is root, do not filter by organization
+        } else {
+            // Filter by organization for non-root users
+            $query->whereHas('user', function ($query) use ($organisation_id) {
+                $query->where('organisation_id', $organisation_id);
+            });
+        }
+
+        // Paginate the results
+        $logs = $query->paginate(24);
 
         return view('logs.list', compact('pageTitle', 'logs', 'filter'));
     }
+
 
 
     /**

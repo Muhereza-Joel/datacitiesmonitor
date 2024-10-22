@@ -71,9 +71,8 @@
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     <option value="">Select user role</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                                    <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
                                     <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                                    <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
                                 </select>
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
@@ -91,9 +90,6 @@
                 <div class="card p-2">
                     <div class="card-title">User Roles Explanation</div>
                     <div class="card-body">
-                        <h5 class="card-title">Administrator</h5>
-                        <p class="card-text">Administrators can add and manage indicators, manage responses, manage user accounts and roles, and have full access to all data and system settings.</p>
-
                         <h5 class="card-title">Users</h5>
                         <p class="card-text">Users can create indicators and responses as well, view all data (indicators, responses), modify there responses but cannot delete any data.</p>
 

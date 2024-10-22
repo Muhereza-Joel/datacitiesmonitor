@@ -65,7 +65,7 @@ class ResponsePolicy
      */
     public function delete(User $user, Response $response)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['admin']) && in_array($response->status, ['draft', 'review']);
     }
 
     /**

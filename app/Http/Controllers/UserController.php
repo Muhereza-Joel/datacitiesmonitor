@@ -20,13 +20,20 @@ class UserController extends Controller
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
 
-        // Load users for the current user's organization
-        $users = User::with('organisation')
-            ->where('organisation_id', $organisation_id)
-            ->paginate(25);
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // Fetch all users if the role is root
+            $users = User::with('organisation')->paginate(25);
+        } else {
+            // Load users for the current user's organization
+            $users = User::with('organisation')
+                ->where('organisation_id', $organisation_id)
+                ->paginate(25);
+        }
 
         return view('users.list', compact('pageTitle', 'users'));
     }
+
 
 
     /**

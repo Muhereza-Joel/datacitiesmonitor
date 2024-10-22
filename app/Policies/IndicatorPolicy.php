@@ -18,7 +18,7 @@ class IndicatorPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -30,7 +30,7 @@ class IndicatorPolicy
      */
     public function view(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -41,7 +41,7 @@ class IndicatorPolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -53,7 +53,7 @@ class IndicatorPolicy
      */
     public function update(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -65,7 +65,7 @@ class IndicatorPolicy
      */
     public function delete(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['admin']) && in_array($indicator->status, ['draft', 'review']);
+        return in_array($user->role, ['root','admin']) && in_array($indicator->status, ['draft', 'review']);
     }
 
     /**
@@ -77,7 +77,7 @@ class IndicatorPolicy
      */
     public function restore(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**
