@@ -42,6 +42,8 @@
                                 <h4>You are editing a response for</h4>
                                 <i class="fw-bold">>>>> {{$response->indicator['indicator_title']}} indicator <<<< </i>
                             </div>
+
+
                             <div class="form-group my-2">
                                 <label for="">Indicator Baseline</label>
                                 <input id="indicator-id" type="hidden" name="indicator-id" value="{{$response->indicator['id']}}">
@@ -56,7 +58,7 @@
                             <div class="form-group my-2">
                                 <label for="">Enter current state</label>
                                 <small class="text-danger"> (Must be a whole number)</small>
-                                <input  id="current" name="current" type="number" class="form-control" value="{{ $response->current }}" >
+                                <input id="current" name="current" type="number" class="form-control" value="{{ $response->current }}">
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
                             <div class="form-group my-2">
@@ -71,12 +73,42 @@
                             </div>
                             <input type="hidden" id="direction" value="{{ $response->indicator['direction']}}">
 
-                            <div class="form-group my-2">
-                                <label for="">Progress</label>
-                                <div class="progress">
-                                    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            <!-- Progress Bar Section -->
+                            <div class="form-group mb-4">
+                                <label for="progress-bar">Progress</label>
+                                <div class="progress" style="height: 30px;">
+                                    <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                                 </div>
                             </div>
+
+                            <!-- Add this in your custom CSS for additional styling -->
+                            <style>
+                                .form-control[readonly] {
+                                    background-color: #e9ecef;
+                                    opacity: 1;
+                                }
+
+                                .progress-bar {
+                                    transition: width 0.6s ease;
+                                    font-weight: bold;
+                                }
+
+                                .invalid-feedback {
+                                    display: none;
+                                }
+
+                                input.is-invalid+.invalid-feedback {
+                                    display: block;
+                                }
+
+                                .progress-bar.bg-success {
+                                    background-color: #28a745 !important;
+                                }
+                            </style>
+
+
+
+
                             <div class="accordion" id="responseAccordion">
 
                                 <!-- Notes Section -->
@@ -150,101 +182,89 @@
 
 <script>
     $(document).ready(function() {
-        var baseline = parseFloat($('input[name="baseline"]').val());
-        var target = parseFloat($('input[name="target"]').val());
+
+        var baseline = parseFloat($('input[name="baseline"]').val()) || 0;
+        var target = parseFloat($('input[name="target"]').val()) || 100;
         var lastCurrentState = parseFloat($('input[name="last_current_state"]').val()) || baseline;
+        var direction = $('#direction').val();
+        var currentProgress = 0; // Store the progress to prevent recalculation on submit
 
         // Initial progress calculation
-        var initialProgress = (lastCurrentState - baseline) / (target - baseline) * 100;
-        initialProgress = isNaN(initialProgress) ? 0 : initialProgress;
-        $('#progress').val(initialProgress.toFixed(1));
-        $('#progress-bar').css('width', initialProgress.toFixed(1) + '%');
-        $('#progress-bar').attr('aria-valuenow', initialProgress.toFixed(1));
-        $('#progress-bar').text(initialProgress.toFixed(1) + '%');
+        var initialProgress = calculateProgress(lastCurrentState, baseline, target, direction);
+        updateProgressUI(initialProgress);
 
+        // Handle current state input
         $('#current').on('input', function() {
             var current = parseFloat($(this).val());
-            var direction = $('#direction').val(); // Assuming you have a way to get the direction value
-            var baseline = parseFloat($('#baseline').val()); // Assuming you have a baseline input
-            var target = parseFloat($('#target').val()); // Assuming you have a target input
 
-
-            // Check for invalid inputs
-            if (isNaN(current) || isNaN(baseline) || isNaN(target)) {
-                $('#current').addClass('is-invalid');
-                $('#progress').val('');
-                $('#progress-bar').css('width', '0%');
-                $('#progress-bar').attr('aria-valuenow', 0);
-                $('#progress-bar').text('0%');
-
-                Toastify({
-                    text: "Please ensure all values are numbers.",
-                    duration: 3000,
-                    gravity: 'bottom',
-                    position: 'left',
-                    backgroundColor: '#ff8282',
-                }).showToast();
-                return; // Exit the function early
+            // Ensure baseline and target are valid numbers
+            if (isNaN(baseline) || isNaN(target)) {
+                return; // Abort if baseline or target are invalid
             }
 
-            // Direction-dependent validation
-            if (direction === 'increasing') {
-                if (current < baseline || current > target) {
-                    $('#current').addClass('is-invalid');
-                    $('#progress').val('');
-                    $('#progress-bar').css('width', '0%');
-                    $('#progress-bar').attr('aria-valuenow', 0);
-                    $('#progress-bar').text('0%');
+            // Determine the valid range based on the direction
+            var isIncreasing = direction === 'increasing';
+            var validMin, validMax;
 
+            if (isIncreasing) {
+                validMin = Math.min(baseline, target);
+                validMax = Math.max(baseline, target);
+            } else {
+                validMin = Math.min(target, baseline);
+                validMax = Math.max(target, baseline);
+            }
 
-                    Toastify({
-                        text: "Please ensure current lies between baseline and target.",
-                        duration: 3000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#ff8282',
-                    }).showToast();
-                    return; // Exit the function early
+            // Validate if the current value is in the valid range
+            if (isNaN(current) || current < validMin || current > validMax) {
+                $('#current').addClass('is-invalid');
+                updateProgressUI(0); // Reset progress bar to 0%
+                showToast("Current state must be between " + validMin + " and " + validMax, '#ff8282');
+            } else {
+                $('#current').removeClass('is-invalid');
 
-
-                } else {
-                    $('#current').removeClass('is-invalid');
-                    var progress = ((current - baseline) / (target - baseline)) * 100;
-                    $('#progress').val(progress.toFixed(1));
-
-                    // Update progress bar
-                    $('#progress-bar').css('width', progress.toFixed(1) + '%');
-                    $('#progress-bar').attr('aria-valuenow', progress.toFixed(1));
-                    $('#progress-bar').text(progress.toFixed(1) + '%');
-                }
-            } else if (direction === 'decreasing') {
-                if (current > baseline || current < target) {
-                    $('#current').addClass('is-invalid');
-                    $('#progress').val('');
-                    $('#progress-bar').css('width', '0%');
-                    $('#progress-bar').attr('aria-valuenow', 0);
-                    $('#progress-bar').text('0%');
-
-                    Toastify({
-                        text: "Please ensure current lies between baseline and target.",
-                        duration: 3000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#ff8282',
-                    }).showToast();
-                    return; // Exit the function early
-                } else {
-                    $('#current').removeClass('is-invalid');
-                    var progress = ((baseline - current) / (baseline - target)) * 100;
-                    $('#progress').val(progress.toFixed(1));
-
-                    // Update progress bar
-                    $('#progress-bar').css('width', progress.toFixed(1) + '%');
-                    $('#progress-bar').attr('aria-valuenow', progress.toFixed(1));
-                    $('#progress-bar').text(progress.toFixed(1) + '%');
-                }
+                // Calculate progress based on the direction
+                currentProgress = calculateProgress(current, baseline, target, direction);
+                updateProgressUI(currentProgress);
             }
         });
+
+        // Function to calculate progress based on direction
+        function calculateProgress(current, baseline, target, direction) {
+            var progress;
+
+            if (direction === 'increasing') {
+                progress = ((current - baseline) / (target - baseline)) * 100;
+            } else {
+                progress = ((baseline - current) / (baseline - target)) * 100;
+            }
+
+            // Clamp progress between 0 and 100
+            return Math.min(Math.max(progress, 0), 100);
+        }
+
+        // Function to update the progress bar UI
+        function updateProgressUI(progress) {
+            $('#progress').val(progress.toFixed(1)); // Update the progress input field
+            $('#progress-bar').css('width', progress.toFixed(1) + '%'); // Update progress bar width
+            $('#progress-bar').attr('aria-valuenow', progress.toFixed(1)); // Update ARIA attribute
+            $('#progress-bar').text(progress.toFixed(1) + '%'); // Update progress bar text
+        }
+
+        // Function to show toast notifications for errors
+        var toastInstance = null; // Track the toast instance
+
+        function showToast(message, color) {
+            if (toastInstance) {
+                toastInstance.hideToast(); // Close any existing toast before showing a new one
+            }
+            toastInstance = Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'bottom',
+                position: 'left',
+                backgroundColor: color,
+            }).showToast();
+        }
 
 
         var quill = new Quill('#editor-container', {
@@ -336,13 +356,10 @@
         $('#add-response-form').submit(function(event) {
             event.preventDefault();
 
-            // Custom validation for 'current' input
-            var current = $('#current').val();
-            if (current === "" || isNaN(current) || !Number.isInteger(parseFloat(current))) {
-                $('#current').addClass('is-invalid');
-                return;
-            } else {
-                $('#current').removeClass('is-invalid');
+             // Check if the current value is valid before submitting
+             if ($('#current').hasClass('is-invalid')) {
+                showToast("Please correct the current state value before submitting.", '#ff8282');
+                return; // Prevent submission if the current value is invalid
             }
 
             if (this.checkValidity() === true) {
@@ -372,9 +389,9 @@
                             indicator_id: $('input[name="indicator-id"]').val(),
                             id: $('#response-id').val(),
                             baseline: baseline,
-                            current: current,
+                            current: parseFloat($('#current').val()),
                             target: target,
-                            progress: progress.toFixed(1),
+                            progress: currentProgress.toFixed(1),
                             lessons: lessons,
                             notes: notes,
                             recommendations: recommendations,
@@ -468,7 +485,6 @@
                         close: true,
                     }).showToast();
 
-
                     for (var key in savedData) {
                         if (key !== 'lessons' && key !== 'notes' && key !== 'recommendations' && key !== 'indicator-id') {
                             var $field = $('form').find('[name="' + key + '"]');
@@ -478,11 +494,37 @@
                         }
                     }
 
+                    // Validate restored `current` value
+                    var current = parseFloat(savedData['current']);
+                    if (!isNaN(current)) {
+                        var validMin, validMax;
+                        var isIncreasing = direction === 'increasing';
+
+                        if (isIncreasing) {
+                            validMin = Math.min(baseline, target);
+                            validMax = Math.max(baseline, target);
+                        } else {
+                            validMin = Math.min(target, baseline);
+                            validMax = Math.max(target, baseline);
+                        }
+
+                        if (current < validMin || current > validMax) {
+                            // Mark `current` as invalid if it falls outside the valid range
+                            $('#current').addClass('is-invalid');
+                            updateProgressUI(0); // Reset progress bar to 0%
+                            showToast("Current state must be between " + validMin + " and " + validMax + ". Please adjust the value.", '#ff8282');
+                        } else {
+                            $('#current').removeClass('is-invalid');
+                            updateProgressUI(savedData['progress']); // Restore the valid progress bar UI
+                        }
+                    }
+
+                    // Restore progress bar value
                     $('#progress-bar').css('width', savedData['progress'].toString() + '%');
                     $('#progress-bar').attr('aria-valuenow', savedData['progress']);
                     $('#progress-bar').text(savedData['progress'] + '%');
 
-
+                    // Restore Quill editor content
                     var quillEditors = {
                         'lessons': quill,
                         'notes': notesQuill,

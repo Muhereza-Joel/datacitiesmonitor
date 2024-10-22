@@ -44,41 +44,82 @@
                                 <h4>You are adding a response to</h4>
                                 <i class="fw-bold">>>>> {{$indicator['indicator_title']}} indicator <<<< </i>
                             </div>
-                            <div class="form-group my-2">
-                                <label for="">Indicator Baseline</label>
-                                <input id="indicator-id" type="hidden" name="indicator-id" value="{{$indicator['id']}}">
-                                <input type="hidden" name="last_current_state" value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : '' }}">
-                                <input id="baseline" name="baseline" required readonly type="number" value="{{$indicator['baseline']}}" class="form-control">
-                            </div>
-                            <div class="form-group my-2 alert alert-info">
-                                <label for="">Previous State Entered</label>
-                                <input type="text" class="form-control" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No response added yet' }}">
-                            </div>
 
-                            <div class="form-group my-2">
-                                <label for="">Enter current state</label>
-                                <small class="text-danger">Can be a floating number with a decimal point</small>
-                                <input required id="current" name="current" type="number" step="0.1" class="form-control">
-                                <div class="invalid-feedback">This value is required</div>
-                            </div>
-                            <div class="form-group my-2">
-                                <label for="">Current Progress</label>
-                                <input required id="progress" name="progress" readonly type="number" class="form-control">
-                                <div class="invalid-feedback">This value is required</div>
-                            </div>
 
-                            <div class="form-group my-2">
-                                <label for="">Target For Indicator</label>
-                                <input id="target" name="target" required readonly type="number" value="{{$indicator['target']}}" class="form-control">
-                            </div>
-                            <input type="hidden" id="direction" value="{{ $indicator['direction']}}">
+                            <div class="container my-4">
+                                <!-- Indicator Baseline Section -->
+                                <div class="form-group mb-3">
+                                    <label for="baseline">Indicator Baseline</label>
+                                    <input id="indicator-id" type="hidden" name="indicator-id" value="{{$indicator['id']}}">
+                                    <input type="hidden" name="last_current_state" value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : '' }}">
+                                    <input id="baseline" name="baseline" required readonly type="number" value="{{$indicator['baseline']}}" class="form-control" aria-describedby="baselineHelp">
+                                </div>
 
-                            <div class="form-group my-2">
-                                <label for="">Progress</label>
-                                <div class="progress">
-                                    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                <!-- Previous State Section -->
+                                <div class="form-group mb-3 alert alert-info">
+                                    <label for="previous-state">Previous State Entered</label>
+                                    <input type="text" class="form-control" id="previous-state" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No response added yet' }}">
+                                </div>
+
+                                <!-- Enter Current State Section -->
+                                <div class="form-group mb-3">
+                                    <label for="current">Enter Current State</label>
+                                    <small class="text-info d-block mb-2">Can be a floating number with a decimal point</small>
+                                    <input required id="current" name="current" type="number" step="0.1" class="form-control" aria-describedby="currentHelp">
+                                    <div class="invalid-feedback">Please enter a valid current state.</div>
+                                </div>
+
+                                <!-- Current Progress Section -->
+                                <div class="form-group mb-3">
+                                    <label for="progress">Current Progress</label>
+                                    <input required id="progress" name="progress" readonly type="text" class="form-control">
+                                    <div class="invalid-feedback">Progress cannot be empty.</div>
+                                </div>
+
+                                <!-- Target For Indicator Section -->
+                                <div class="form-group mb-3">
+                                    <label for="target">Target For Indicator</label>
+                                    <input id="target" name="target" required readonly type="number" value="{{$indicator['target']}}" class="form-control">
+                                </div>
+
+                                <input type="hidden" id="direction" value="{{ $indicator['direction']}}">
+
+                                <!-- Progress Bar Section -->
+                                <div class="form-group mb-4">
+                                    <label for="progress-bar">Progress</label>
+                                    <div class="progress" style="height: 30px;">
+                                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- Add this in your custom CSS for additional styling -->
+                            <style>
+                                .form-control[readonly] {
+                                    background-color: #e9ecef;
+                                    opacity: 1;
+                                }
+
+                                .progress-bar {
+                                    transition: width 0.6s ease;
+                                    font-weight: bold;
+                                }
+
+                                .invalid-feedback {
+                                    display: none;
+                                }
+
+                                input.is-invalid+.invalid-feedback {
+                                    display: block;
+                                }
+
+                                .progress-bar.bg-success {
+                                    background-color: #28a745 !important;
+                                }
+                            </style>
+
+
+
                             <div class="accordion" id="responseAccordion">
 
                                 <!-- Notes Section -->
@@ -152,98 +193,88 @@
 
 <script>
     $(document).ready(function() {
-        var baseline = parseFloat($('input[name="baseline"]').val());
-        var target = parseFloat($('input[name="target"]').val());
+        var baseline = parseFloat($('input[name="baseline"]').val()) || 0;
+        var target = parseFloat($('input[name="target"]').val()) || 100;
         var lastCurrentState = parseFloat($('input[name="last_current_state"]').val()) || baseline;
+        var direction = $('#direction').val();
+        var currentProgress = 0; // Store the progress to prevent recalculation on submit
 
         // Initial progress calculation
-        var initialProgress = (lastCurrentState - baseline) / (target - baseline) * 100;
-        initialProgress = isNaN(initialProgress) ? 0 : initialProgress;
-        $('#progress').val(initialProgress.toFixed(1));
-        $('#progress-bar').css('width', initialProgress.toFixed(1) + '%');
-        $('#progress-bar').attr('aria-valuenow', initialProgress.toFixed(1));
-        $('#progress-bar').text(initialProgress.toFixed(1) + '%');
+        var initialProgress = calculateProgress(lastCurrentState, baseline, target, direction);
+        updateProgressUI(initialProgress);
 
+        // Handle current state input
         $('#current').on('input', function() {
             var current = parseFloat($(this).val());
-            var direction = $('#direction').val(); // Assuming you have a way to get the direction value
-            var baseline = parseFloat($('#baseline').val()); // Assuming you have a baseline input
-            var target = parseFloat($('#target').val()); // Assuming you have a target input
 
-            // Check for invalid inputs
-            if (isNaN(current) || isNaN(baseline) || isNaN(target)) {
-                $('#current').addClass('is-invalid');
-                $('#progress').val('');
-                $('#progress-bar').css('width', '0%');
-                $('#progress-bar').attr('aria-valuenow', 0);
-                $('#progress-bar').text('0%');
-
-                Toastify({
-                    text: "Please ensure all values are numbers.",
-                    duration: 3000,
-                    gravity: 'bottom',
-                    position: 'left',
-                    backgroundColor: '#ff8282',
-                }).showToast();
-                return; // Exit the function early
+            // Ensure baseline and target are valid numbers
+            if (isNaN(baseline) || isNaN(target)) {
+                return; // Abort if baseline or target are invalid
             }
 
-            // Direction-dependent validation
-            if (direction === 'increasing') {
-                if (current < baseline || current > target) {
-                    $('#current').addClass('is-invalid');
-                    $('#progress').val('');
-                    $('#progress-bar').css('width', '0%');
-                    $('#progress-bar').attr('aria-valuenow', 0);
-                    $('#progress-bar').text('0%');
+            // Determine the valid range based on the direction
+            var isIncreasing = direction === 'increasing';
+            var validMin, validMax;
 
-                    Toastify({
-                        text: "Please ensure current lies between baseline and target.",
-                        duration: 3000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#ff8282',
-                    }).showToast();
-                    return; // Exit the function early
+            if (isIncreasing) {
+                validMin = Math.min(baseline, target);
+                validMax = Math.max(baseline, target);
+            } else {
+                validMin = Math.min(target, baseline);
+                validMax = Math.max(target, baseline);
+            }
 
-                } else {
-                    $('#current').removeClass('is-invalid');
-                    var progress = ((current - baseline) / (target - baseline)) * 100;
-                    $('#progress').val(progress.toFixed(1));
+            // Validate if the current value is in the valid range
+            if (isNaN(current) || current < validMin || current > validMax) {
+                $('#current').addClass('is-invalid');
+                updateProgressUI(0); // Reset progress bar to 0%
+                showToast("Current state must be between " + validMin + " and " + validMax, '#ff8282');
+            } else {
+                $('#current').removeClass('is-invalid');
 
-                    // Update progress bar
-                    $('#progress-bar').css('width', progress.toFixed(1) + '%');
-                    $('#progress-bar').attr('aria-valuenow', progress.toFixed(1));
-                    $('#progress-bar').text(progress.toFixed(1) + '%');
-                }
-            } else if (direction === 'decreasing') {
-                if (current > baseline || current < target) {
-                    $('#current').addClass('is-invalid');
-                    $('#progress').val('');
-                    $('#progress-bar').css('width', '0%');
-                    $('#progress-bar').attr('aria-valuenow', 0);
-                    $('#progress-bar').text('0%');
-
-                    Toastify({
-                        text: "Please ensure current lies between baseline and target.",
-                        duration: 3000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#ff8282',
-                    }).showToast();
-                    return; // Exit the function early
-                } else {
-                    $('#current').removeClass('is-invalid');
-                    var progress = ((baseline - current) / (baseline - target)) * 100;
-                    $('#progress').val(progress.toFixed(1));
-
-                    // Update progress bar
-                    $('#progress-bar').css('width', progress.toFixed(1) + '%');
-                    $('#progress-bar').attr('aria-valuenow', progress.toFixed(1));
-                    $('#progress-bar').text(progress.toFixed(1) + '%');
-                }
+                // Calculate progress based on the direction
+                currentProgress = calculateProgress(current, baseline, target, direction);
+                updateProgressUI(currentProgress);
             }
         });
+
+        // Function to calculate progress based on direction
+        function calculateProgress(current, baseline, target, direction) {
+            var progress;
+
+            if (direction === 'increasing') {
+                progress = ((current - baseline) / (target - baseline)) * 100;
+            } else {
+                progress = ((baseline - current) / (baseline - target)) * 100;
+            }
+
+            // Clamp progress between 0 and 100
+            return Math.min(Math.max(progress, 0), 100);
+        }
+
+        // Function to update the progress bar UI
+        function updateProgressUI(progress) {
+            $('#progress').val(progress.toFixed(1)); // Update the progress input field
+            $('#progress-bar').css('width', progress.toFixed(1) + '%'); // Update progress bar width
+            $('#progress-bar').attr('aria-valuenow', progress.toFixed(1)); // Update ARIA attribute
+            $('#progress-bar').text(progress.toFixed(1) + '%'); // Update progress bar text
+        }
+
+        // Function to show toast notifications for errors
+        var toastInstance = null; // Track the toast instance
+
+        function showToast(message, color) {
+            if (toastInstance) {
+                toastInstance.hideToast(); // Close any existing toast before showing a new one
+            }
+            toastInstance = Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'bottom',
+                position: 'left',
+                backgroundColor: color,
+            }).showToast();
+        }
 
 
         var quill = new Quill('#editor-container', {
@@ -332,73 +363,55 @@
 
         var indicatorId = $('input[name="indicator-id"]').val();
 
+        // Handle form submission
         $('#add-response-form').submit(function(event) {
             event.preventDefault();
 
-            if (this.checkValidity() === true) {
-                var lessons = quill.root.innerHTML.trim();
-                var notes = notesQuill.root.innerHTML.trim();
-                var recommendations = recommendationsQuill.root.innerHTML.trim();
+            // Check if the current value is valid before submitting
+            if ($('#current').hasClass('is-invalid')) {
+                showToast("Please correct the current state value before submitting.", '#ff8282');
+                return; // Prevent submission if the current value is invalid
+            }
 
-                if (lessons === "" || lessons === "<p><br></p>") {
-                    $('#editor-feedback').show();
-                    Toastify({
-                        text: "Lessons learnt cannot be empty.",
-                        duration: 3000,
-                        gravity: 'bottom', // Position the toast at the bottom
-                        position: 'left', // Align toast to the left
-                        backgroundColor: '#ff8282',
-                    }).showToast();
-                } else {
-                    $('#editor-feedback').hide();
+            // Avoid recalculating progress, use the existing `currentProgress`
+            var lessons = quill.root.innerHTML.trim();
+            var notes = notesQuill.root.innerHTML.trim();
+            var recommendations = recommendationsQuill.root.innerHTML.trim();
 
-                    var current = parseFloat($('#current').val());
-                    var progress = (current - baseline) / (target - baseline) * 100;
-
-                    $.ajax({
-                        url: '/indicators/response/store',
-                        method: 'POST',
-                        data: {
-                            indicator_id: $('input[name="indicator-id"]').val(),
-                            baseline: baseline,
-                            current: current,
-                            target: target,
-                            progress: progress.toFixed(1),
-                            lessons: lessons,
-                            notes: notes,
-                            recommendations: recommendations,
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
-                        },
-                        success: function(response) {
-                            Toastify({
-                                text: "Response added successfully!",
-                                duration: 3000,
-                                gravity: 'bottom', // Position the toast at the bottom
-                                position: 'left', // Align toast to the left
-                                backgroundColor: '#28a745',
-                            }).showToast();
-
-                            localStorage.removeItem('monitorresponsedata' + indicatorId);
-
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 1500);
-                        },
-                        error: function(response) {
-                            Toastify({
-                                text: "An error occurred. Please try again.",
-                                duration: 3000,
-                                gravity: 'bottom', // Position the toast at the bottom
-                                position: 'left', // Align toast to the left
-                                backgroundColor: '#ff8282',
-                            }).showToast();
-                        }
-                    });
-                }
+            if (lessons === "" || lessons === "<p><br></p>") {
+                $('#editor-feedback').show();
+                showToast("Lessons learnt cannot be empty.");
             } else {
-                this.classList.add('was-validated');
+                $('#editor-feedback').hide();
+
+                $.ajax({
+                    url: '/indicators/response/store',
+                    method: 'POST',
+                    data: {
+                        indicator_id: $('input[name="indicator-id"]').val(),
+                        baseline: baseline,
+                        current: parseFloat($('#current').val()),
+                        target: target,
+                        progress: currentProgress.toFixed(1), // Use the pre-calculated progress
+                        lessons: lessons,
+                        notes: notes,
+                        recommendations: recommendations,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
+                    },
+                    success: function(response) {
+                        showToast("Response added successfully!", '#28a745');
+                        localStorage.removeItem('monitorresponsedata' + indicatorId);
+
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function(response) {
+                        showToast("An error occurred. Please try again.");
+                    }
+                });
             }
         });
 
@@ -457,7 +470,6 @@
                         close: true,
                     }).showToast();
 
-
                     for (var key in savedData) {
                         if (key !== 'lessons' && key !== 'notes' && key !== 'recommendations' && key !== 'indicator-id') {
                             var $field = $('form').find('[name="' + key + '"]');
@@ -467,11 +479,37 @@
                         }
                     }
 
+                    // Validate restored `current` value
+                    var current = parseFloat(savedData['current']);
+                    if (!isNaN(current)) {
+                        var validMin, validMax;
+                        var isIncreasing = direction === 'increasing';
+
+                        if (isIncreasing) {
+                            validMin = Math.min(baseline, target);
+                            validMax = Math.max(baseline, target);
+                        } else {
+                            validMin = Math.min(target, baseline);
+                            validMax = Math.max(target, baseline);
+                        }
+
+                        if (current < validMin || current > validMax) {
+                            // Mark `current` as invalid if it falls outside the valid range
+                            $('#current').addClass('is-invalid');
+                            updateProgressUI(0); // Reset progress bar to 0%
+                            showToast("Current state must be between " + validMin + " and " + validMax + ". Please adjust the value.", '#ff8282');
+                        } else {
+                            $('#current').removeClass('is-invalid');
+                            updateProgressUI(savedData['progress']); // Restore the valid progress bar UI
+                        }
+                    }
+
+                    // Restore progress bar value
                     $('#progress-bar').css('width', savedData['progress'].toString() + '%');
                     $('#progress-bar').attr('aria-valuenow', savedData['progress']);
                     $('#progress-bar').text(savedData['progress'] + '%');
 
-
+                    // Restore Quill editor content
                     var quillEditors = {
                         'lessons': quill,
                         'notes': notesQuill,
