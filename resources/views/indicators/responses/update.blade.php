@@ -185,7 +185,7 @@
 
         var baseline = parseFloat($('input[name="baseline"]').val()) || 0;
         var target = parseFloat($('input[name="target"]').val()) || 100;
-        var lastCurrentState = parseFloat($('input[name="last_current_state"]').val()) || baseline;
+        var lastCurrentState = parseFloat($('input[name="last_current_state"]').val())|| baseline;
         var direction = $('#direction').val();
         var currentProgress = 0; // Store the progress to prevent recalculation on submit
 

@@ -511,7 +511,6 @@
 
         $('#discardData').click(function(event) {
             event.preventDefault(); // Pass event to prevent default action
-            alert('Deleted');
 
             // Remove the local storage item
             localStorage.removeItem('monitorresponsedata' + indicatorId);
