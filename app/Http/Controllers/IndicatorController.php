@@ -157,15 +157,24 @@ class IndicatorController extends Controller
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
 
-        // Find the indicator by id and ensure it belongs to the current user's organisation
-        $indicator = Indicator::where('id', $id)
-            ->where('organisation_id', $organisation_id)
-            ->firstOrFail();
+        // Start the query to find the indicator
+        $query = Indicator::where('id', $id);
 
+        // Check if the current user is a root user
+        if ($currentUser->role !== 'root') {
+            // If not root, ensure the indicator belongs to the current user's organisation
+            $query->where('organisation_id', $organisation_id);
+        }
+
+        // Find the indicator
+        $indicator = $query->firstOrFail();
+
+        // Fetch theories of change associated with the organization
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
 
         return view('indicators.update', compact('pageTitle', 'myOrganisation', 'indicator', 'theories'));
     }
+
 
     /**
      * Update the specified resource in storage.

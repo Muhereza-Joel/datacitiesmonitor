@@ -16,19 +16,29 @@ class SearchController extends Controller
         // Perform search using TNTSearch and get the initial results
         $searchResults = Indicator::search($query)->get(); // Use get() to retrieve all search results
 
-        // Filter the results based on the organization and eager load relationships
-        $results = Indicator::with([
+        // Start the query for indicators
+        $indicatorQuery = Indicator::with([
             'theoryOfChange',
             'organisation',
             'responses' => function ($query) {
                 $query->latest()->limit(1); // Eager load the latest response
             }
         ])
-            ->withCount('responses') // Add response count
-            ->whereIn('id', $searchResults->pluck('id')) // Filter results by IDs from the search
-            ->where('organisation_id', Auth::user()->organisation_id) // Filter by organization
-            ->orderByDesc('responses_count') // Sort by responses count in descending order
-            ->paginate(24); // Paginate the sorted results
+            ->withCount('responses'); // Add response count
+
+        // Check if the current user is a root user
+        $currentUser = Auth::user();
+        if ($currentUser->role === 'root') {
+            // If root, do not filter by organization
+            $indicatorQuery->whereIn('id', $searchResults->pluck('id')); // Filter results by IDs from the search
+        } else {
+            // For non-root users, filter by organization
+            $indicatorQuery->whereIn('id', $searchResults->pluck('id')) // Filter results by IDs from the search
+                ->where('organisation_id', $currentUser->organisation_id); // Filter by organization
+        }
+
+        // Order by responses count in descending order and paginate the results
+        $results = $indicatorQuery->orderByDesc('responses_count')->paginate(24);
 
         // Map the results to include the 'current' value from the latest response
         $results->getCollection()->transform(function ($indicator) {
