@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,7 @@ use Ramsey\Uuid\Uuid;
 
 class Indicator extends Model
 {
-    use HasFactory, SoftDeletes, Searchable;
+    use HasFactory, SoftDeletes, Searchable, Cachable;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
