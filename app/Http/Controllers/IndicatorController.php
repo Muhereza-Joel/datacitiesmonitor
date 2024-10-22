@@ -34,9 +34,7 @@ class IndicatorController extends Controller
             ->withCount('responses'); // Add response count
 
         // Check if the current user is a root user
-        if ($currentUser->role === 'root') {
-            // If the user is root, do not filter by organization
-        } else {
+        if ($currentUser->role !== 'root') {
             // Filter by organization for non-root users
             $organisation_id = $currentUser->organisation_id;
             $query->where('organisation_id', $organisation_id);
@@ -61,12 +59,13 @@ class IndicatorController extends Controller
         // Paginate the filtered results
         $indicators = $query->paginate(24);
 
-        // Iterate through each indicator to set the current value from the last response
-        foreach ($indicators as $indicator) {
-            // Check if there is a response and set the current value
-            $latestResponse = $indicator->responses->first();
-            $indicator->current = $latestResponse ? $latestResponse->current : null; // Assuming 'value' is the attribute for current
-        }
+        // Map the results to include the 'current' value from the latest response
+        $indicators->getCollection()->transform(function ($indicator) {
+            // Fetch the latest response, ordered by 'created_at'
+            $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
+            return $indicator;
+        });
 
         // Load the latest response's created_at for each indicator
         $indicators->load(['responses' => function ($query) {
@@ -75,7 +74,6 @@ class IndicatorController extends Controller
 
         return view('indicators.list', compact('pageTitle', 'indicators'));
     }
-
 
     /**
      * Show the form for creating a new resource.

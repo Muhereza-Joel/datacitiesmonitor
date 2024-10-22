@@ -47,9 +47,14 @@ class ResponseController extends Controller
         $organisation_id = $currentUser->organisation_id;
         $user_id = $currentUser->id;
 
-        // Add organisation_id and user_id to the validated data
+        // Fetch the indicator to get its status
+        $indicator = Indicator::findOrFail($request->indicator_id);
+        $status = $indicator->status; // Assuming the Indicator model has a 'status' field
+
+        // Add organisation_id, user_id, and status to the validated data
         $validated['organisation_id'] = $organisation_id;
         $validated['user_id'] = $user_id;
+        $validated['status'] = $status; // Include the status of the indicator
 
         // Create the response with the additional fields
         Response::create($validated);
@@ -58,6 +63,7 @@ class ResponseController extends Controller
             'message' => 'Response added successfully!',
         ], 200);
     }
+
 
     public function editResponse($id)
     {
@@ -91,16 +97,28 @@ class ResponseController extends Controller
         // Find the response by ID
         $response = Response::findOrFail($id);
 
-        // Check if the user is authorized to update this response (optional)
-        // $this->authorize('update', $response);
+        // Fetch the indicator to get its status
+        $indicator = Indicator::findOrFail($request->indicator_id);
+        $status = $indicator->status; // Assuming the Indicator model has a 'status' field
 
-        // Update the response with the validated data
+        // Get current user and their organization
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
+        $user_id = $currentUser->id;
+
+        // Add organisation_id, user_id, and status to the validated data
+        $validated['organisation_id'] = $organisation_id;
+        $validated['user_id'] = $user_id;
+        $validated['status'] = $status; // Include the status of the indicator
+
+        // Update the response with the validated data including status
         $response->update($validated);
 
         return response()->json([
             'message' => 'Response updated successfully!',
         ], 200);
     }
+
 
     public function getResponsesForIndicator($id)
     {

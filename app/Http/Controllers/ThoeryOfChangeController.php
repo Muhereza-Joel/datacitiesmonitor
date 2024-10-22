@@ -159,14 +159,13 @@ class ThoeryOfChangeController extends Controller
             ->withCount('responses'); // Include the count of related responses
 
         // Check if the current user is a root user
-        if ($currentUser->role === 'root') {
-            // If the user is root, do not filter by organization
-            $query->where('theory_of_change_id', $id); // Apply Theory of Change filter
-        } else {
+        if ($currentUser->role !== 'root') {
             // Filter by organization for non-root users
             $organisation_id = $currentUser->organisation_id;
             $query->where('theory_of_change_id', $id)
                 ->where('organisation_id', $organisation_id); // Apply both filters
+        } else {
+            $query->where('theory_of_change_id', $id); // Apply Theory of Change filter
         }
 
         // Order by response count first (descending), then by created_at for the indicators
@@ -174,15 +173,17 @@ class ThoeryOfChangeController extends Controller
             ->orderBy('created_at', 'desc') // Then order by creation date
             ->paginate(25);
 
-        // Iterate through each indicator to set the current value from the last response
-        foreach ($indicators as $indicator) {
-            // Check if there are responses and set the latest current value
-            $latestResponse = $indicator->responses->sortByDesc('created_at')->first(); // Get the latest response
-            $indicator->current = $latestResponse ? $latestResponse->current : null; // Assuming 'current' is the attribute
-        }
+        // Use getCollection() to transform the collection and assign the 'current' value from the latest response
+        $indicators->getCollection()->transform(function ($indicator) {
+            // Fetch the latest response, ordered by 'created_at'
+            $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
+            $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
+            return $indicator;
+        });
 
         return view('theory.connectedIndicators', compact('pageTitle', 'indicators'));
     }
+
 
 
 
