@@ -153,13 +153,21 @@ class ThoeryOfChangeController extends Controller
     {
         $pageTitle = "All Indicators linked to ToC";
         $currentUser = Auth::user();
-        $organisation_id = $currentUser->organisation_id;
 
         // Start the query with the base conditions
         $query = Indicator::with(['theoryOfChange', 'responses']) // Eager load Theory of Change and responses
-            ->withCount('responses') // Include the count of related responses
-            ->where('theory_of_change_id', $id)
-            ->where('organisation_id', $organisation_id);
+            ->withCount('responses'); // Include the count of related responses
+
+        // Check if the current user is a root user
+        if ($currentUser->role === 'root') {
+            // If the user is root, do not filter by organization
+            $query->where('theory_of_change_id', $id); // Apply Theory of Change filter
+        } else {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('theory_of_change_id', $id)
+                ->where('organisation_id', $organisation_id); // Apply both filters
+        }
 
         // Order by response count first (descending), then by created_at for the indicators
         $indicators = $query->orderBy('responses_count', 'desc') // Indicators with responses first

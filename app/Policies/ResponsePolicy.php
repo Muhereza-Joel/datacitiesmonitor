@@ -18,7 +18,7 @@ class ResponsePolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -30,7 +30,7 @@ class ResponsePolicy
      */
     public function view(User $user, Response $response)
     {
-        return in_array($user->role, ['admin', 'user', 'viewer']);
+        return in_array($user->role, ['root','admin', 'user', 'viewer']);
     }
 
     /**
@@ -41,7 +41,7 @@ class ResponsePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -53,7 +53,7 @@ class ResponsePolicy
      */
     public function update(User $user, Response $response)
     {
-        return in_array($user->role, ['admin', 'user']);
+        return in_array($user->role, ['root','admin', 'user']);
     }
 
     /**
@@ -65,7 +65,7 @@ class ResponsePolicy
      */
     public function delete(User $user, Response $response)
     {
-        return in_array($user->role, ['admin']) && in_array($response->status, ['draft', 'review']);
+        return in_array($user->role, ['root','admin']) && in_array($response->status, ['draft', 'review']);
     }
 
     /**
@@ -77,7 +77,7 @@ class ResponsePolicy
      */
     public function restore(User $user, Response $response)
     {
-        return in_array($user->role, ['admin']);
+        return in_array($user->role, ['root','admin']);
     }
 
     /**
