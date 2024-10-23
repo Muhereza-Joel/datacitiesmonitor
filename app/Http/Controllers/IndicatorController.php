@@ -10,6 +10,7 @@ use App\Jobs\IndexIndicatorJob;
 use App\Models\Archive;
 use App\Models\Indicator;
 use App\Models\Organisation;
+use App\Models\Response;
 use App\Models\TheoryOfChange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -384,5 +385,40 @@ class IndicatorController extends Controller
             // Error: could not create zip file
             return response()->json(['error' => 'Could not create zip file'], 500);
         }
+    }
+
+    public function getLineChartData($indicatorId)
+    {
+        // Get the indicator to fetch baseline and target values
+        $indicator = Indicator::findOrFail($indicatorId);
+
+        // Fetch responses associated with the indicator
+        $responses = Response::where('indicator_id', $indicatorId)
+            ->orderBy('created_at', 'asc')
+            ->get(['created_at', 'current']);
+
+        $responseCount = $responses->count();
+        $labels = $responses->pluck('created_at')->map(function ($date) {
+            return $date->format('Y-m-d'); // Format the date as needed
+        });
+
+        $data = $responses->pluck('current');
+
+        // Add dummy labels if there is only one response
+        if ($responseCount < 5) {
+            $dummyLabelsCount = 5 - $responseCount; // Ensure a minimum of 5 labels
+
+            for ($i = 0; $i < $dummyLabelsCount; $i++) {
+                $labels->push("Label " . ($responseCount + $i + 1)); // Example dummy label
+                $data->push($data->last()); // Repeat the last data value to match the dummy label
+            }
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+            'baseline' => $indicator->baseline, // Include baseline value
+            'target' => $indicator->target      // Include target value
+        ]);
     }
 }

@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-
+                        <input type="hidden" id="currentIndicator" value="{{ $indicator->id}}">
                         <div class="row mb-3">
                             <div class="col-sm-4 font-weight-bold">Indicator Category:</div>
                             <div class="col-sm-8">
@@ -183,6 +183,13 @@
                             <div class="col-sm-4 font-weight-bold">Reporting:</div>
                             <div class="col-sm-8">{{ $indicator->reporting }}</div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="card mt-2">
+                    <div class="card-header">Indicator Progress Over Time</div>
+                    <div class="card-body">
+                        <canvas id="progressChart"></canvas>
                     </div>
                 </div>
 
@@ -235,6 +242,14 @@
 
                     </div>
                 </div>
+
+                <div class="card mt-2">
+                    <div class="card-header">Indicator Status Distribution</div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
 
                 @if(Gate::allows('create', App\Models\Archive::class))
                 <div class="card my-2">
@@ -342,5 +357,136 @@
                 }
             });
         });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        var formattedBaselineValue = 0;
+        var formattedTargetValue = 100;
+
+        // Initialize the progress chart variable
+        let progressChart;
+
+        // Fetch and update the chart data dynamically
+        const indicatorId = $('#currentIndicator').val();
+        const lineGraphUrl = `/indicator/${indicatorId}/graph/line`;
+
+        $.ajax({
+            url: lineGraphUrl,
+            method: 'GET',
+            success: function(response) {
+                if (response && response.labels && response.data && response.baseline !== undefined && response.target !== undefined) {
+                    // Ensure baseline and target are numbers
+                    const baselineValue = Number(response.baseline);
+                    const targetValue = Number(response.target);
+
+                    // Check if they are valid numbers
+                    if (!isNaN(baselineValue) && !isNaN(targetValue)) {
+                        // Format baseline and target to 1 decimal place
+                        formattedBaselineValue = baselineValue.toFixed(1);
+                        formattedTargetValue = targetValue.toFixed(1);
+
+                        // Create the line chart for Progress Over Time
+                        const progressData = {
+                            labels: response.labels,
+                            datasets: [{
+                                label: "Progress",
+                                data: response.data,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                                tension: 0.3,
+                            }]
+                        };
+
+                        // Determine min and max for y-axis
+                        const yMin = Math.min(baselineValue, targetValue); // Ensure minimum is the lesser of baseline or target
+                        const yMax = Math.max(baselineValue, targetValue); // Ensure maximum is the greater of baseline or target
+
+                        progressChart = new Chart(document.getElementById('progressChart'), {
+                            type: 'line',
+                            data: progressData,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Time Period',
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: false,
+                                        min: yMin, // Set minimum value to the lesser of baseline or target
+                                        max: yMax, // Set maximum value to the greater of baseline or target
+                                        title: {
+                                            display: true,
+                                            text: 'Current State',
+                                        },
+                                        ticks: {
+                                            callback: function(value) {
+                                                if (value === parseFloat(formattedBaselineValue)) {
+                                                    return `Baseline: ${formattedBaselineValue}`;
+                                                }
+                                                if (value === parseFloat(formattedTargetValue)) {
+                                                    return `Target: ${formattedTargetValue}`;
+                                                }
+                                                return value.toFixed(1);
+                                            },
+                                        },
+                                    }
+                                }
+                            }
+                        });
+
+                        // Calculate covered and remaining values for pie chart
+                        const currentState = response.data[response.data.length - 1] || 0; // Get the latest progress value
+                        const coveredValue = Math.min(currentState, baselineValue); // Covered value cannot exceed baseline
+                        const remainingValue = Math.max(baselineValue - coveredValue, 0); // Remaining is the difference from baseline
+
+                        // Update the pie chart data based on the calculated values
+                        const statusData = {
+                            labels: ["Covered", "Remaining"],
+                            datasets: [{
+                                data: [coveredValue, remainingValue],
+                                backgroundColor: ['#b6d9bf', '#f294a8'], // Light green for covered, red for remaining
+                            }]
+                        };
+
+                        // Pie Chart for Indicator Status Distribution
+                        const statusChart = new Chart(document.getElementById('statusChart'), {
+                            type: 'pie',
+                            data: statusData,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                }
+                            }
+                        });
+
+                    } else {
+                        console.error('Baseline or target is not a valid number:', response.baseline, response.target);
+                    }
+                } else {
+                    console.error('Invalid response format:', response);
+                }
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching progress data:', error);
+            }
+        });
+
     });
 </script>
