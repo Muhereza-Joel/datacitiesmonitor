@@ -7,11 +7,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Create New Organizations</h1>
+        <h1>Update Organisation Details</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">Create Organizations</li>
+                <li class="breadcrumb-item active">Update Organisation</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -20,10 +20,9 @@
         <div class="row g-1">
             <div class="col-sm-4">
                 <div class="card p-2">
-                    <div class="card-title">Create Organization</div>
+                    <div class="card-title">Update Organisation Details</div>
                     <div class="card-body">
-                        <small class="text-success">Organizations help to organize user accounts, profiles, indicators, and responses to their respective Organizations, and only members can modify but the rest only view.</small>
-                        <hr>
+                        
                         <form id="organization-registration-form" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
