@@ -448,15 +448,24 @@
 
                         // Calculate covered and remaining values for pie chart
                         const currentState = response.data[response.data.length - 1] || 0; // Get the latest progress value
-                        const coveredValue = Math.min(currentState, baselineValue); // Covered value cannot exceed baseline
-                        const remainingValue = Math.max(baselineValue - coveredValue, 0); // Remaining is the difference from baseline
+                        let coveredValue, remainingValue;
+
+                        if (baselineValue > targetValue) {
+                            // If baseline is greater than target, we need to adjust the calculation logic
+                            coveredValue = Math.max(baselineValue - currentState, 0); // Ensure covered is not negative
+                            remainingValue = Math.max(baselineValue - targetValue - coveredValue, 0); // Ensure remaining is not negative
+                        } else {
+                            // Normal case when target is greater than baseline
+                            coveredValue = Math.min(currentState, targetValue);
+                            remainingValue = Math.max(targetValue - coveredValue, 0); // Ensure remaining is not negative
+                        }
 
                         // Update the pie chart data based on the calculated values
                         const statusData = {
                             labels: ["Covered", "Remaining"],
                             datasets: [{
                                 data: [coveredValue, remainingValue],
-                                backgroundColor: ['#b6d9bf', '#f294a8'], // Light green for covered, red for remaining
+                                backgroundColor: ['#a2e8b5', '#dc3545'], // Light green for covered, red for remaining
                             }]
                         };
 
