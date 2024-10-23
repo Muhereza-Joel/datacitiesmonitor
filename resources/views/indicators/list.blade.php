@@ -81,18 +81,20 @@
     @endif
     <div class="status-key text-center pt-1 pb-0">
         <span>
-            <div class="key-draft"></div> Draft
+            <div class="key-draft"></div> Draft <span class="fw-bold text-primary">({{ $indicatorCounts['draft'] }})</span>
         </span>
         <span>
-            <div class="key-review"></div> Review
+            <div class="key-review"></div> Review <span class="fw-bold text-primary">({{ $indicatorCounts['review'] }})</span>
         </span>
         <span>
-            <div class="key-public"></div> Public
+            <div class="key-public"></div> Public <span class="fw-bold text-primary">({{ $indicatorCounts['public'] }})</span>
         </span>
         <span>
-            <div class="key-archived"></div> Archived
+            <div class="key-archived"></div> Archived <span class="fw-bold text-primary">({{ $indicatorCounts['archived'] }})</span>
         </span>
+        <div class="">Total: {{ $indicatorCounts['total'] }} Indicators</div>
     </div>
+
     <section class="section dashboard">
         @if($indicators->isEmpty())
         <p class="alert alert-info">No Indicators found...</p>
@@ -120,7 +122,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             @endif
-                            
+
                             @if(Gate::allows('delete', $indicator))
                             <a href="" class="icon" title="Delete Indicator">
                                 <i class="bi bi-trash text-danger"></i>
@@ -136,7 +138,7 @@
                             <small>Created on: {{ $indicator->created_at->format('M d, Y \a\t g:iA') }}</small>
                         </div>
                         @if($indicator->responses_count > 0)
-                            @include('layouts.ruller')
+                        @include('layouts.ruller')
                         @endif
 
 

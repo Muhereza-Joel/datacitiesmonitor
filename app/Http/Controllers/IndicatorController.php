@@ -53,7 +53,14 @@ class IndicatorController extends Controller
         if ($request->filled('category')) {
             $query->where('category', 'like', '%' . $request->input('category') . '%');
         }
-
+        // Calculate the counts for all indicators before pagination
+        $indicatorCounts = [
+            'total' => $query->count(),
+            'draft' => (clone $query)->where('status', 'draft')->count(),
+            'review' => (clone $query)->where('status', 'review')->count(),
+            'public' => (clone $query)->where('status', 'public')->count(),
+            'archived' => (clone $query)->where('status', 'archived')->count(),
+        ];
         // Order the results: those with at least one response first, then by created_at
         $query->orderByRaw('CASE WHEN responses_count > 0 THEN 0 ELSE 1 END, created_at DESC');
 
@@ -73,7 +80,7 @@ class IndicatorController extends Controller
             $query->select('indicator_id', 'created_at')->latest()->limit(1);
         }]);
 
-        return view('indicators.list', compact('pageTitle', 'indicators'));
+        return view('indicators.list', compact('pageTitle', 'indicators', 'indicatorCounts'));
     }
 
     /**
