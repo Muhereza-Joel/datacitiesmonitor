@@ -13,9 +13,9 @@
                         </a>
                     </div>
                     <!-- End Logo -->
+                     <div class="card-title text-center">M $ E Monitor</div>
                     <div class="card-body">
                         <div class="pt-0 text-center">
-                            <h5 class="card-title pb-0 fs-4">{{ env('APP_NAME') }}</h5>
                             <p class="small">{{__('Enter your username & password to login.')}}</p>
                         </div>
 
