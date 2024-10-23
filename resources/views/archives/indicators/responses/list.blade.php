@@ -140,7 +140,7 @@
               <div class="text-start w-50">
                 <span class="badge bg-success">{{ $response['response_tag_label'] }} from <br></span>
                 {{ $response->user['name'] }}
-  
+
               </div>
               <div class="text-end w-50">
                 <div class="dropdown">
@@ -157,11 +157,11 @@
                     <a href="#response-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
                       <i class="bi bi-file-earmark"></i> Response Files
                     </a>
-  
-  
+
+
                   </div>
                 </div>
-  
+
               </div>
             </div>
           </div>
@@ -182,20 +182,20 @@
                       $recommendationsContent = trim(strip_tags($response['recommendations'], '
                     <p><br>'));
                       @endphp
-  
+
                       @if(!empty($notesContent) && $notesContent !== '
                     <p><br></p>')
                     <h5 class="text-success">Notes Taken</h5>
                     <p class="text-success">{!! $response['notes'] !!}</p>
                     <hr>
                     @endif
-  
+
                     @if(!empty($lessonsContent) && $lessonsContent !== '<p><br></p>')
                     <h5 class="text-success">Lessons Learnt</h5>
                     <p class="text-success">{!! $response['lessons'] !!}</p>
                     <hr>
                     @endif
-  
+
                     @if(!empty($recommendationsContent) && $recommendationsContent !== '<p><br></p>')
                     <h5 class="text-success">Recommendations</h5>
                     <p class="text-success">{!! $response['recommendations'] !!}</p>
@@ -204,15 +204,15 @@
                 </div>
               </div>
             </div>
-  
+
             <div class="mt-3">
-              <h6>Progress Towards Target for Indicator</h6>
+              <h6>Added on: {{ $response->created_at->format('M d, Y \a\t g:iA') }}</h6>
               <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
-  
+
               @include('layouts.rullerTwo')
             </div>
           </div>
-  
+
         </div>
         <div class="modal fade" id="deleteModal{{ $response->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $response->id }}" aria-hidden="true">
           <div class="modal-dialog">
@@ -232,7 +232,7 @@
                   <button type="button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete-form{{ $response->id }}').submit();">Delete</button>
                 </form>
               </div>
-  
+
             </div>
           </div>
         </div>
