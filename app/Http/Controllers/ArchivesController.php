@@ -102,8 +102,8 @@ class ArchivesController extends Controller
         // Find the archive by ID, throw 404 if not found
         $archive = Archive::findOrFail($id);
 
-        // Retrieve the archived indicators with related data
-        $indicators = ArchivedIndicator::with([
+        // Start the query for archived indicators
+        $indicatorsQuery = ArchivedIndicator::with([
             'theoryOfChange',
             'responses' => function ($query) {
                 $query->orderBy('created_at', 'desc'); // Order responses by the latest
@@ -111,9 +111,15 @@ class ArchivesController extends Controller
         ])
             ->withCount('responses') // Add response count
             ->where('archive_id', $id)
-            ->where('organisation_id', $organisation_id) // Ensure it belongs to the current organization
-            ->orderByDesc('responses_count') // Sort by response count in descending order
-            ->paginate(25);
+            ->orderByDesc('responses_count'); // Sort by response count in descending order
+
+        // Apply organisation filter if the user's role is not 'root'
+        if ($currentUser->role !== 'root') {
+            $indicatorsQuery->where('organisation_id', $organisation_id); // Ensure it belongs to the current organization
+        }
+
+        // Paginate the results
+        $indicators = $indicatorsQuery->paginate(25);
 
         // If no archived indicators are found, handle the error
         if ($indicators->isEmpty()) {
@@ -130,8 +136,6 @@ class ArchivesController extends Controller
 
         return view('archives.indicators.list', compact('pageTitle', 'indicators', 'archive'));
     }
-
-
 
 
     /**
