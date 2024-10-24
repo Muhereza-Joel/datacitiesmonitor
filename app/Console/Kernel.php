@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // $schedule->command('notifications:send-unverified')->hourly();
-        $schedule->command('notifications:send-unverified')->everyTenMinutes();
+        $schedule->command('notifications:send-unverified')->everyMinute();
     }
 
     /**
