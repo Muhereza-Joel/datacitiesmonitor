@@ -30,7 +30,7 @@
   <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.6.1/toastify.min.css" integrity="sha512-UiKdzM5DL+I+2YFxK+7TDedVyVm7HMp/bN85NeWMJNYortoll+Nd6PU9ZDrZiaOsdarOyk9egQm6LOJZi36L2g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
   <!-- Template Main CSS File -->
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
@@ -110,6 +110,40 @@
       padding: 4px 8px;
       border-radius: 5px;
       border: 2px solid #e0dada;
+    }
+
+    .shepherd-modal {
+      background-color: rgba(0, 0, 0, 0.8);
+      /* Semi-transparent background */
+
+    }
+
+    .shepherd-content {
+      color: #075E54;
+      /* White text color */
+    }
+
+    .shepherd-buttons {
+      margin-top: 20px;
+      /* Add spacing between buttons */
+    }
+
+    .shepherd-button {
+      background-color: #075E54;
+      /* Blue button color */
+      color: #fff;
+      /* White text color */
+      border-radius: 5px;
+      /* Rounded corners */
+      padding: 4px 8px;
+      /* Padding for buttons */
+      margin-right: 10px;
+      /* Add spacing between buttons */
+    }
+
+    .shepherd-button:hover {
+      background-color: #075E54;
+      /* Darker blue on hover */
     }
   </style>
 

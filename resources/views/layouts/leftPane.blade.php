@@ -22,7 +22,7 @@ $other_organizations = session('other_organizations');
       </a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item dashboard-tour-step-1">
       <a class="nav-link" href="{{ route('theory.index') }}">
         <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Theories of Change') }}</span>
@@ -47,7 +47,7 @@ $other_organizations = session('other_organizations');
     </li>
     @endif
 
-    <li class="nav-item">
+    <li class="nav-item dashboard-tour-step-2">
       <a class="nav-link" href="{{ route('archives.index') }}">
         <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('Archives') }}</span>
@@ -62,7 +62,7 @@ $other_organizations = session('other_organizations');
       </a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item dashboard-tour-step-3">
       <a class="nav-link" href="{{ route('logs.index') }}">
         <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
         <span>{{ __('User Activity') }}</span>
@@ -71,7 +71,7 @@ $other_organizations = session('other_organizations');
     @endif
 
     
-    <li class="nav-heading">Publications</li>
+    <li class="nav-heading dashboard-tour-step-4">Publications</li>
     @if($other_organizations->isEmpty())
     <p>No organisation found...</p>
     @else

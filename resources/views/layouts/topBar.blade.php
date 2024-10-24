@@ -20,7 +20,7 @@
 
   <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
-      <li class="nav-item dropdown pe-3">
+      <li class="nav-item dropdown pe-3 dashboard-tour-step-5">
         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
           <img src="{{ isset(Auth::user()->profile->image_url) ? asset(Auth::user()->profile->image_url) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="40px" height="40px" style="object-fit: cover; border: 2px solid #fff">
           <span class="d-none d-md-block dropdown-toggle px-2">Hello, {{ Auth::user()->name }}</span>
