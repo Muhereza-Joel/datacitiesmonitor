@@ -7,6 +7,20 @@
 <main id="main" class="main">
 
     <section class="section dashboard mt-3">
+        @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <!-- Display validation errors -->
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
         <div class="alert alert-warning mt-2 px-3 py-1">
             <h5>Welcome back, {{ Auth::User()->name }}</h5>
@@ -102,6 +116,7 @@
                     </div>
                 </div>
             </div>
+        </div>
 
     </section>
 </main>

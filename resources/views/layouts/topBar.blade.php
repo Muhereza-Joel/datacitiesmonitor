@@ -18,8 +18,70 @@
   </div>
 
 
+
   <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
+      <li class="nav-item d-block d-lg-none">
+        <a class="nav-link nav-icon search-bar-toggle " href="#">
+          <i class="bi bi-search"></i>
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+
+        @php
+        $notifications = Auth::user()->notifications;
+        @endphp
+        <a class="nav-link nav-icon show" href="#" data-bs-toggle="dropdown" aria-expanded="true">
+          <i class="bi bi-bell"></i>
+          <span class="badge bg-primary badge-number">{{$notifications->count()}}</span>
+        </a><!-- End Notification Icon -->
+
+
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-25px, 35px);">
+          <li class="dropdown-header">
+            You have {{$notifications->count()}} new notifications
+            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          @if($notifications->count())
+          @foreach($notifications as $notification)
+          <li class="notification-item">
+            @if($notification->data['notification_type'] === 'warning')
+            <i class="bi bi-exclamation-circle text-warning"></i>
+            @elseif($notification->data['notification_type'] === 'info')
+            <i class="bi bi-info-circle text-info"></i>
+            @elseif($notification->data['notification_type'] === 'success')
+            <i class="bi bi-check-circle text-success"></i>
+            @elseif($notification->data['notification_type'] === 'danger')
+            <i class="bi bi-x-circle text-danger"></i>
+            @else
+            <i class="bi bi-bell text-secondary"></i> <!-- Default icon -->
+            @endif
+            <a href="{{ $notification->data['request_verification_url'] }}">
+              <div>
+                <h4>{{ $notification->data['notification_title'] }}</h4>
+                <p>{{ $notification->data['message'] }}</p>
+                <p>{{ $notification->created_at->diffForHumans() }}</p>
+              </div>
+            </a>
+          </li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          @endforeach
+          @endif
+
+          <li class="dropdown-footer">
+            <a href="#">Show all notifications</a>
+          </li>
+
+        </ul><!-- End Notification Dropdown Items -->
+
+      </li>
       <li class="nav-item dropdown pe-3 dashboard-tour-step-5">
         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
           <img src="{{ isset(Auth::user()->profile->image_url) ? asset(Auth::user()->profile->image_url) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="40px" height="40px" style="object-fit: cover; border: 2px solid #fff">

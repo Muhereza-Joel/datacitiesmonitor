@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchivesController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\LogController;
@@ -30,7 +31,7 @@ Route::get('/', function () {
 
 
 
-Auth::routes(['register' => false]);
+Auth::routes(['verify' => true, 'register' => false]);
 
 Route::post('/password/update', [ResetPasswordController::class, 'update'])->name('user.update.password');
 
@@ -83,6 +84,10 @@ Route::middleware(['auth'])->group(function () {
 
     //Routes for charts
     Route::get('/indicator/{indicatorId}/graph/line', [IndicatorController::class, 'getLineChartData'])->name('indicator.linegraph');
+
+
+    Route::get('/email/request-verification/{id}', [EmailVerificationController::class, 'sendVerification'])->name('verification.request');
+
 });
 
 

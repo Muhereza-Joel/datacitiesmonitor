@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Events\UserActionPerformed;
 use App\Events\UserLoggedIn;
 use App\Events\UserLoggedOut;
+use App\Listeners\DeleteUnverifiedEmailNotification;
 use App\Listeners\LogUserAction;
 use App\Listeners\LogUserLoginLogout;
 use App\Models\UserActionLog;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
@@ -32,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserActionPerformed::class => [
             LogUserAction::class,
+        ],
+        Verified::class => [
+            DeleteUnverifiedEmailNotification::class,
         ],
     ];
 
