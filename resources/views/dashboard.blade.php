@@ -251,7 +251,7 @@
         }, {
             text: 'Got It',
             action: function() {
-                setCookie('filterIndicatorsTourFinished', 'true', 30); // Set cookie with expiry of 7 days
+                setCookie('dashboardTourFinished', 'true', 30); // Set cookie with expiry of 7 days
                 tour.complete();
             },
         }],
