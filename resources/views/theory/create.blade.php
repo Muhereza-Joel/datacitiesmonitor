@@ -7,11 +7,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Create New Organizations</h1>
+        <h1>Create New Theory of Change</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">Create Organizations</li>
+                <li class="breadcrumb-item active">Create New Theory of Change</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
