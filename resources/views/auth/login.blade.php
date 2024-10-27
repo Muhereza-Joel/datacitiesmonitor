@@ -13,7 +13,7 @@
                         </a>
                     </div>
                     <!-- End Logo -->
-                     <div class="card-title text-center">M $ E Monitor</div>
+                    <div class="card-title text-center">M $ E Monitor</div>
                     <div class="card-body">
                         <div class="pt-0 text-center">
                             <p class="small">{{__('Enter your username & password to login.')}}</p>
@@ -96,8 +96,18 @@
 
                     </div>
                 </div>
-            </div>
 
+                
+            </div>
+            
+        </div>
+        <div class="d-flex offset-md-1 align-items-center mt-2">
+            <div class="alert">
+                <a class="btn btn-link fw-bold" target="_blank" title="M $ E Monitor User Manual" href="https://monitor-docs.opendata-analytics.org">User Manual</a> |
+                <a class="btn btn-link fw-bold" href="#">Privacy Policy</a> |
+                <a class="btn btn-link fw-bold" href="#">Terms of Use</a>
+
+            </div>
         </div>
     </div>
 

@@ -12,8 +12,8 @@
 
 
   <!-- Favicons -->
-  <link href="{{ asset('assets/img/logo_yellow.png') }}" rel="icon">
-  <link href="{{ asset('assets/img/logo_yellow.png') }}" rel="apple-touch-icon">
+  <link href="{{ asset('assets/img/logo.png') }}" rel="icon">
+  <link href="{{ asset('assets/img/logo.png') }}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -76,7 +76,7 @@
     }
 
     .btn-primary {
-      background-color: #135f8f;
+      background-color: #59879e;
     }
 
     .highlight {

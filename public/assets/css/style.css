@@ -17,7 +17,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   background: #f6f9ff;
-  color: #01000d;
+  color: #2f2e36;
   overflow-x: hidden;
 }
 
@@ -44,7 +44,7 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  margin-top: 40px;
+  margin-top: 30px;
   padding: 20px 10px;
   transition: all 0.3s;
 }
@@ -63,9 +63,9 @@ h6 {
 }
 
 .pagetitle h1 {
-  font-size: 28px;
+  font-size: 20px;
   margin-bottom: 0.2rem;
-  font-weight: 600;
+  font-weight: 800;
   color: #08265c;
 }
 
@@ -223,7 +223,7 @@ h6 {
   margin-bottom: 1px;
   border: none;
   border-radius: 0px;
-  background-color: #fefefe;
+  background-color: #fbfbfb;
   /* background-color: #dcf0e4; */
   /* box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1); */
   border: 1px solid rgb(189, 190, 185);
@@ -233,7 +233,7 @@ h6 {
 .card-footer {
   border-color: #ebeef4;
   background-color: #fff;
-  color: #798eb3;
+  color: #202021;
   padding: 15px;
 }
 
@@ -387,10 +387,9 @@ h6 {
   transition: all 0.5s;
   z-index: 997;
   height: 60px;
-  /* box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1); */
   background-color: #05333e;
   padding-left: 20px;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #f18adc;
   /* Toggle Sidebar Button */
   /* Search Bar */
 }
@@ -607,7 +606,7 @@ h6 {
 --------------------------------------------------------------*/
 .sidebar {
   position: fixed;
-  top: 60px;
+  top: 40px;
   left: 0;
   bottom: 0;
   width: 300px;
@@ -692,9 +691,10 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #f8f8fa;
+  color: #183649;
   transition: 0.3;
-  background: #135f8f;
+  background: #e9ecee;
+  /* background: rgba(144, 238, 144, 0.3); */
   padding: 6px 12px;
   border-radius: 0px 50px 50px 0px;
 }
@@ -702,12 +702,11 @@ h6 {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #f8f8fa;
 }
 
 .sidebar-nav .nav-link.collapsed {
   color: #ffffff;
-  background: #135f8f;
+  background: #59879e;
 }
 
 .sidebar-nav .nav-link.collapsed i {
@@ -715,12 +714,12 @@ h6 {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #fdfeff;
+  color: #395d76;
   border-left: 9px solid #4154f1;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: #395d76;;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -743,7 +742,7 @@ h6 {
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #65d6a0;
+  color: #061d12;
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -758,7 +757,7 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #395d76;;
 }
 
 .sidebar-nav .nav-content a.active i {

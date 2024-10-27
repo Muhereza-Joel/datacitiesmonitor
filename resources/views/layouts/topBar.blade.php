@@ -100,9 +100,40 @@
           <li>
             <a class="dropdown-item d-flex align-items-center justify-content-start" href="{{ route('profile.show') }}">
               <i class="bi bi-person"></i>
-              <span>Your Profile</span>
+              <span>Manage Your Profile</span>
             </a>
           </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <a class="dropdown-item d-flex align-items-center justify-content-start" href="https://monitor-docs.opendata-analytics.org" target="_blank">
+              <i class="bi bi-book"></i> <!-- Changed to a book icon for User Manual -->
+              <span>Visit User Manual</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <a class="dropdown-item d-flex align-items-center justify-content-start" href="#">
+              <i class="bi bi-file-earmark-text"></i> <!-- Changed to a document icon for Terms of Use -->
+              <span>Terms of Use</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <a class="dropdown-item d-flex align-items-center justify-content-start" href="#">
+              <i class="bi bi-shield-lock"></i> <!-- Changed to a shield lock icon for Privacy Policy -->
+              <span>Our Privacy Policy</span>
+            </a>
+          </li>
+
           <li>
             <hr class="dropdown-divider">
           </li>
@@ -117,9 +148,6 @@
             <hr class="dropdown-divider">
           </li>
 
-          <li>
-            <hr class="dropdown-divider">
-          </li>
 
           <li>
             <a class="dropdown-item d-flex align-items-center justify-content-start" href="{{ route('logout') }}">
