@@ -138,8 +138,11 @@
                         <div class="activity">
                             <!-- Recent Indicators Visited -->
                             <div class="card p-4">
-                                <h6>You Recently Visited These {{ $recentActivities['recentIndicators']->count() > 0 ? $recentActivities['recentIndicators']->count() : '' }} Indicators</h6>
-
+                                <h6>
+                                    You Recently Visited {{ $recentActivities['recentIndicators']->count() }}
+                                    Indicator{{ $recentActivities['recentIndicators']->count() !== 1 ? 's' : '' }}
+                                </h6>
+                                
                                 @forelse($recentActivities['recentIndicators'] as $indicator)
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">{{ $indicator->created_at->diffForHumans() }}</div>
@@ -158,7 +161,11 @@
 
                             <!-- Recent ToCs Visited -->
                             <div class="card p-4 my-2">
-                                <h6>You Recently Visited These {{ $recentActivities['recentToCs']->count() > 0 ? $recentActivities['recentToCs']->count() : '' }} Theories of Change</h6>
+                                <h6>
+                                    You Recently Visited {{ $recentActivities['recentToCs']->count() }}
+                                    Theor{{ $recentActivities['recentToCs']->count() !== 1 ? 'ies' : 'y' }} of Change
+                                </h6>
+
                                 @forelse($recentActivities['recentToCs'] as $toc)
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">{{ $toc->created_at->diffForHumans() }}</div>
