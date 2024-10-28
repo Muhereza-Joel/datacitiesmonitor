@@ -7,6 +7,7 @@ use App\Models\Organisation;
 use App\Models\Response;
 use App\Models\TheoryOfChange;
 use App\Models\User;
+use App\Models\UserActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,9 +32,10 @@ class DashboardController extends Controller
     {
         $pageTitle = 'Dashboard';
         $currentUser = Auth::user();
+        $userId = $currentUser->id;
         $organisation_id = $currentUser->organisation_id;
 
-        $myOrganisation = $myOrganisation = Organisation::findOrFail($organisation_id);
+        $myOrganisation = Organisation::findOrFail($organisation_id);
         $indicatorCount = Indicator::where('organisation_id', $organisation_id)->count();
         $usersCount = User::where('organisation_id', $organisation_id)->count();
         $tocCount = TheoryOfChange::where('organisation_id', $organisation_id)->count();
@@ -42,6 +44,17 @@ class DashboardController extends Controller
             $query->select('id')->from('indicators')->where('organisation_id', $organisation_id);
         })->count();
 
-        return view('dashboard', compact('pageTitle','myOrganisation', 'indicatorCount', 'responseCount', 'usersCount', 'tocCount'));
+        // Fetch recent activities
+        $recentActivities = UserActionLog::getUserRecentActivities($userId);
+
+        return view('dashboard', compact(
+            'pageTitle',
+            'myOrganisation',
+            'indicatorCount',
+            'responseCount',
+            'usersCount',
+            'tocCount',
+            'recentActivities'
+        ));
     }
 }

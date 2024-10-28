@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserActionPerformed;
 use App\Models\Indicator;
 use App\Models\Organisation;
 use App\Models\TheoryOfChange;
@@ -102,6 +103,8 @@ class ThoeryOfChangeController extends Controller
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $toc = TheoryOfChange::findOrFail($id);
 
+        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+
         return view('theory.update', compact('pageTitle', 'myOrganisation', 'toc'));
     }
 
@@ -181,6 +184,8 @@ class ThoeryOfChangeController extends Controller
             return $indicator;
         });
 
+        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+
         return view('theory.connectedIndicators', compact('pageTitle', 'indicators'));
     }
 
@@ -196,6 +201,8 @@ class ThoeryOfChangeController extends Controller
         $toc_id = $id;
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
 
+        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+        
         return view('theory.createIndicatorForToC', compact('pageTitle', 'myOrganisation', 'theories', 'toc_id'));
     }
 }

@@ -22,11 +22,8 @@
         </div>
         @endif
 
-        <div class="alert alert-warning mt-2 px-3 py-1">
-            <h5>Welcome back, {{ Auth::User()->name }}</h5>
-            <hr>
-            <h2>Your are a member of {{ $myOrganisation->name }}</h2>
-
+        <div class="alert alert-warning px-3 py-1">
+            <h5>Welcome back, {{ Auth::User()->name }}, {{ $myOrganisation->name }} is your organisation</h5>
         </div>
 
         @if(Auth::User()->role == 'viewer')
@@ -35,7 +32,7 @@
         </div>
         @endif
 
-        <div class="row g-1 mt-4">
+        <div class="row g-1">
 
             <div class="col-md-3">
                 <div class="row g-1">
@@ -115,6 +112,110 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row g-1 mt-4">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{Auth::user()->name }}, here is your recent activities log</h5>
+
+                        <div class="activity">
+                            <!-- Recent Indicators Visited -->
+                            <div class="card p-4">
+                                <h6>You Recently Visited These {{ $recentActivities['recentIndicators']->count() > 0 ? $recentActivities['recentIndicators']->count() : '' }} Indicators</h6>
+
+                                @forelse($recentActivities['recentIndicators'] as $indicator)
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{ $indicator->created_at->diffForHumans() }}</div>
+                                    <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                                    <div class="activity-content py-3">
+                                        Visited Indicator: <a href="{{ route('indicators.show', $indicator->indicator_id) }}" class="fw-bold text-primary">{{ $indicator->indicator_title }}</a>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="activity-item d-flex">
+                                    <div class="activity-content"><span class="badge bg-info">No recent indicators visited.</span></div>
+                                </div>
+                                @endforelse
+
+                            </div>
+
+                            <!-- Recent ToCs Visited -->
+                            <div class="card p-4 my-2">
+                                <h6>You Recently Visited These {{ $recentActivities['recentToCs']->count() > 0 ? $recentActivities['recentToCs']->count() : '' }} Theories of Change</h6>
+                                @forelse($recentActivities['recentToCs'] as $toc)
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{ $toc->created_at->diffForHumans() }}</div>
+                                    <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                                    <div class="activity-content">
+                                        Visited ToC: <a href="{{ route('theory.index') }}" class="fw-bold text-primary">{{ $toc->toc_title }}</a>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="activity-item d-flex">
+                                    <div class="activity-content"><span class="badge bg-info">No recent ToCs visited.</span></div>
+                                </div>
+                                @endforelse
+
+                            </div>
+
+                            <!-- Recent Responses Visited -->
+                            <!-- <div class="card p-4 my-2">
+                                <h5>Recent Responses Visited</h5>
+                                @forelse($recentActivities['recentResponses'] as $response)
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{ $response->created_at->diffForHumans() }}</div>
+                                    <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
+                                    <div class="activity-content">
+                                        Visited Response: <a href="#" class="fw-bold text-dark">{{ $response->resource_id }}</a>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="activity-item d-flex">
+                                    <div class="activity-content"><span class="badge bg-info">No recent responses visited.</span></div>
+                                </div>
+                                @endforelse
+
+                            </div> -->
+
+                            <!-- Last Logins -->
+                            <div class="card p-4 my-2">
+                                <h6>Last Logins</h6>
+                                @forelse($recentActivities['lastLogins'] as $login)
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{ $login->created_at->diffForHumans() }}</div>
+                                    <i class="bi bi-circle-fill activity-badge text-muted align-self-start"></i>
+                                    <div class="activity-content">
+                                        Login from IP: {{ $login->ip_address }}
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="activity-item d-flex">
+                                    <div class="activity-content">No login history available.</div>
+                                </div>
+                                @endforelse
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 

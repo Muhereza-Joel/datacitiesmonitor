@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserActionPerformed;
 use App\Models\Indicator;
 use App\Models\Response;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ class ResponseController extends Controller
         $lastCurrentState = [
             'last_current_state' => $lastResponse ? $lastResponse->current : null
         ];
+
+        event( new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
 
         return view('indicators.responses.create', compact('pageTitle', 'indicator', 'lastCurrentState'));
     }

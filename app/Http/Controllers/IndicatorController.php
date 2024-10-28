@@ -146,6 +146,8 @@ class IndicatorController extends Controller
         // Use first() to get a single result
         $indicator = Indicator::with('theoryOfChange')->where('id', $id)->firstOrFail();
 
+        event( new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
+
         return view('indicators.view', compact('pageTitle', 'indicator'));
     }
 
