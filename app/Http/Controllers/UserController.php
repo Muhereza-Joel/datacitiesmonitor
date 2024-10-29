@@ -22,17 +22,18 @@ class UserController extends Controller
 
         // Check if the current user is a root user
         if ($currentUser->role === 'root') {
-            // Fetch all users if the role is root
-            $users = User::with('organisation')->paginate(25);
+            // Fetch all users with organisation and profile if the role is root
+            $users = User::with(['organisation', 'profile'])->paginate(25);
         } else {
-            // Load users for the current user's organization
-            $users = User::with('organisation')
+            // Load users with organisation and profile for the current user's organization
+            $users = User::with(['organisation', 'profile'])
                 ->where('organisation_id', $organisation_id)
                 ->paginate(25);
         }
 
         return view('users.list', compact('pageTitle', 'users'));
     }
+
 
 
 

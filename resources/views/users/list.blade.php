@@ -33,7 +33,7 @@
             <div class="card pt-4">
                 <div class="card-body">
                     <!-- Table with stripped rows -->
-                    <table class="table table-striped">
+                    <table id="users-table" class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Organisation</th>
@@ -50,12 +50,18 @@
                             <tr>
                                 <td>
                                     <div style="display: flex; align-items: center;">
-                                        <img src="{{ isset($user->organisation->logo) ? asset($user->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="25px" height="25px" style="margin-right: 8px;">
+                                        <img src="{{ isset($user->organisation->logo) ? asset($user->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="35px" height="35px" style="margin-right: 8px;">
                                         <span>{{ $user->organisation->name ?? 'N/A' }}</span>
                                     </div>
                                 </td>
 
-                                <td>{{$user->name ?? 'N/A'}}</td>
+                                <td style="display: flex; align-items: center;">
+                                    <img src="{{ isset($user->profile->image_url) ? asset($user->profile->image_url) : asset('assets/img/placeholder.png') }}"
+                                        alt="Profile" class="rounded-circle profileImage" width="35px" height="35px"
+                                        style="margin-right: 8px; cursor: pointer;">
+                                    <span>{{ $user->organisation->name ?? 'N/A' }}</span>
+                                </td>
+
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->role}}</td>
                                 <td>
@@ -95,6 +101,17 @@
 
                         </tbody>
                     </table>
+                    <!-- Modal -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img id="enlargedImage" src="" alt="Enlarged Image" class="img-fluid" style="object-fit: cover;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- End Table with stripped rows -->
                     <!-- Pagination links -->
                     <div class="d-flex justify-content-center">
@@ -251,5 +268,21 @@
             $('#deleteUserModal').modal('hide');
         });
 
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Use event delegation to handle clicks on images within the table
+        $('#users-table').on('click', '.profileImage', function() {
+            // Get the source of the clicked image
+            var imgSrc = $(this).attr('src');
+
+            // Set the source of the modal image
+            $('#enlargedImage').attr('src', imgSrc);
+
+            // Show the modal
+            $('#imageModal').modal('show');
+        });
     });
 </script>
