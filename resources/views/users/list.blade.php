@@ -40,7 +40,7 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Prevellage</th>
-                                <th>Address</th>
+                                <th>Email Verified</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -58,7 +58,12 @@
                                 <td>{{$user->name ?? 'N/A'}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->role}}</td>
-                                <td>{{$user->country ?? 'N/A'}}, {{$user->district ?? 'N/A'}}</td>
+                                <td>
+                                    <span class="badge {{ $user->email_verified_at ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $user->email_verified_at ? 'Yes' : 'No' }}
+                                    </span>
+                                </td>
+
 
                                 <td>
                                     <div class="dropdown">
