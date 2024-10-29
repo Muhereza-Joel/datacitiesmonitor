@@ -29,6 +29,7 @@ class ArchivedResponse extends Model
         'status',
         'organisation_id',
         'user_id',
+        'original_created_at',
     ];
 
     protected static function boot()

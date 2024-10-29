@@ -106,7 +106,7 @@ class ArchivesController extends Controller
         $indicatorsQuery = ArchivedIndicator::with([
             'theoryOfChange',
             'responses' => function ($query) {
-                $query->orderBy('created_at', 'desc'); // Order responses by the latest
+                $query->orderBy('original_created_at', 'desc'); // Use original_created_at for accurate ordering
             }
         ])
             ->withCount('responses') // Add response count
@@ -128,15 +128,14 @@ class ArchivesController extends Controller
 
         // Transform the collection to add the 'current' value from the latest response
         $indicators->getCollection()->transform(function ($indicator) {
-            // Get the latest response, ordered by 'created_at'
-            $latestResponse = $indicator->responses->first(); // First response is the most recent due to orderBy 'desc'
+            // Fetch the latest response based on original_created_at
+            $latestResponse = $indicator->responses()->orderBy('original_created_at', 'desc')->first();
             $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
             return $indicator;
         });
 
         return view('archives.indicators.list', compact('pageTitle', 'indicators', 'archive'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -235,6 +234,7 @@ class ArchivesController extends Controller
                 'qualitative_progress' => $indicator->qualitative_progress,
                 'is_manually_updated' => $indicator->is_manually_updated,
                 'theory_of_change_id' => $indicator->theory_of_change_id,
+                'original_created_at' => $indicator->created_at,
             ]);
 
             // Move associated responses
@@ -252,6 +252,7 @@ class ArchivesController extends Controller
                     'status' => $response->status,
                     'organisation_id' => $response->organisation_id,
                     'user_id' => $response->user_id,
+                    'original_created_at' => $response->created_at,
                 ]);
 
                 // Delete the original response
@@ -293,30 +294,26 @@ class ArchivesController extends Controller
         // Fetch the responses along with related indicator and user (from the users table)
         $responses = ArchivedResponse::with(['indicator', 'user'])
             ->where('indicator_id', $indicator_id)
-            ->orderBy('user_id')  // First order by user
-            ->orderBy('created_at')  // Then order by created_at for each user
+            ->orderBy('original_created_at')  // Then order by created_at for each user
             ->get();
 
-        // dd($responses);
+        // Initialize a variable to store row numbers for each user
+        $userRowNumbers = [];
 
-        // Initialize variables for row number calculation
-        $currentUserId = null;
-        $rowNumber = 0;
+        // Map through responses to set response tags based on the row number per user
+        $responses = $responses->map(function ($response) use (&$userRowNumbers) {
+            $userId = $response->user_id;
 
-        // Add the row number and formatted response tag
-        $responses = $responses->map(function ($response) use (&$currentUserId, &$rowNumber) {
-            if ($currentUserId !== $response->user_id) {
-                // Reset row number if new user
-                $currentUserId = $response->user_id;
-                $rowNumber = 1;
+            // Initialize row number for a new user or increment for an existing one
+            if (!isset($userRowNumbers[$userId])) {
+                $userRowNumbers[$userId] = 1;
             } else {
-                // Increment row number for the same user
-                $rowNumber++;
+                $userRowNumbers[$userId]++;
             }
 
-            // Add response_tag and response_tag_label
-            $response->response_tag = $rowNumber;
-            $response->response_tag_label = 'Response ' . $rowNumber;
+            // Set response tag and response tag label
+            $response->response_tag = $userRowNumbers[$userId];
+            $response->response_tag_label = 'Response ' . $userRowNumbers[$userId];
 
             return $response;
         });

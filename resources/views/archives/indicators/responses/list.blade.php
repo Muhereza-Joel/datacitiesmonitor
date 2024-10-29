@@ -206,7 +206,7 @@
             </div>
 
             <div class="mt-3">
-              <h6>Added on: {{ $response->created_at->format('M d, Y \a\t g:iA') }}</h6>
+              <h6>Archived on: {{ $response->created_at->format('M d, Y \a\t g:iA') }}</h6>
               <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
 
               @include('layouts.rullerTwo')

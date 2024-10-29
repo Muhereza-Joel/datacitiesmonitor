@@ -42,11 +42,6 @@
 
         <!-- Target Marker -->
         <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
-
-        <!-- Horizontal Yellow Line for Decreasing Value -->
-        @if ($current < $target)
-            <div style="position: absolute; left: {{ $currentPosition }}%; right: {{ 100 - $baselinePosition }}%; height: 2px; background-color: yellow; top: 8px;"></div>
-        @endif
     </div>
 
     <div class="px-1" style="position: relative; margin-top: 15px;">

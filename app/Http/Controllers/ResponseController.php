@@ -26,7 +26,7 @@ class ResponseController extends Controller
             'last_current_state' => $lastResponse ? $lastResponse->current : null
         ];
 
-        event( new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
+        event(new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
 
         return view('indicators.responses.create', compact('pageTitle', 'indicator', 'lastCurrentState'));
     }
@@ -127,37 +127,37 @@ class ResponseController extends Controller
     {
         $indicatorId = $id;
         $pageTitle = "Indicator responses";
-        // Fetch the responses along with related indicator and user (from the users table)
+
+        // Fetch the responses, ordering by created_at in descending order to get the latest first
         $responses = Response::with(['indicator', 'user'])
             ->where('indicator_id', $id)
-            ->orderBy('user_id')  // First order by user
-            ->orderBy('created_at')  // Then order by created_at for each user
+            ->orderBy('created_at') // Order by created_at for latest responses first
             ->get();
 
-        // Initialize variables for row number calculation
-        $currentUserId = null;
-        $rowNumber = 0;
+        // Initialize a variable to store row numbers for each user
+        $userRowNumbers = [];
 
-        // Add the row number and formatted response tag
-        $responses = $responses->map(function ($response) use (&$currentUserId, &$rowNumber) {
-            if ($currentUserId !== $response->user_id) {
-                // Reset row number if new user
-                $currentUserId = $response->user_id;
-                $rowNumber = 1;
+        // Map through responses to set response tags based on the row number per user
+        $responses = $responses->map(function ($response) use (&$userRowNumbers) {
+            $userId = $response->user_id;
+
+            // Initialize row number for a new user or increment for an existing one
+            if (!isset($userRowNumbers[$userId])) {
+                $userRowNumbers[$userId] = 1;
             } else {
-                // Increment row number for the same user
-                $rowNumber++;
+                $userRowNumbers[$userId]++;
             }
 
-            // Add response_tag and response_tag_label
-            $response->response_tag = $rowNumber;
-            $response->response_tag_label = 'Response ' . $rowNumber;
+            // Set response tag and response tag label
+            $response->response_tag = $userRowNumbers[$userId];
+            $response->response_tag_label = 'Response ' . $userRowNumbers[$userId];
 
             return $response;
         });
 
         return view('indicators.responses.list', compact('pageTitle', 'responses', 'indicatorId'));
     }
+
 
     public function deleteResponse($id)
     {

@@ -119,6 +119,11 @@
                             <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
+                            @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
+                            <span class="badge bg-light text-primary">
+                                Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
+                            </span>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -178,9 +178,14 @@ class ThoeryOfChangeController extends Controller
 
         // Use getCollection() to transform the collection and assign the 'current' value from the latest response
         $indicators->getCollection()->transform(function ($indicator) {
-            // Fetch the latest response, ordered by 'created_at'
+            // Fetch the latest response based on 'original_created_at' in descending order
             $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
             $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
+
+            // Get the last time a response was added based on 'created_at' in descending order
+            $latestResponseDate = $indicator->responses()->orderBy('created_at', 'desc')->first();
+            $indicator->latest_response_date = $latestResponseDate ? $latestResponseDate->created_at : null; // Set the latest response date
+
             return $indicator;
         });
 

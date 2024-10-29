@@ -53,6 +53,7 @@ class IndicatorController extends Controller
         if ($request->filled('category')) {
             $query->where('category', 'like', '%' . $request->input('category') . '%');
         }
+
         // Calculate the counts for all indicators before pagination
         $indicatorCounts = [
             'total' => $query->count(),
@@ -61,27 +62,31 @@ class IndicatorController extends Controller
             'public' => (clone $query)->where('status', 'public')->count(),
             'archived' => (clone $query)->where('status', 'archived')->count(),
         ];
+
         // Order the results: those with at least one response first, then by created_at
         $query->orderByRaw('CASE WHEN responses_count > 0 THEN 0 ELSE 1 END, created_at DESC');
 
         // Paginate the filtered results
         $indicators = $query->paginate(24);
 
-        // Map the results to include the 'current' value from the latest response
+        // Transform the collection to add the 'current' value from the latest response
         $indicators->getCollection()->transform(function ($indicator) {
-            // Fetch the latest response, ordered by 'created_at'
+            // Fetch the latest response based on 'original_created_at' in descending order
             $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
             $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
+
+            // Get the last time a response was added based on 'created_at' in descending order
+            $latestResponseDate = $indicator->responses()->orderBy('created_at', 'desc')->first();
+            $indicator->latest_response_date = $latestResponseDate ? $latestResponseDate->created_at : null; // Set the latest response date
+
             return $indicator;
         });
 
-        // Load the latest response's created_at for each indicator
-        $indicators->load(['responses' => function ($query) {
-            $query->select('indicator_id', 'created_at')->latest()->limit(1);
-        }]);
 
         return view('indicators.list', compact('pageTitle', 'indicators', 'indicatorCounts'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -146,7 +151,7 @@ class IndicatorController extends Controller
         // Use first() to get a single result
         $indicator = Indicator::with('theoryOfChange')->where('id', $id)->firstOrFail();
 
-        event( new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
+        event(new UserActionPerformed(Auth::user(), 'visit_indicator', 'Indicator', $id));
 
         return view('indicators.view', compact('pageTitle', 'indicator'));
     }
