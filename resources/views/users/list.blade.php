@@ -59,7 +59,7 @@
                                     <img src="{{ isset($user->profile->image_url) ? asset($user->profile->image_url) : asset('assets/img/placeholder.png') }}"
                                         alt="Profile" class="rounded-circle profileImage" width="35px" height="35px"
                                         style="margin-right: 8px; cursor: pointer;">
-                                    <span>{{ $user->organisation->name ?? 'N/A' }}</span>
+                                    <span>{{ $user->name ?? 'N/A' }}</span>
                                 </td>
 
                                 <td>{{$user->email}}</td>
