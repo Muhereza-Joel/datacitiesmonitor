@@ -59,12 +59,20 @@
                 <div class="card p-2">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <div>
-                                <strong>User:</strong> {{ $log->user->name ?? 'Unknown User' }} <br>
-                                <strong>Action:</strong> {{ $log->action }} <br>
-                                <strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }}) <br>
-                                <strong>Associated IP Address:</strong> {{ $log->ip_address }} <br>
-                                <strong>Timestamp:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }}
+                            <div class="d-flex align-items-center">
+                                <img src="{{ $log->user->profile->image_url ?? asset('assets/img/placeholder.png') }}"
+                                    alt="User Image"
+                                    class="rounded-circle"
+                                    width="80"
+                                    height="80"
+                                    style="margin-right: 15px;">
+                                <div>
+                                    <strong>Username:</strong> {{ $log->user->name ?? 'Unknown User' }} <br>
+                                    <strong>Action Done:</strong> {{ $log->action }} <br>
+                                    <strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }}) <br>
+                                    <strong>Associated IP Address:</strong> {{ $log->ip_address }} <br>
+                                    <strong>Logged On:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }}
+                                </div>
                             </div>
                             <div class="text-end">
                                 <a href="#" class="icon" title="View Details" data-bs-toggle="modal" data-bs-target="#viewLogModal{{ $log->id }}">
@@ -75,6 +83,7 @@
                     </div>
                 </div>
 
+
                 <!-- Modal for viewing log details -->
                 <div class="modal fade" id="viewLogModal{{ $log->id }}" tabindex="-1" aria-labelledby="viewLogModalLabel{{ $log->id }}" aria-hidden="true">
                     <div class="modal-dialog">
@@ -84,12 +93,22 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p><strong>User:</strong> {{ $log->user->name ?? 'Unknown User' }}</p>
-                                <p><strong>Action:</strong> {{ $log->action }}</p>
+                                <div class="text-center">
+                                    <img src="{{ $log->user->profile->image_url ?? asset('assets/img/placeholder.png') }}"
+                                        alt="User Image"
+                                        class="rounded-circle"
+                                        width="200"
+                                        height="200"
+                                        style="margin-right: 15px;">
+
+                                </div>
+                                <hr>
+                                <p><strong>Username:</strong> {{ $log->user->name ?? 'Unknown User' }}</p>
+                                <p><strong>Action Done:</strong> {{ $log->action }}</p>
                                 <p><strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }})</p>
-                                <p><strong>IP Address:</strong> {{ $log->ip_address }}</p>
+                                <p><strong>Associated IP Address:</strong> {{ $log->ip_address }}</p>
                                 <p><strong>Description:</strong> {{ $log->description ?? 'N/A' }}</p>
-                                <p><strong>Timestamp:</strong> {{ $log->created_at }}</p>
+                                <p><strong>Logged On:</strong> {{ $log->created_at }}</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

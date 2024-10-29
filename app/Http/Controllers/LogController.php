@@ -39,7 +39,7 @@ class LogController extends Controller
         }
 
         // Start the query for logs
-        $query = UserActionLog::with('user')
+        $query = UserActionLog::with(['user', 'user.profile']) // Eager load the user and their profile
             ->where('created_at', '>=', $startDate)
             ->orderBy('created_at', 'desc');
 
@@ -52,6 +52,9 @@ class LogController extends Controller
                 $query->where('organisation_id', $organisation_id);
             });
         }
+
+        // Execute the query and paginate or get results as needed
+        $logs = $query->paginate(25); // Example pagination
 
         // Paginate the results
         $logs = $query->paginate(24);
