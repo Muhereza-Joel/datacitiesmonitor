@@ -8,6 +8,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            page-break-inside: avoid;
+            /* Prevents page break inside table */
         }
 
         table,
