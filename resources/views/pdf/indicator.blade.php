@@ -124,12 +124,18 @@
                     <strong>Notes:</strong>
                     <div>{!! nl2br($response->notes) !!}</div>
                     @endif
-
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="extra-info">
                     @if ($response->lessons !== '')
                     <strong>Lessons:</strong>
                     <div>{!! nl2br($response->lessons) !!}</div>
                     @endif
-
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="extra-info">
                     @if ($response->recommendations !== '')
                     <strong>Recommendations:</strong>
                     <div>{!! nl2br($response->recommendations) !!}</div>
