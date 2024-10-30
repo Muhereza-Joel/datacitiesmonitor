@@ -90,7 +90,7 @@
     <table>
         <thead>
             <tr>
-                <th>Response id</th>
+                <th>Response ID</th>
                 <th>Status</th>
                 <th>Current State</th>
                 <th>Percentage Progress From Baseline</th>
@@ -106,28 +106,28 @@
                 <td>{{ $response->progress }}</td>
                 <td>{{ $response->created_at }}</td>
             </tr>
+            <!-- Additional Information for Each Response -->
+            <tr>
+                <td colspan="5">
+                    @if ($response->notes !== '')
+                    <strong>Notes:</strong>
+                    <div>{!! $response->notes !!}</div>
+                    @endif
+
+                    @if ($response->lessons !== '')
+                    <strong>Lessons:</strong>
+                    <div>{!! $response->lessons !!}</div>
+                    @endif
+
+                    @if ($response->recommendations !== '')
+                    <strong>Recommendations:</strong>
+                    <div>{!! $response->recommendations !!}</div>
+                    @endif
+                </td>
+            </tr>
             @endforeach
         </tbody>
-
     </table>
-    @foreach ($indicator->responses as $response)
-    <!-- Additional Information for Each Response -->
-
-    @if ($response->notes !== '')
-    <h4>Notes</h4>
-    <div>{!! $response->notes !!}</div>
-    @endif
-
-    @if ($response->lessons !== '')
-    <h4>Lessons</h4>
-    <div>{!! $response->lessons !!}</div>
-    @endif
-
-    @if ($response->recommendations !== '')
-    <h4>Recommendations</h4>
-    <div>{!! $response->recommendations !!}</div>
-    @endif
-    @endforeach
 
 </body>
 
