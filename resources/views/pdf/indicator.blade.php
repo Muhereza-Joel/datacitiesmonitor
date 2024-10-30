@@ -114,47 +114,35 @@
     </table>
 
     <h2>Responses</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Response ID</th>
-                <th>Status</th>
-                <th>Current State</th>
-                <th>Percentage Progress From Baseline</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($indicator->responses as $response)
-            <tr>
-                <td>{{ $response->id }}</td>
-                <td>{{ $response->status }}</td>
-                <td>{{ $response->current }}</td>
-                <td>{{ $response->progress }}</td>
-                <td>{{ $response->created_at }}</td>
-            </tr>
-            <tr>
-                <td colspan="5" class="additional-info">
-                    <strong>Additional Information:</strong>
-                    @if ($response->notes !== '')
-                    <strong>Notes:</strong>
-                    <div>{!! nl2br($response->notes) !!}</div>
-                    @endif
+    @foreach ($indicator->responses as $response)
+    <div class="response-entry">
+        <p><strong>Response ID:</strong> {{ $response->id }}</p>
+        <p><strong>Status:</strong> {{ $response->status }}</p>
+        <p><strong>Current State:</strong> {{ $response->current }}</p>
+        <p><strong>Percentage Progress From Baseline:</strong> {{ $response->progress }}%</p>
+        <p><strong>Created At:</strong> {{ $response->created_at }}</p>
 
-                    @if ($response->lessons !== '')
-                    <strong>Lessons:</strong>
-                    <div>{!! nl2br($response->lessons) !!}</div>
-                    @endif
+        <div class="additional-info">
+            <strong>Additional Information:</strong>
+            @if ($response->notes !== '')
+            <p><strong>Notes:</strong></p>
+            <p>{!! nl2br($response->notes) !!}</p>
+            @endif
 
-                    @if ($response->recommendations !== '')
-                    <strong>Recommendations:</strong>
-                    <div>{!! nl2br($response->recommendations) !!}</div>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+            @if ($response->lessons !== '')
+            <p><strong>Lessons:</strong></p>
+            <p>{!! nl2br($response->lessons) !!}</p>
+            @endif
+
+            @if ($response->recommendations !== '')
+            <p><strong>Recommendations:</strong></p>
+            <p>{!! nl2br($response->recommendations) !!}</p>
+            @endif
+        </div>
+        <hr>
+    </div>
+    @endforeach
+
 
 </body>
 
