@@ -68,11 +68,13 @@ class ThoeryOfChangeController extends Controller
             'organisation_id' => 'string|required|exists:organisations,id',
         ]);
 
-        TheoryOfChange::create($validated);
+        $theoryOfChange = TheoryOfChange::create($validated);
 
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
+
+        event(new UserActionPerformed($currentUser, 'create_toc', 'TheoryOfChange', $theoryOfChange->id));
 
         return redirect()->back()
             ->with(['success' => 'ToC Created Successfully', 'myOrganisation' => $myOrganisation]);
@@ -103,7 +105,7 @@ class ThoeryOfChangeController extends Controller
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $toc = TheoryOfChange::findOrFail($id);
 
-        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+        event(new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
 
         return view('theory.update', compact('pageTitle', 'myOrganisation', 'toc'));
     }
@@ -131,6 +133,8 @@ class ThoeryOfChangeController extends Controller
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
 
+        event(new UserActionPerformed(Auth::user(), 'update_toc', 'TheoryOfChange', $id));
+
         return redirect()->back()
             ->with(['success' => 'ToC Updated Successfully', 'myOrganisation' => $myOrganisation]);
     }
@@ -148,6 +152,8 @@ class ThoeryOfChangeController extends Controller
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $theory = TheoryOfChange::findOrFail($id);
         $theory->delete();
+
+        event(new UserActionPerformed(Auth::user(), 'delete_toc', 'TheoryOfChange', $id));
 
         return redirect()->back()->with(['success' => 'ToC deleted successfully.', 'myOrganisation' => $myOrganisation]);
     }
@@ -189,7 +195,7 @@ class ThoeryOfChangeController extends Controller
             return $indicator;
         });
 
-        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+        event(new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
 
         return view('theory.connectedIndicators', compact('pageTitle', 'indicators'));
     }
@@ -206,8 +212,8 @@ class ThoeryOfChangeController extends Controller
         $toc_id = $id;
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
 
-        event( new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
-        
+        event(new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
+
         return view('theory.createIndicatorForToC', compact('pageTitle', 'myOrganisation', 'theories', 'toc_id'));
     }
 }
