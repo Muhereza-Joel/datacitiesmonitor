@@ -447,7 +447,10 @@ class IndicatorController extends Controller
 
         // Create an instance of the PDF and load the view with data
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('pdf.indicator', compact('indicator'));
+        $pdf->loadView('pdf.indicator', compact('indicator'))
+            ->setOption('keep-table-together', true)
+            ->setPaper('A4')
+            ->setOption('margin-bottom', 10);;
 
         // Stream or download the PDF
         return $pdf->download('indicator_' . $indicator->id . '.pdf');
