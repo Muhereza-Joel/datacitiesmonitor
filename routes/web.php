@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/indicators/export', [IndicatorController::class, 'exportAllWithResponses'])->name('indicators.export.all');
     Route::get('/indicators/{id}/export', [IndicatorController::class, 'exportIndicatorAndResponses'])->name('indicators.export.single');
+    Route::get('/indicators/pdf/{id}', [IndicatorController::class, 'exportIndicatorPDF'])->name('export.single.indicator.pdf');
 
     //Routes for charts
     Route::get('/indicator/{indicatorId}/graph/line', [IndicatorController::class, 'getLineChartData'])->name('indicator.linegraph');

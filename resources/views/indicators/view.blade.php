@@ -81,6 +81,7 @@
                 <div class="btn-group g-1" role="group" aria-label="Administrator Actions">
                     @if(Gate::allows('create', App\Models\Response::class))
                     <a href="{{ route('indicators.export.single', $indicator->id) }}" class="btn btn-primary btn-sm">Export As Excel</a>
+                    <a href="{{ route('export.single.indicator.pdf', $indicator->id) }}" class="btn btn-primary btn-sm">Export As PDF</a>
                     <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
                     @endif
 

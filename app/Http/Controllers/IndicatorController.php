@@ -12,6 +12,7 @@ use App\Models\Indicator;
 use App\Models\Organisation;
 use App\Models\Response;
 use App\Models\TheoryOfChange;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -437,5 +438,18 @@ class IndicatorController extends Controller
             'baseline' => $indicator->baseline, // Include baseline value
             'target' => $indicator->target      // Include target value
         ]);
+    }
+
+    public function exportIndicatorPDF($id)
+    {
+        // Fetch the indicator along with its responses
+        $indicator = Indicator::with('responses')->findOrFail($id);
+
+        // Create an instance of the PDF and load the view with data
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('pdf.indicator', compact('indicator'));
+
+        // Stream or download the PDF
+        return $pdf->download('indicator_' . $indicator->id . '.pdf');
     }
 }
