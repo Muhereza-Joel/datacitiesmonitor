@@ -129,12 +129,14 @@ class IndicatorController extends Controller
             'organisation_id' => 'string|required|exists:organisations,id',
         ]);
 
-        Indicator::create($validated);
+        $indicator = Indicator::create($validated);
 
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
+
+        event(new UserActionPerformed(Auth::user(), 'create_indicator', 'Indicator', $indicator->id));
 
         return redirect()->back()->with(['success' => 'Indicator Created Successfully', 'myOrganisation' => $myOrganisation, 'theories' => $theories]);
     }
@@ -264,7 +266,7 @@ class IndicatorController extends Controller
         $myOrganisation = Organisation::findOrFail($organisation_id);
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
 
-        event(new UserActionPerformed(Auth::user(), 'Updated indicator', 'Indicator', $id));
+        event(new UserActionPerformed(Auth::user(), 'update_indicator', 'Indicator', $id));
 
         return redirect()->back()->with(['success' => 'Indicator Updated Successfully', 'myOrganisation' => $myOrganisation, 'theories' => $theories]);
     }
@@ -303,6 +305,7 @@ class IndicatorController extends Controller
             // Commit the transaction if everything goes well
             DB::commit();
 
+            event(new UserActionPerformed(Auth::user(), 'update_indicator_status', 'Indicator', $indicator->id));
             return redirect()->back()->with(['success' => 'Indicator Status Updated Successfully']);
         } catch (\Exception $e) {
             // Rollback the transaction if there's an error
