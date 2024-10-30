@@ -13,6 +13,8 @@ use App\Models\Organisation;
 use App\Models\Response;
 use App\Models\TheoryOfChange;
 use Barryvdh\DomPDF\PDF;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -405,6 +407,51 @@ class IndicatorController extends Controller
         }
     }
 
+    public function exportIndicatorAndResponsesAsCSV($indicatorId)
+    {
+        // Prepare the export objects
+        $indicatorExport = new SingleIndicatorExport($indicatorId);
+        $responsesExport = new ResponseExport($indicatorId);
+
+        // Define the directory and ensure it exists
+        $archiveDir = storage_path("app/public/archives/");
+        if (!file_exists($archiveDir)) {
+            mkdir($archiveDir, 0777, true); // Create the directory if it doesn't exist
+        }
+
+        // Create the zip file
+        $zipFileName = $archiveDir . "indicator_responses_$indicatorId.zip";
+        $zip = new ZipArchive();
+
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            // Export indicator to a CSV file in the 'public' disk
+            $indicatorFileName = "indicator_$indicatorId.csv";
+            Excel::store($indicatorExport, $indicatorFileName, 'public', \Maatwebsite\Excel\Excel::CSV);
+            $indicatorPath = storage_path("app/public/$indicatorFileName");
+            if (file_exists($indicatorPath)) {
+                $zip->addFile($indicatorPath, $indicatorFileName);
+            }
+
+            // Export responses to a CSV file in the 'public' disk
+            $responsesFileName = "responses_$indicatorId.csv";
+            Excel::store($responsesExport, $responsesFileName, 'public', \Maatwebsite\Excel\Excel::CSV);
+            $responsesPath = storage_path("app/public/$responsesFileName");
+            if (file_exists($responsesPath)) {
+                $zip->addFile($responsesPath, $responsesFileName);
+            }
+
+            // Close the zip file after adding files
+            $zip->close();
+
+            // Return the zip file as a download
+            return response()->download($zipFileName)->deleteFileAfterSend(true);
+        } else {
+            // Error: could not create zip file
+            return response()->json(['error' => 'Could not create zip file'], 500);
+        }
+    }
+
+
     public function getLineChartData($indicatorId)
     {
         // Get the indicator to fetch baseline and target values
@@ -445,13 +492,26 @@ class IndicatorController extends Controller
         // Fetch the indicator along with its responses
         $indicator = Indicator::with('responses')->findOrFail($id);
 
+        // Generate the QR code directly to a base64 string
+        $qrCode = new QrCode('https://monitor.opendata-analytics.org/indicators/' . $indicator->id); // URL or data you want to encode
+        $writer = new PngWriter();
+        $qrCodeImage = $writer->write($qrCode);
+
+        // Convert to base64
+        $qrCodeBase64 = base64_encode($qrCodeImage->getString());
+
         // Create an instance of the PDF and load the view with data
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('pdf.indicator', compact('indicator'))
+        $pdf->loadView('pdf.indicator', compact('indicator', 'qrCodeBase64'))
             ->setOption('keep-table-together', true)
             ->setPaper('A4')
-            ->setOption('margin-bottom', 10);
-
+            ->setOption('margin-bottom', 10)
+            ->setOption('password', 'user-password') // User password
+            ->setOption('permissions', 'owner-password') // Owner permissions password
+            ->setOption('print-media-type', true)
+            ->setOption('no-copy', true) // Disallow copying
+            ->setOption('no-modify', true) // Disallow modification
+            ->setOption('no-annotate', true); // Disallow annotations
         // Format the filename
         $formattedDate = now()->format('Y-m-d'); // Get the current date in the desired format
         $titleSlug = $this->slugify($indicator->indicator_title); // Use the slugify function

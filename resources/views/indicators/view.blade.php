@@ -78,19 +78,50 @@
 
             </div>
             <div class="text-end w-75 mt-2">
-                <div class="btn-group g-1" role="group" aria-label="Administrator Actions">
-                    @if(Gate::allows('create', App\Models\Response::class))
-                    <a href="{{ route('indicators.export.single', $indicator->id) }}" class="btn btn-primary btn-sm">Export As Excel</a>
-                    <a href="{{ route('export.single.indicator.pdf', $indicator->id) }}" class="btn btn-primary btn-sm">Export As PDF</a>
-                    <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
-                    @endif
+                <div class="btn-group" role="group" aria-label="Administrator Actions">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Manage Indicator
+                    </button>
+                    <ul class="dropdown-menu">
+                        @if(Gate::allows('create', App\Models\Response::class))
+                        <li>
+                            <a class="dropdown-item" href="{{ route('indicators.export.single', $indicator->id) }}">
+                                <i class="bi bi-file-earmark-excel-fill me-2"></i>Export as Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('export.single.indicator.pdf', $indicator->id) }}">
+                                <i class="bi bi-file-pdf-fill me-2"></i>Export as PDF
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('export.single.indicator.csv', $indicator->id) }}">
+                                <i class="bi bi-file-earmark-text-fill me-2"></i>Export as CSV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="left"
+                                title="Add Responses to this Indicator"
+                                href="{{ route('indicators.response.create', $indicator->id) }}">
+                                <i class="bi bi-plus-circle me-2"></i>Add Responses
+                            </a>
+                        </li>
+                        @endif
 
-                    @if(Gate::allows('update', Auth::user(), $indicator))
-                    <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicator->id) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
-                    @endif
+                        @if(Gate::allows('update', Auth::user(), $indicator))
+                        <li>
+                            <a class="dropdown-item" href="{{ route('indicators.edit', $indicator->id) }}">
+                                <i class="bi bi-pencil-square me-2"></i>Edit Indicator
+                            </a>
+                        </li>
+                        @endif
 
-                    <a class="btn btn-primary btn-sm" href="{{ route('indicator.responses', $indicator->id) }}">Indicator Responses</a>
-
+                        <li>
+                            <a class="dropdown-item" href="{{ route('indicator.responses', $indicator->id) }}">
+                                <i class="bi bi-list-ul me-2"></i>View Indicator Responses
+                            </a>
+                        </li>
+                    </ul>
                 </div>
 
             </div>

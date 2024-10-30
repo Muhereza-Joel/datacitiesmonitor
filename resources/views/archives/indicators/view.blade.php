@@ -80,13 +80,22 @@
             </div>
             <div class="text-end w-50 mt-2">
                 <div class="btn-group" role="group" aria-label="Administrator Actions">
-
-
-                    <a class="btn btn-primary btn-sm" href="{{ route('archives.indicator.responses', $indicator->indicator_id) }}">Indicator Responses</a>
-                    <a class="btn btn-primary btn-sm mx-2" href="{{ route('archives.show', $indicator->archive_id) }}">Go back to archive</a>
-
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Manage Indicator
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('archives.indicator.responses', $indicator->indicator_id) }}">
+                                <i class="bi bi-list-ul me-2"></i>Indicator Responses
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('archives.show', $indicator->archive_id) }}">
+                                <i class="bi bi-arrow-left-circle me-2"></i>Go Back to Archive
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
             </div>
         </div>
 

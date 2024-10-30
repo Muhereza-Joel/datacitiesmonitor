@@ -4,6 +4,11 @@
 <head>
     <title>Indicator Report</title>
     <style>
+        @page {
+            margin: 100px 25px;
+            /* Adjust margins as needed */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -56,15 +61,17 @@
         }
 
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background-color: #f8f9fa;
             padding: 20px;
-            border-bottom: 2px solid #007bff;
+
         }
 
         .header img {
             width: 300px;
-            /* Adjust width as needed */
+            /* Logo width */
             object-fit: contain;
         }
 
@@ -73,6 +80,7 @@
             font-size: 24px;
             color: #343a40;
         }
+
         .header h3 {
             margin: 10px 0 5px;
             font-size: 18px;
@@ -89,31 +97,50 @@
             font-weight: bold;
             color: #007bff;
         }
+
+        .qr-code {
+            width: 150px;
+            /* Adjust QR code size as needed */
+            height: 150px;
+            /* Adjust QR code size as needed */
+        }
+
+        .page-number {
+            font-size: 12px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        
-        <h1>M $ E Monitor</h1>
-        <h3>Indicator Report For</h3>
-        <p>{{ $indicator->indicator_title }}</p>
-        <p class="date">As Of  {{ now()->format('F j, Y') }}</p>
-    </div>
+    <table style="width: 100%; border-collapse: collapse; background-color: #f8f9fa; border-bottom: 2px solid #007bff;">
+        <tr>
+            <td style="border: none; vertical-align: top; text-align: center; line-height: 1.0">
+                <div class="header">
+                    <div>
+                        <h1>Datacities M $ E Monitor</h1>
+                        <h3>Indicator Report For</h3>
+                        <p>{{ $indicator->indicator_title }}</p>
+                        <p class="date">As of {{ now()->format('F j, Y') }}</p>
+                    </div>
+                    <div>
 
+                    </div>
+                </div>
+            </td>
+            <td style="border: none; text-align: right; vertical-align: middle;">
+                <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" class="qr-code">
+            </td>
+        </tr>
+    </table>
 
     <table>
-        <tr>
-            <th>Attribute</th>
-            <th>Value</th>
-        </tr>
         <tr>
             <td>Indicator Id</td>
             <td>{{ $indicator->id }}</td>
         </tr>
         <tr>
             <td>Category</td>
-            <td>{{ $indicator->category }} Indicator</td>
+            <td>{{ $indicator->category === 'None' ? 'Un Categorised' :  $indicator->category }} Indicator</td>
         </tr>
         <tr>
             <td>Direction of Progress Measurement</td>
@@ -192,7 +219,9 @@
     </div>
     @endforeach
 
-
+    <footer>
+        <div class="page-number">PDF Document Generate By the Datacities M $ E Monitor</div>
+    </footer>
 </body>
 
 </html>
