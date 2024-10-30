@@ -20,6 +20,17 @@
         td {
             padding: 10px;
             text-align: left;
+            vertical-align: top;
+            /* Aligns content to the top for better readability */
+            word-wrap: break-word;
+            /* Allows content to break within cells */
+            white-space: pre-wrap;
+            /* Preserves whitespace and wraps long content */
+        }
+
+        .extra-info {
+            margin-top: 10px;
+            /* Adds a bit of spacing between the response details and additional info */
         }
     </style>
 </head>
@@ -108,20 +119,20 @@
             </tr>
             <!-- Additional Information for Each Response -->
             <tr>
-                <td colspan="5">
+                <td colspan="5" class="extra-info">
                     @if ($response->notes !== '')
                     <strong>Notes:</strong>
-                    <div>{!! $response->notes !!}</div>
+                    <div>{!! nl2br(e($response->notes)) !!}</div>
                     @endif
 
                     @if ($response->lessons !== '')
                     <strong>Lessons:</strong>
-                    <div>{!! $response->lessons !!}</div>
+                    <div>{!! nl2br(e($response->lessons)) !!}</div>
                     @endif
 
                     @if ($response->recommendations !== '')
                     <strong>Recommendations:</strong>
-                    <div>{!! $response->recommendations !!}</div>
+                    <div>{!! nl2br(e($response->recommendations)) !!}</div>
                     @endif
                 </td>
             </tr>
