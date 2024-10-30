@@ -450,9 +450,35 @@ class IndicatorController extends Controller
         $pdf->loadView('pdf.indicator', compact('indicator'))
             ->setOption('keep-table-together', true)
             ->setPaper('A4')
-            ->setOption('margin-bottom', 10);;
+            ->setOption('margin-bottom', 10);
+
+        // Format the filename
+        $formattedDate = now()->format('Y-m-d'); // Get the current date in the desired format
+        $titleSlug = $this->slugify($indicator->indicator_title); // Use the slugify function
 
         // Stream or download the PDF
-        return $pdf->download('indicator_' . $indicator->id . '.pdf');
+        return $pdf->download("indicator-{$titleSlug}-{$formattedDate}.pdf");
+    }
+
+    // Function to slugify the title
+    private function slugify($text)
+    {
+        // Replace non-letter or digits by hyphens
+        $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+
+        // Transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT//IGNORE', $text);
+
+        // Remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+        // Trim
+        $text = trim($text, '-');
+
+        // Remove duplicate -'s
+        $text = preg_replace('~-+~', '-', $text);
+
+        // Return the slug
+        return strtolower($text);
     }
 }

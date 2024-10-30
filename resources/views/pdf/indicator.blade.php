@@ -48,11 +48,60 @@
             margin-top: 5px;
             /* Adds spacing above each strong element */
         }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .header img {
+            width: 300px;
+            /* Adjust width as needed */
+            object-fit: contain;
+        }
+
+        .header h1 {
+            margin: 10px 0 5px;
+            font-size: 24px;
+            color: #343a40;
+        }
+        .header h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+            color: #343a40;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .header .date {
+            font-weight: bold;
+            color: #007bff;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Indicator: {{ $indicator->name }}</h1>
+    <div class="header">
+        
+        <h1>M $ E Monitor</h1>
+        <h3>Indicator Report For</h3>
+        <p>{{ $indicator->indicator_title }}</p>
+        <p class="date">As Of  {{ now()->format('F j, Y') }}</p>
+    </div>
+
+
     <table>
         <tr>
             <th>Attribute</th>
