@@ -111,7 +111,7 @@
                                 <p><strong>Country:</strong> {{ $log->country ? $log->country : 'N/A' }} </p>
                                 <p><strong>Device Operating System:</strong> {{ $log->device_os ? $log->device_os : 'N/A' }} </p>
                                 <p><strong>Operating System Architecture:</strong> {{ $log->device_architecture ? $log->device_architecture : 'N/A' }} </p>
-                                <p><strong>Description:</strong> {{ $log->description ?? 'N/A' }}</p>
+                                <p><strong>Browser:</strong> {{ $log->device_browser ? $log->device_browser : 'N/A' }} <br></p>
                                 <p><strong>Logged On:</strong> {{ $log->created_at }}</p>
                             </div>
                             <div class="modal-footer">
