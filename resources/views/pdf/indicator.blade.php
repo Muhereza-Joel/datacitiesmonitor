@@ -21,20 +21,30 @@
         th,
         td {
             padding: 10px;
-            text-align: left;
+            text-align: justify;
             vertical-align: top;
             /* Aligns content to the top for better readability */
-            word-wrap: break-word;
-            /* Allows content to break within cells */
-            white-space: pre-wrap;
-            /* Preserves whitespace and wraps long content */
         }
 
-        .extra-info {
+        .additional-info {
             margin-top: 10px;
-            /* Adds a bit of spacing between the response details and additional info */
+            /* Adds spacing above additional info */
+            background-color: #f9f9f9;
+            /* Light gray background for additional info */
+            padding: 10px;
+            /* Padding for better readability */
+            border-top: 1px solid #ccc;
+            /* Border to separate from the response row */
+        }
+
+        strong {
+            display: block;
+            /* Makes the strong text stand out as a block */
+            margin-top: 5px;
+            /* Adds spacing above each strong element */
         }
     </style>
+    
 </head>
 
 <body>
@@ -119,25 +129,19 @@
                 <td>{{ $response->progress }}</td>
                 <td>{{ $response->created_at }}</td>
             </tr>
-            <!-- Additional Information for Each Response -->
             <tr>
-                <td colspan="5" class="extra-info">
+                <td colspan="5" class="additional-info">
+                    <strong>Additional Information:</strong>
                     @if ($response->notes !== '')
                     <strong>Notes:</strong>
                     <div>{!! nl2br($response->notes) !!}</div>
                     @endif
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5" class="extra-info">
+
                     @if ($response->lessons !== '')
                     <strong>Lessons:</strong>
                     <div>{!! nl2br($response->lessons) !!}</div>
                     @endif
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5" class="extra-info">
+
                     @if ($response->recommendations !== '')
                     <strong>Recommendations:</strong>
                     <div>{!! nl2br($response->recommendations) !!}</div>
