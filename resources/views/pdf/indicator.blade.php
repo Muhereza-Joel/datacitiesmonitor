@@ -116,11 +116,11 @@
     <h2>Responses</h2>
     @foreach ($indicator->responses as $response)
     <div class="response-entry">
-        <p><strong>Response ID:</strong> {{ $response->id }}</p>
-        <p><strong>Status:</strong> {{ $response->status }}</p>
-        <p><strong>Current State:</strong> {{ $response->current }}</p>
-        <p><strong>Percentage Progress From Baseline:</strong> {{ $response->progress }}%</p>
-        <p><strong>Created At:</strong> {{ $response->created_at }}</p>
+        <p>
+            Response {{ $loop->iteration }} with ID {{ $response->id }} was recorded on {{ $response->created_at }}.
+            <strong>The current state of the indicator is</strong> {{ $response->current }}, while its status is {{ $response->status }}.
+            The percentage progress compared to the baseline is {{ $response->current }} percent.
+        </p>
 
         <div class="additional-info">
             <strong>Additional Information:</strong>
