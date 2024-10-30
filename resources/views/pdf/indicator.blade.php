@@ -122,17 +122,17 @@
                 <td colspan="5" class="extra-info">
                     @if ($response->notes !== '')
                     <strong>Notes:</strong>
-                    <div>{!! nl2br(e($response->notes)) !!}</div>
+                    <div>{!! nl2br($response->notes) !!}</div>
                     @endif
 
                     @if ($response->lessons !== '')
                     <strong>Lessons:</strong>
-                    <div>{!! nl2br(e($response->lessons)) !!}</div>
+                    <div>{!! nl2br($response->lessons) !!}</div>
                     @endif
 
                     @if ($response->recommendations !== '')
                     <strong>Recommendations:</strong>
-                    <div>{!! nl2br(e($response->recommendations)) !!}</div>
+                    <div>{!! nl2br($response->recommendations) !!}</div>
                     @endif
                 </td>
             </tr>
