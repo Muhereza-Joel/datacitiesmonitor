@@ -3,13 +3,12 @@
 
 <head>
     <title>Indicator Report</title>
-
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
             page-break-inside: avoid;
-            /* Prevents page break inside table */
+            /* Prevent page break inside table */
         }
 
         table,
@@ -21,9 +20,13 @@
         th,
         td {
             padding: 10px;
-            text-align: justify;
+            text-align: left;
             vertical-align: top;
             /* Aligns content to the top for better readability */
+            word-wrap: break-word;
+            /* Allows content to break within cells */
+            page-break-inside: avoid;
+            /* Prevents page break inside a cell */
         }
 
         .additional-info {
@@ -35,6 +38,8 @@
             /* Padding for better readability */
             border-top: 1px solid #ccc;
             /* Border to separate from the response row */
+            page-break-inside: avoid;
+            /* Prevent page break inside additional info */
         }
 
         strong {
@@ -44,7 +49,6 @@
             /* Adds spacing above each strong element */
         }
     </style>
-    
 </head>
 
 <body>
