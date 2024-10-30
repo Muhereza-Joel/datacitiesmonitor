@@ -71,7 +71,8 @@
                                     <strong>Action Done:</strong> {{ $log->action }} <br>
                                     <strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }}) <br>
                                     <strong>Associated IP Address:</strong> {{ $log->ip_address }} <br>
-                                    <strong>Logged On:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }}
+                                    <strong>Browser:</strong> {{ $log->device_browser ? $log->device_browser : 'N/A' }} <br>
+                                    <strong>Logged On:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }} <br>
                                 </div>
                             </div>
                             <div class="text-end">
@@ -107,6 +108,9 @@
                                 <p><strong>Action Done:</strong> {{ $log->action }}</p>
                                 <p><strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }})</p>
                                 <p><strong>Associated IP Address:</strong> {{ $log->ip_address }}</p>
+                                <p><strong>Country:</strong> {{ $log->country ? $log->country : 'N/A' }} </p>
+                                <p><strong>Device Operating System:</strong> {{ $log->device_os ? $log->device_os : 'N/A' }} </p>
+                                <p><strong>Operating System Architecture:</strong> {{ $log->device_architecture ? $log->device_architecture : 'N/A' }} </p>
                                 <p><strong>Description:</strong> {{ $log->description ?? 'N/A' }}</p>
                                 <p><strong>Logged On:</strong> {{ $log->created_at }}</p>
                             </div>

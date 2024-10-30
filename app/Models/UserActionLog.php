@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Exception;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 class UserActionLog extends Model
@@ -25,6 +29,10 @@ class UserActionLog extends Model
         'ip_address', // User's IP address
         'resource_type', // Type of the resource (e.g., 'Indicator')
         'resource_id', // ID of the specific resource
+        'device_os',
+        'device_architecture',
+        'device_browser',
+        'country',
     ];
 
     // Automatically generate UUID when creating
@@ -84,7 +92,7 @@ class UserActionLog extends Model
             ->select(
                 'theory_of_changes.id as resource_id',
                 'theory_of_changes.title as toc_title',
-                 DB::raw('MAX(user_action_logs.created_at) as created_at')
+                DB::raw('MAX(user_action_logs.created_at) as created_at')
             )
             ->groupBy('theory_of_changes.id', 'theory_of_changes.title')
             ->orderBy('created_at', 'desc')
@@ -106,5 +114,61 @@ class UserActionLog extends Model
             ->where('action', 'User logged in')
             ->latest()
             ->take($limit);
+    }
+
+    protected static function getCountryFromIp($ip)
+    {
+
+        $cacheKey = 'country_from_ip_' . md5($ip);
+
+        return Cache::remember($cacheKey, now()->addHours(1), function () use ($ip) {
+            try {
+
+                $response = Http::get('https://ipinfo.io/' . $ip . '/json');
+
+                if ($response->successful()) {
+                    return $response->json()['country'] ?? null; // Return country code if available
+                }
+
+                return null;
+            } catch (Exception $e) {
+
+                // Log the exception for debugging purposes
+                Log::error('Failed to get country from IP: ' . $ip . ' - Error: ' . $e->getMessage());
+                return null;
+            }
+        });
+    }
+
+    protected static function parseUserAgent($userAgent)
+    {
+        $os = 'Unknown OS';
+        $architecture = 'Unknown Architecture';
+        $browser = 'Unknown Browser';
+
+        // Simple checks (expand these as needed for more precise parsing)
+        if (strpos($userAgent, 'Windows NT 10.0') !== false) {
+            $os = 'Windows 10';
+        } elseif (strpos($userAgent, 'Mac OS X') !== false) {
+            $os = 'macOS';
+        }
+
+        if (strpos($userAgent, 'Win64') !== false || strpos($userAgent, 'x64') !== false) {
+            $architecture = '64-bit';
+        } elseif (strpos($userAgent, 'Win32') !== false || strpos($userAgent, 'x86') !== false) {
+            $architecture = '32-bit';
+        }
+
+        if (strpos($userAgent, 'Chrome') !== false) {
+            $browser = 'Chrome';
+        } elseif (strpos($userAgent, 'Firefox') !== false) {
+            $browser = 'Firefox';
+        }
+
+        return [
+            'os' => $os,
+            'architecture' => $architecture,
+            'browser' => $browser,
+        ];
     }
 }
