@@ -104,15 +104,27 @@
 
                                 </div>
                                 <hr>
-                                <p><strong>Username:</strong> {{ $log->user->name ?? 'Unknown User' }}</p>
-                                <p><strong>Action Done:</strong> {{ $log->action }}</p>
-                                <p><strong>Resource:</strong> {{ $log->resource_type }} (ID: {{ $log->resource_id }})</p>
-                                <p><strong>Associated IP Address:</strong> {{ $log->ip_address }}</p>
-                                <p><strong>Country:</strong> {{ $log->country ? $log->country : 'N/A' }} </p>
-                                <p><strong>Device Operating System:</strong> {{ $log->device_os ? $log->device_os : 'N/A' }} </p>
-                                <p><strong>Operating System Architecture:</strong> {{ $log->device_architecture ? $log->device_architecture : 'N/A' }} </p>
-                                <p><strong>Browser:</strong> {{ $log->device_browser ? $log->device_browser : 'N/A' }} <br></p>
-                                <p><strong>Logged On:</strong> {{ $log->created_at }}</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Username:</strong> {{ $log->user->name ?? 'Unknown User' }} <br>
+                                        <strong>Action:</strong> {{ $log->action }} <br>
+                                        <strong>IP Address:</strong> {{ $log->ip_address }} <br>
+                                        <strong>Hostname:</strong> {{ $log->hostname ?? 'N/A' }} <br>
+                                        <strong>Country:</strong> {{ $log->country ?? 'N/A' }} <br>
+                                        <strong>City:</strong> {{ $log->city ?? 'N/A' }} <br>
+                                        <strong>Region:</strong> {{ $log->region ?? 'N/A' }} <br>
+                                        <strong>Coordinates:</strong> {{ $log->loc ?? 'N/A' }} <br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Organization:</strong> {{ $log->org ?? 'N/A' }} <br>
+                                        <strong>Timezone:</strong> {{ $log->timezone ?? 'N/A' }} <br>
+                                        <strong>Operating System:</strong> {{ $log->device_os ?? 'N/A' }} <br>
+                                        <strong>Architecture:</strong> {{ $log->device_architecture ?? 'N/A' }} <br>
+                                        <strong>Browser:</strong> {{ $log->device_browser ?? 'N/A' }} <br>
+                                        <strong>Logged On:</strong> {{ $log->created_at->format('M d, Y \a\t g:ia') }}
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

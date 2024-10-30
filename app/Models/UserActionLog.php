@@ -33,6 +33,12 @@ class UserActionLog extends Model
         'device_architecture',
         'device_browser',
         'country',
+        'city',
+        'region',
+        'loc',
+        'hostname',
+        'org',
+        'timezone',
     ];
 
     // Automatically generate UUID when creating
@@ -116,7 +122,7 @@ class UserActionLog extends Model
             ->take($limit);
     }
 
-    protected static function getCountryFromIp($ip)
+    protected static function getIpDetails($ip)
     {
 
         $cacheKey = 'country_from_ip_' . md5($ip);
@@ -127,7 +133,15 @@ class UserActionLog extends Model
                 $response = Http::get('https://ipinfo.io/' . $ip . '/json');
 
                 if ($response->successful()) {
-                    return $response->json()['country'] ?? null; // Return country code if available
+                    return [
+                        'hostname' => $response->json()['hostname'] ?? null,
+                        'city' => $response->json()['city'] ?? null,
+                        'region' => $response->json()['region'] ?? null,
+                        'country' => $response->json()['country'] ?? null,
+                        'loc' => $response->json()['loc'] ?? null,
+                        'org' => $response->json()['org'] ?? null,
+                        'timezone' => $response->json()['timezone'] ?? null,
+                    ];
                 }
 
                 return null;
