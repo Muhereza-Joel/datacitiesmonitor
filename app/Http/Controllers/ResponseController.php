@@ -60,7 +60,9 @@ class ResponseController extends Controller
         $validated['status'] = $status; // Include the status of the indicator
 
         // Create the response with the additional fields
-        Response::create($validated);
+        $response = Response::create($validated);
+
+        event(new UserActionPerformed(Auth::user(), 'create_response', 'Response', $response->id));
 
         return response()->json([
             'message' => 'Response added successfully!',
@@ -117,6 +119,8 @@ class ResponseController extends Controller
         // Update the response with the validated data including status
         $response->update($validated);
 
+        event(new UserActionPerformed(Auth::user(), 'update_response', 'Response', $response->id));
+
         return response()->json([
             'message' => 'Response updated successfully!',
         ], 200);
@@ -169,6 +173,7 @@ class ResponseController extends Controller
 
         $response->delete(); // This will soft delete the record
 
+        event(new UserActionPerformed(Auth::user(), 'delete_response', 'Response', $response->id));
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Response deleted successfully');
     }
