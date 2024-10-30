@@ -53,12 +53,7 @@ class LogController extends Controller
             });
         }
 
-        // Execute the query and paginate or get results as needed
-        $logs = $query->paginate(25); // Example pagination
-
-        // Paginate the results
-        $logs = $query->paginate(24);
-
+        $logs = $query->paginate(100); 
         return view('logs.list', compact('pageTitle', 'logs', 'filter'));
     }
 
