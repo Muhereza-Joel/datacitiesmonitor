@@ -93,33 +93,6 @@
                                 </div>
                             </div>
 
-                            <!-- Add this in your custom CSS for additional styling -->
-                            <style>
-                                .form-control[readonly] {
-                                    background-color: #e9ecef;
-                                    opacity: 1;
-                                }
-
-                                .progress-bar {
-                                    transition: width 0.6s ease;
-                                    font-weight: bold;
-                                }
-
-                                .invalid-feedback {
-                                    display: none;
-                                }
-
-                                input.is-invalid+.invalid-feedback {
-                                    display: block;
-                                }
-
-                                .progress-bar.bg-success {
-                                    background-color: #28a745 !important;
-                                }
-                            </style>
-
-
-
                             <div class="accordion" id="responseAccordion">
 
                                 <!-- Notes Section -->
@@ -198,6 +171,8 @@
         var lastCurrentState = parseFloat($('input[name="last_current_state"]').val()) || baseline;
         var direction = $('#direction').val();
         var currentProgress = 0; // Store the progress to prevent recalculation on submit
+        // Check the auto_save preference from the session
+        const autoSaveEnabled = "{{ session('user.preferences.auto_save') }}" === "true";
 
         // Initial progress calculation
         var initialProgress = calculateProgress(lastCurrentState, baseline, target, direction);
@@ -425,15 +400,19 @@
 
         loadFormData(indicatorId);
 
-        // Save form data on input change
-        $('form input, form select, form textarea').on('change', function() {
-            saveFormData();
-        });
+        // Save form data on input change if auto_save is true
+        if (autoSaveEnabled) {
+            $('form input, form select, form textarea').on('change', function() {
+                saveFormData();
+            });
+        }
 
         var editors = [quill, notesQuill, recommendationsQuill];
         editors.forEach(function(editor) {
             editor.on('text-change', function(delta, oldDelta, source) {
+                if (autoSaveEnabled) {
                 saveFormData();
+            }
             });
         });
 
@@ -487,7 +466,7 @@
                         }
                     }
 
-                    
+
 
                     // Restore Quill editor content
                     var quillEditors = {

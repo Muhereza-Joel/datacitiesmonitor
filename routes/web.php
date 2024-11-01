@@ -11,6 +11,7 @@ use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ThoeryOfChangeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -87,7 +88,8 @@ Route::middleware(['auth'])->group(function () {
     //Routes for charts
     Route::get('/indicator/{indicatorId}/graph/line', [IndicatorController::class, 'getLineChartData'])->name('indicator.linegraph');
 
-
+    Route::get('/account/settings', [UserPreferenceController::class, 'showPreferences'])->name('preferences.show');
+    Route::put('/preferences/update', [UserPreferenceController::class, 'updatePreference'])->name('preferences.update');
     Route::get('/email/request-verification/{id}', [EmailVerificationController::class, 'sendVerification'])->name('verification.request');
 
 });

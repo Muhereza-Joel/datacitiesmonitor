@@ -35,6 +35,7 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/dark.css') }}" rel="stylesheet">
     <style>
         #loading-overlay {
             display: none;
@@ -129,15 +130,15 @@
     </style>
 </head>
 
-<body>
+<body {{ session('user.preferences.dark_mode') === 'true' ? 'data-bs-theme=dark' : 'data-bs-theme=light' }}>
     <div class="container">
         <main id="main" class="main">
             @yield('content')
         </main>
     </div>
 
-    
-    
+
+
     <div class="copyright text-center my-4">
         © Copyright <strong><span>M & E Monitor <?php echo date('Y'); ?></span></strong>. All Rights Reserved
     </div>

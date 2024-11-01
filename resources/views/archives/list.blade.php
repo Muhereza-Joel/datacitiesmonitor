@@ -55,9 +55,18 @@
                     <div class="mb-2">
                         <div class="d-flex fw-bold">
                             <div class="w-75 text-start">
+
+                                @if(session('user.preferences.show_archive_organisation_logo') === 'true')
                                 <img src="{{ asset($archive->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                                @endif
+
+                                @if(session('user.preferences.show_archive_status') === 'true')
                                 <span class="badge bg-primary text-light">{{ $archive->access_level}} and {{ $archive->status}}</span>
+                                @endif
+
+                                @if(session('user.preferences.show_archive_indicators_count') === 'true')
                                 <span class="text-primary">Archive has {{ $archive->indicators_count }} Indicators</span>
+                                @endif
 
                             </div>
 
@@ -84,7 +93,9 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading{{$loop->iteration}}">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$loop->iteration}}" aria-expanded="false" aria-controls="collapse{{$loop->iteration}}">
-                                        <small class="text-success">Expand To Read More</small>
+                                        <small id="toggleArchiveAccordionText" class="text-success">
+                                            {{ session('user.preferences.archive_compact_mode') === 'true' ? 'Expand To Read More' : 'Collapse To Show Less' }}
+                                        </small>
                                     </button>
                                 </h2>
                                 <div id="collapse{{$loop->iteration}}" class="accordion-collapse collapse" aria-labelledby="heading{{$loop->iteration}}" data-bs-parent="#accordionArchive{{$loop->iteration}}">
@@ -96,9 +107,11 @@
                             </div>
                         </div>
                     </div>
+                    @if(session('user.preferences.show_archive_create_date') === 'true')
                     <div class="card-footer">
                         <h6>Created On: {{ $archive->created_at->format('M d, Y \a\t g:ia') }}</h6>
                     </div>
+                    @endif
                 </div>
                 <div class="modal fade" id="deleteModal{{ $archive->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $archive->id }}" aria-hidden="true">
                     <div class="modal-dialog">
@@ -137,6 +150,21 @@
 
 <script>
     $(document).ready(function() {
+        // Set initial state for each accordion item based on session preference
+        $('.accordion-collapse').each(function() {
+            const isCompact = "{{ session('user.preferences.archive_compact_mode') }}" === "true";
+            const $accordionText = $(this).prev().find('#toggleArchiveAccordionText');
 
-    })
+            $(this).toggleClass('collapse', isCompact);
+            $accordionText.text(isCompact ? 'Expand To Read More' : 'Collapse To Show Less');
+        });
+
+        // Toggle text when accordion is expanded/collapsed
+        $('.accordion-button').on('click', function() {
+            const $accordionText = $(this).find('#toggleArchiveAccordionText');
+            const isCollapsed = $(this).attr('aria-expanded') === "false";
+
+            $accordionText.text(isCollapsed ? 'Expand To Read More' : 'Collapse To Show Less');
+        });
+    });
 </script>

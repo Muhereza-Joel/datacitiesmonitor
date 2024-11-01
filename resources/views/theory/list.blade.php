@@ -53,8 +53,13 @@
                         <div class="d-flex">
 
                             <div class="w-75 text-start">
+                                @if(session('user.preferences.show_toc_organisation_logo') === 'true')
                                 <img src="{{ asset($theory->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                                @endif
+
+                                @if(session('user.preferences.show_toc_indicators_count') === 'true')
                                 ToC has {{ $theory->indicators_count }} Indicators
+                                @endif
                             </div>
 
                             @if(Gate::allows('delete', $theory))
@@ -68,16 +73,22 @@
                     <div class="card-body">
                         <small class="text-success">Title</small>
                         <h4 class="two-line-truncate">{{ $theory->title }}</h4>
+
+                        @if(session('user.preferences.show_toc_create_date') === 'true')
                         <h6>Created On: {{ $theory->created_at->format('M d, Y \a\t g:ia') }}</h6>
+                        @endif
 
                         <div class="accordion" id="accordionToC{{$loop->iteration}}">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading{{$loop->iteration}}">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$loop->iteration}}" aria-expanded="false" aria-controls="collapse{{$loop->iteration}}">
-                                        <small class="text-success">Expand To Read More</small>
+                                        <small id="toggleToCAccordionText" class="text-success">
+                                            {{ session('user.preferences.toc_compact_mode') === 'true' ? 'Expand To Read More' : 'Collapse To Show Less' }}
+                                        </small>
+
                                     </button>
                                 </h2>
-                                <div id="collapse{{$loop->iteration}}" class="accordion-collapse collapse" aria-labelledby="heading{{$loop->iteration}}" data-bs-parent="#accordionToC{{$loop->iteration}}">
+                                <div id="collapse{{$loop->iteration}}" class="accordion-collapse {{ session('user.preferences.toc_compact_mode') === 'true' ? 'collapse' : '' }}" aria-labelledby="heading{{$loop->iteration}}" data-bs-parent="#accordionToC{{$loop->iteration}}">
                                     <div class="accordion-body">
                                         <h5>Description</h5>
                                         <p>{!! $theory->description !!}</p>
@@ -134,5 +145,22 @@
 @include('layouts.footer')
 
 <script>
+    $(document).ready(function() {
+        // Set initial state for each accordion item based on session preference
+        $('.accordion-collapse').each(function() {
+            const isCompact = "{{ session('user.preferences.toc_compact_mode') }}" === "true";
+            const $accordionText = $(this).prev().find('#toggleToCAccordionText');
 
+            $(this).toggleClass('collapse', isCompact);
+            $accordionText.text(isCompact ? 'Expand To Read More' : 'Collapse To Show Less');
+        });
+
+        // Toggle text when accordion is expanded/collapsed
+        $('.accordion-button').on('click', function() {
+            const $accordionText = $(this).find('#toggleToCAccordionText');
+            const isCollapsed = $(this).attr('aria-expanded') === "false";
+
+            $accordionText.text(isCollapsed ? 'Expand To Read More' : 'Collapse To Show Less');
+        });
+    });
 </script>

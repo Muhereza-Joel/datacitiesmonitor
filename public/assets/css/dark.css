@@ -1,0 +1,179 @@
+/* Custom styles for Bootstrap cards in dark mode */
+[data-bs-theme="dark"] .header {
+    background-color: #353b40;
+    border-bottom: none;
+}
+
+[data-bs-theme="dark"] .header .search-form input {
+    color: #fdfeff !important;
+}
+
+[data-bs-theme="dark"] .header .search-form button i {
+    color: #fdfeff !important;
+}
+
+[data-bs-theme="dark"] .header-nav .profile .dropdown-item:hover {
+    background-color: #24292e !important;
+}
+
+[data-bs-theme="dark"] .header-nav .notifications .notification-item {
+    background-color: #24292e !important;
+}
+
+[data-bs-theme="dark"] .header-nav .profile .dropdown-header h6 {
+    color: #1cc9be !important;
+}
+
+[data-bs-theme="dark"] .nav-tabs {
+    background-color: #05333e !important;
+    color: #fdfeff !important;
+}
+
+[data-bs-theme="dark"] .nav-tabs .nav-link {
+    background-color: #05333e !important;
+    color: #fdfeff !important;
+}
+
+[data-bs-theme="dark"] .card {
+    background-color: #24292e;
+    color: #e5e7e9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme="dark"] .card-header {
+    background-color: #24292e;
+    color: #dcddde;
+}
+
+[data-bs-theme="dark"] .card-title {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .card-footer {
+    background-color: #24292e;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .sidebar {
+    background-color: #24292e;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .sidebar-nav .nav-link {
+    background-color: #05333e !important;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .sidebar-nav .publication-link {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .sidebar-nav .publication-link:hover {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .pagetitle {
+    background-color: #24292e;
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .pagetitle h1 {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .breadcrumb a {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .breadcrumb .breadcrumb-item.active {
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .card a {
+    color: #fafafa;
+}
+
+[data-bs-theme="dark"] .card a:hover {
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .text-primary {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .badge.bg-light {
+    background-color: #05333e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .badge.bg-primary {
+    background-color: #0a5062 !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .btn.btn-primary {
+    background-color: #0a5062 !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .card-icon {
+    background-color: #05333e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .info-card h6 {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dropdown .dropdown-item {
+    background-color: #24292e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dashboard .filter .dropdown-item {
+    background-color: #24292e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dashboard .filter .dropdown-item:hover {
+    background-color: #05333e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dropdown .dropdown-item:hover {
+    background-color: #05333e !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .tab-pane .text-dark {
+    color: #eae5e5 !important;
+}
+
+[data-bs-theme="dark"] .baseline-marker {
+    color: #eae5e5 !important;
+}
+
+[data-bs-theme="dark"] .status-draft {
+    /* border-top: 10px solid #fc03a1; */
+    border-left: 5px solid #fc03a1;
+}
+
+[data-bs-theme="dark"] .status-review {
+    /* border-top: 10px solid #0a1157; */
+    border-left: 5px solid #0a1157;
+}
+
+[data-bs-theme="dark"] .status-public {
+    /* border-top: 10px solid green; */
+    border-left: 5px solid green;
+}
+
+[data-bs-theme="dark"] .status-archived {
+    /* border-top: 10px solid #1cc9be; */
+    border-left: 5px solid #1cc9be;
+}
+
+[data-bs-theme="dark"] .nav-pills .nav-link {
+    background-color: #353b40;
+    border-left: 5px solid #1cc9be;
+}

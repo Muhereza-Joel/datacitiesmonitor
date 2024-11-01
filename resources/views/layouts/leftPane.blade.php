@@ -83,12 +83,12 @@ $other_organizations = session('other_organizations');
       </a>
       <ul id="org-nav-{{ $row->id }}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="{{ route('organisation.publications', [$row->id, 'type' => 'public_indicators']) }}">
+          <a class="publication-link" href="{{ route('organisation.publications', [$row->id, 'type' => 'public_indicators']) }}">
             <i class="bi bi-circle bg-light"></i><span>Public Indicators</span>
           </a>
         </li>
         <li>
-          <a href="{{ route('organisation.publications', [$row->id, 'type' => 'archives']) }}">
+          <a class="publication-link" href="{{ route('organisation.publications', [$row->id, 'type' => 'archives']) }}">
             <i class="bi bi-circle bg-light"></i><span>Archives</span>
           </a>
         </li>

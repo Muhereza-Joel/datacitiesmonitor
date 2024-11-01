@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>{{$pageTitle}}</title>
+  <title>{{$pageTitle ?? 'M $ E Monitor'}}</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
   <!-- Template Main CSS File -->
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/dark.css') }}" rel="stylesheet">
 
   <style>
     #loading-overlay {
@@ -253,4 +254,20 @@
     }
   </style>
 
+  <!-- Add this in your custom CSS for additional styling -->
+  <style>
+    .progress-bar {
+      transition: width 0.6s ease;
+      font-weight: bold;
+    }
+
+    .progress-bar.bg-success {
+      background-color: #28a745 !important;
+    }
+  </style>
+
+
+
 </head>
+
+<body class="body" {{ session('user.preferences.dark_mode') === 'true' ? 'data-bs-theme=dark' : 'data-bs-theme=light' }}>

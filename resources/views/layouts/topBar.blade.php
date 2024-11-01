@@ -139,7 +139,7 @@
           </li>
 
           <li>
-            <a class="dropdown-item d-flex align-items-center justify-content-start" href="#">
+            <a class="dropdown-item d-flex align-items-center justify-content-start" href="{{ route('preferences.show') }}">
               <i class="bi bi-gear"></i>
               <span>Your Account Settings</span>
             </a>

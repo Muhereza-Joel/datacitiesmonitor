@@ -74,7 +74,7 @@ class UserActionLog extends Model
         ];
     }
 
-    public function scopeRecentIndicators($query, $userId, $limit = 3)
+    public function scopeRecentIndicators($query, $userId, $limit = 6)
     {
         return $query->where('user_id', $userId)
             ->where('action', 'visit_indicator')

@@ -35,7 +35,7 @@
         <div style="position: absolute; left: {{ min($baselinePosition, $currentPosition) }}%; right: {{ 100 - max($baselinePosition, $currentPosition) }}%; height: 100%; background-color: rgba(144, 238, 144, 0.3); border-radius: 3px;" title="Progress From Baseline"></div>
 
         <!-- Baseline Marker -->
-        <div style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
+        <div class="baseline-marker" style="position: absolute; left: {{ $baselinePosition }}%; width: 6px; height: 100%; background-color: rgba(0, 0, 255, 0.5); border-radius: 3px;" title="Baseline"></div>
 
         <!-- Current State Marker -->
         <div style="position: absolute; left: {{ $currentPosition }}%; width: 6px; height: 100%; background-color: green; border-radius: 3px;" title="Current State"></div>
