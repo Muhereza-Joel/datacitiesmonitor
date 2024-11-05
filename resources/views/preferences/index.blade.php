@@ -68,14 +68,14 @@
                                 <div class="form-check form-switch my-2">
                                     <input {{ session('user.preferences.auto_save') === "true" ? 'checked' : '' }} class="form-check-input js-preference-toggle" type="checkbox" data-key="auto_save" id="autoSave">
                                     <label class="form-check-label fw-bold" for="autoSave">Enable Auto-Save</label><br>
-                                    <small class="text-secondary">Allow Monitor to automatically save response data when adding responses to indicators in your browser, such that it can be restored when you navigate back to add a response the same indicator.</small>
+                                    <small class="text-secondary">Enable automatic saving of response data while adding responses to indicators. This ensures your input is retained and can be restored if you return to add a response to the same indicator.</small>
                                 </div>
 
                                 <div class="form-check form-switch my-2">
                                     <input {{ session('user.preferences.dark_mode') === "true" ? 'checked' : '' }} class="form-check-input js-preference-toggle" type="checkbox" data-key="dark_mode" id="darkModeToggle">
                                     <label class="form-check-label fw-bold" for="darkModeToggle">Enable Dark Theme</label><br>
-                                    <small class="text-secondary">Allow Monitor to switch between dark and light themes.</small>
-                                    <div class="alert alert-info">The theme will change instantly.</div>
+                                    <small class="text-secondary">Enable theme switching between dark and light modes for a customized viewing experience.</small>
+                                    <div class="alert alert-info">Changes to the theme will take effect immediately.</div>
                                 </div>
                                 <hr>
                                 <h5>Two-Factor Authentication</h5>
@@ -89,9 +89,7 @@
                                     <label class="form-check-label fw-bold" for="twoFactorAuthToggle">
                                         Enable Two-Factor Authentication
                                     </label>
-                                    <small class="text-secondary d-block mt-1">
-                                        Add an additional layer of security to your account. Once enabled, you will be prompted to choose another authentication method that will be used when you are loging in to your account.
-                                    </small>
+                                    <small class="text-secondary d-block mt-1"> Enhance your account security with an additional verification step. Once enabled, you'll select an authentication method to be used for verifying your identity during login. </small>
                                 </div>
 
                                 <!-- Options that depend on Two-Factor Authentication -->
@@ -108,12 +106,12 @@
                                             value="security_question"
                                             id="securityQuestionOption">
                                         <label class="form-check-label" for="securityQuestionOption">
-                                            Set Security Question
+                                            Security Question
                                         </label>
                                     </div>
 
                                     <!-- One-Time Password Option -->
-                                    <div class="form-check mt-2">
+                                    <!-- <div class="form-check mt-2">
                                         <input
                                             {{ session('user.preferences.auth_method') === 'otp' ? 'checked' : '' }}
                                             class="form-check-input js-auth-method-toggle"
@@ -124,42 +122,38 @@
                                         <label class="form-check-label" for="otpOption">
                                             Receive One-Time Password (OTP)
                                         </label>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <!-- Security Question Form -->
-                                <div id="securityQuestionForm" class="mt-3 ms-3 ps-3" style="display: {{ session('user.preferences.auth_method') === 'security_question' && session('user.preferences.two_factor_auth') === 'true' ? 'block' : 'none' }}" ;>
-                                    <div class="alert alert-warning p-2">Please do not forget to set a question and its answer if you choose security question as auth option</div>
+                                <div id="securityQuestionForm" class="mt-3 ms-3 ps-3" style="display: {{ session('user.preferences.auth_method') === 'security_question' && session('user.preferences.two_factor_auth') === 'true' ? 'block' : 'none' }}">
+                                    <div class="alert alert-warning p-2">Please provide a security question and answer to complete the two-factor authentication setup.</div>
+
+                                    <!-- Security Question Input -->
                                     <label for="securityQuestion" class="fw-bold">Security Question:</label>
                                     <input
                                         type="text"
                                         class="form-control mt-1 js-preference-toggle"
                                         id="securityQuestion"
                                         placeholder="Enter your security question here"
+                                        required
                                         data-key="security_question">
+                                    <small class="text-secondary d-block mt-1"> Select a question that only you can answer to enhance your account’s security. Avoid using easily guessed questions to keep your account more secure. </small>
 
-                                    <small class="text-secondary d-block mt-1">
-                                        Choose a question that only you know the answer to for added security.
-                                    </small>
-                                </div>
-
-                                <!-- Security Question Answer Form -->
-                                <div id="securityQuestionAnswerForm" class="mt-3 ms-3 ps-3" style="display: {{ session('user.preferences.auth_method') === 'security_question' && session('user.preferences.two_factor_auth') === 'true' ? 'block' : 'none' }}">
-                                    <label for="securityQuestionAnswer" class="fw-bold">Security Question Answer:</label>
+                                    <!-- Security Question Answer Input -->
+                                    <label for="securityQuestionAnswer" class="fw-bold mt-3">Security Question Answer:</label>
                                     <input
                                         type="text"
                                         class="form-control mt-1 js-preference-toggle"
                                         id="securityQuestionAnswer"
                                         placeholder="Enter your security question answer here"
+                                        required
                                         data-key="security_question_answer">
+                                    <small class="text-secondary d-block mt-1"> Provide the answer to your chosen security question above. Make sure it’s something memorable and secure. </small>
 
-                                    <small class="text-secondary d-block mt-1">
-                                        What is the answer for the above question that you have set.
-                                    </small>
+                                    <!-- Save Button -->
+                                    <button id="saveSecurityQuestion" class="btn btn-primary btn-sm mt-3">Save</button>
                                 </div>
-
-
-
 
                             </div>
 
@@ -226,8 +220,9 @@
                                 <div class="form-check form-switch my-2">
                                     <input {{ session('user.preferences.show_indicator_ruller') === 'true' ? 'checked' : '' }} data-key="show_indicator_ruller" class="form-check-input js-preference-toggle" type="checkbox">
                                     <label class="form-check-label fw-bold" for="compactMode">Enable Indicator Ruller</label><br>
-                                    <small class="text-secondary">Allow Monitor to show a graphical ruller on indicators on the listing card that shows the progress for each indicator with regard to its baseline and target</small>
-                                    <div class="alert alert-warning p-2 mt-1"><strong>Note: </strong>Turning off this setting makes interpriting progress hard</div>
+                                    <small class="text-secondary">Enable Monitor to display a graphical ruler on indicator cards, visually showing progress relative to each indicator's baseline and target.</small>
+
+                                    <div class="alert alert-warning p-2 mt-1"><strong>Note:</strong> Disabling this feature may make progress interpretation more challenging.</div>
                                 </div>
 
                                 <hr>
@@ -306,9 +301,12 @@
             }
         });
 
-        // Show Security Question form based on radio selection
+        // Show Security Question form based on radio selection for auth method
         $('input[name="auth_method"]').change(function() {
-            if ($(this).val() === 'security_question') {
+            let authMethod = $(this).val();
+
+            // Show or hide security question fields based on selection
+            if (authMethod === 'security_question') {
                 $('#securityQuestionForm').show();
                 $('#securityQuestionAnswerForm').show();
             } else {
@@ -316,30 +314,29 @@
                 $('#securityQuestionAnswerForm').hide();
             }
 
-            // Update the selected authentication method
-            let key = 'auth_method';
-            let value = $(this).val();
-
+            // Update the selected authentication method preference
             $.ajax({
                 url: '/preferences/update',
                 method: 'PUT',
                 data: {
-                    key,
-                    value
+                    preferences: {
+                        auth_method: authMethod
+                    }
                 },
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    console.log(response.message);
+                    console.log('Authentication method updated:', response.message);
                 },
                 error: function(error) {
-                    console.error(error);
+                    console.error('Error updating authentication method:', error);
                 }
             });
         });
 
-        // Handle preference updates for checkbox
+
+        // Handle preference updates for checkboxes
         $('.js-preference-toggle').change(function() {
             let key = $(this).data('key');
             let value = this.checked;
@@ -348,38 +345,51 @@
                 url: '/preferences/update',
                 method: 'PUT',
                 data: {
-                    key,
-                    value
+                    preferences: {
+                        [key]: value
+                    }
                 },
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    console.log(response.message);
+                    console.log(`${key} preference updated:`, response.message);
                 },
                 error: function(error) {
-                    console.error(error);
+                    console.error(`Error updating ${key} preference:`, error);
                 }
             });
         });
 
-        // Handle the security question input change
-        $('#securityQuestion').on('input', function() {
-            let key = $(this).data('key');
-            let value = $(this).val();
 
+        $('#saveSecurityQuestion').on('click', function() {
+            // Get values of security question and answer
+            let securityQuestion = $('#securityQuestion').val().trim();
+            let authMethod = "security_question";
+            let securityQuestionAnswer = $('#securityQuestionAnswer').val().trim();
+
+            // Check if either field is empty
+            if (!securityQuestion || !securityQuestionAnswer) {
+                showToast("Both the security question and answer fields must be filled out.", "#ff8282");
+                return;
+            }
+
+            // Proceed with AJAX request if both fields have values
             $.ajax({
                 url: '/preferences/update',
                 method: 'PUT',
                 data: {
-                    key,
-                    value
+                    preferences: {
+                        auth_method: authMethod,
+                        security_question: securityQuestion,
+                        security_question_answer: securityQuestionAnswer
+                    }
                 },
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    console.log(response.message);
+                    showToast("Question and Answer Saved!", '#28a745');
                 },
                 error: function(error) {
                     console.error(error);
@@ -387,29 +397,7 @@
             });
         });
 
-        // Handle the security question answer input change
-        $('#securityQuestionAnswer').on('input', function() {
-            let key = $(this).data('key');
-            let value = $(this).val();
 
-            $.ajax({
-                url: '/preferences/update',
-                method: 'PUT',
-                data: {
-                    key,
-                    value
-                },
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    console.log(response.message);
-                },
-                error: function(error) {
-                    console.error(error);
-                }
-            });
-        });
 
         $('#darkModeToggle').on('change', function() {
             let isDarkMode = $(this).is(':checked');
@@ -420,5 +408,21 @@
             // Save the preference in a cookie
             document.cookie = "dark_mode=" + (isDarkMode ? "true" : "false") + "; path=/; max-age=" + (30 * 24 * 60 * 60); // 30 days
         });
+        var toastInstance = null;
+
+        function showToast(message, color) {
+            if (toastInstance) {
+                toastInstance.hideToast(); // Close any existing toast before showing a new one
+            }
+            toastInstance = Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'bottom',
+                position: 'left',
+                backgroundColor: color,
+            }).showToast();
+
+
+        }
     });
 </script>

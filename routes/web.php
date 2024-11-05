@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchivesController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FilesController;
@@ -91,9 +92,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/settings', [UserPreferenceController::class, 'showPreferences'])->name('preferences.show');
     Route::put('/preferences/update', [UserPreferenceController::class, 'updatePreference'])->name('preferences.update');
     Route::get('/email/request-verification/{id}', [EmailVerificationController::class, 'sendVerification'])->name('verification.request');
-
+    Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
 });
 
+Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');
+Route::post('/verify-security-question', [LoginController::class, 'checkSecurityQuestionAnswer'])->name('verify.security_question.check');
 
 
 // Catch-all route for non-existing routes

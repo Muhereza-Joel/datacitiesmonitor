@@ -22,9 +22,36 @@
         </div>
         @endif
 
-        <div class="alert alert-warning px-3 py-1">
+        <div class="alert alert-warning">
             <h5>Welcome back, {{ Auth::User()->name }}, {{ $myOrganisation->name }} is your organisation</h5>
         </div>
+
+        @if(session('user.preferences.two_factor_auth') === "true" && empty(session('user.preferences.security_question')))
+        <div class="alert alert-danger">
+            <strong>Attention, {{ Auth::user()->name }}!</strong>
+            <p>
+                Two-factor authentication is enabled on your account, but you haven't set up a security question and answer yet.
+                Please complete this setup to enhance the security of your account.
+            </p>
+            <a href="{{ route('preferences.show') }}" class="btn btn-primary btn-sm mt-2">
+                Set Up Security Question
+            </a>
+        </div>
+        @elseif(session('user.preferences.two_factor_auth') !== "true")
+        <div class="alert alert-info">
+            <strong>Enhance Your Account Security! {{ Auth::user()->name }}</strong>
+            <p class="m-0">
+                Two-factor authentication is currently disabled on your account. Enable it to add an extra layer of protection.
+            </p>
+            <small class="mb-2">
+                With two-factor authentication, even if someone knows your password, they won’t be able to access your account without the additional verification step.
+            </small><br>
+            <a href="{{ route('preferences.show') }}" class="btn btn-secondary btn-sm mt-2">
+                Enable Two-Factor Authentication
+            </a>
+        </div>
+        @endif
+
 
         @if(Auth::User()->role == 'viewer')
         <div class="alert alert-danger p-2">
@@ -142,7 +169,7 @@
                                     You Recently Visited {{ $recentActivities['recentIndicators']->count() }}
                                     Indicator{{ $recentActivities['recentIndicators']->count() !== 1 ? 's' : '' }}
                                 </h6>
-                                
+
                                 @forelse($recentActivities['recentIndicators'] as $indicator)
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">{{ $indicator->created_at->diffForHumans() }}</div>

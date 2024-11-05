@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class UserPreferenceController extends Controller
 {
     public function updatePreference(Request $request)
     {
         $request->validate([
-            'key' => 'required|string',
-            'value' => 'required',
+            'preferences' => 'required|array',
+            'preferences.*' => 'required|string', // Each preference key should be a string
         ]);
 
         $user = Auth::user();
@@ -21,8 +22,15 @@ class UserPreferenceController extends Controller
         $preferencesData = is_array($preferences->preferences) ? $preferences->preferences : json_decode($preferences->preferences, true);
         $preferencesData = $preferencesData ?? []; // Ensure it's an array
 
-        // Update the preference
-        $preferencesData[$request->key] = $request->value;
+        // Update each preference key-value pair in the request
+        foreach ($request->preferences as $key => $value) {
+            if ($key === 'security_question' || $key === 'security_question_answer') {
+                // Encrypt the security question and answer
+                $preferencesData[$key] = Crypt::encryptString($value);
+            } else {
+                $preferencesData[$key] = $value;
+            }
+        }
 
         // Encode the preferences back to JSON before saving
         $preferences->preferences = json_encode($preferencesData);
@@ -33,6 +41,7 @@ class UserPreferenceController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
 
 
     public function showPreferences()

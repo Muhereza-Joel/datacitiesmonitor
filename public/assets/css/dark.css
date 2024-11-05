@@ -75,6 +75,7 @@
 [data-bs-theme="dark"] .pagetitle {
     background-color: #24292e;
     color: #f8f9fa;
+    border: 1px solid #595858;
 }
 
 [data-bs-theme="dark"] .pagetitle h1 {
