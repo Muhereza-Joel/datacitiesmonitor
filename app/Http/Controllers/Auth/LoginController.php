@@ -66,23 +66,33 @@ class LoginController extends Controller
         if (Auth::attempt([$field => $request->input('identifier'), 'password' => $request->input('password')])) {
             $user = Auth::user();
 
-            // Check if user has preferences and two-factor authentication is enabled
+            // Check if user has preferences and if two-factor authentication is enabled
             $preferences = isset($user->preferences) ? json_decode($user->preferences->preferences, true) : [];
 
             if (!empty($preferences) && ($preferences['two_factor_auth'] ?? 'false') === "true") {
-                if (($preferences['auth_method'] ?? '') === "security_question" && !empty($preferences['security_question']) && !empty($preferences['security_question_answer'])) {
+                if (($preferences['auth_method'] ?? '') === "security_question" &&
+                    !empty($preferences['security_question']) &&
+                    !empty($preferences['security_question_answer'])
+                ) {
 
-                    // Store the security question and expected answer in session
+                    // Store the security question, expected answer, and other session data
                     session([
                         'security_question' => $preferences['security_question'],
                         'expected_answer' => $preferences['security_question_answer'],
                         'pending_2fa' => true, // Flag to indicate pending 2FA verification
                         'user_id' => $user->id, // Store the user ID for re-login after verification
+                        'organization' => $user->organisation,
+                        'profile' => $user->profile,
                     ]);
+
+                    // Store other organizations in session
+                    $otherOrganizations = Organisation::where('id', '!=', $user->organisation->id)->get();
+                    session(['other_organizations' => $otherOrganizations]);
 
                     // Ensure session data is retained during redirection
                     session()->reflash();
 
+                    // Log out the user temporarily until 2FA is verified
                     Auth::logout();
 
                     // Redirect to the 2FA security question page
@@ -99,7 +109,7 @@ class LoginController extends Controller
             $otherOrganizations = Organisation::where('id', '!=', $user->organisation->id)->get();
             session(['other_organizations' => $otherOrganizations]);
 
-            // Dispatch login event
+            // Dispatch the login event
             event(new UserLoggedIn($user));
 
             return redirect()->intended($this->redirectTo);
@@ -109,6 +119,7 @@ class LoginController extends Controller
         return back()->withInput($request->only('identifier'))
             ->withErrors(['identifier' => 'The provided credentials do not match our records.']);
     }
+
 
     public function logout(Request $request)
     {
@@ -189,5 +200,4 @@ class LoginController extends Controller
 
         return back()->withErrors(['errors' => 'Security Check Failed. Please try again.']);
     }
-    
 }
