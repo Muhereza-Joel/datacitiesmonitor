@@ -72,7 +72,7 @@ $other_organizations = session('other_organizations');
 
     
     <li class="nav-heading dashboard-tour-step-4">Publications</li>
-    @if($other_organizations->isEmpty())
+    @if(isset($other_organizations) && !$other_organizations->isEmpty())
     <p>No organisation found...</p>
     @else
     @foreach($other_organizations as $row)
