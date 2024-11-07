@@ -76,7 +76,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'string|required|max:30|unique:users,name',
             'email' => 'string|required|max:50|unique:users,email',
-            'role' => 'required|string|in:admin,user,viewer',
+            'role' => 'required|string|in:root,admin,user,viewer',
             'password' => 'string|required|min:8', // Ensure the password is at least 8 characters
             'organisation_id' => 'string|required|exists:organisations,id',
         ]);

@@ -71,7 +71,10 @@
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     <option value="">Select user role</option>
+                                    @if(Auth::user()->role === 'root')
+                                    <option value="root" {{ old('role') == 'root' ? 'selected' : '' }}>Super User</option>
                                     <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
+                                    @endif
                                     <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
                                     <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
                                 </select>
