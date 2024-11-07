@@ -151,7 +151,7 @@ class UserController extends Controller
     {
         // Validate the incoming request
         $validated = $request->validate([
-            'role' => 'required|string|in:admin,user,viewer', // Validate the role
+            'role' => 'required|string|in:root,admin,user,viewer', // Validate the role
         ]);
 
         // Find the user by ID
