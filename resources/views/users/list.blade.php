@@ -141,6 +141,7 @@
                             <label for="userRole" class="form-label">Role</label>
                             <select class="form-select" id="userRole" name="role" required>
                                 @if(Auth::user()->role === 'root')
+                                <option value="root">Super User</option>
                                 <option value="admin">Administrator</option>
                                 @endif
                                 <option value="user">User</option>
