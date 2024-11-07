@@ -169,4 +169,15 @@ class OrganisationController extends Controller
 
         return redirect()->back()->with('success', 'Organization restored successfully');
     }
+
+    public function getOrganisations()
+    {
+        // Fetch all organisations where the name is not "Administrator"
+        $organisations = Organisation::where('name', '!=', 'Administrator')->get();
+
+        // Return the filtered organisations as a JSON response
+        return response()->json([
+            'organisations' => $organisations
+        ], 200);
+    }
 }

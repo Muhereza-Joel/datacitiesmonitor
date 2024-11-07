@@ -89,15 +89,31 @@
 
       <div style="border-radius: 50%;" class="d-flex align-self-center justify-content-end w-50">
         @if($indicatorId != null)
-        <div class="btn-group" role="group" aria-label="Administrator Actions">
-          @if(Gate::allows('create', App\Models\Response::class))
-          <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add More Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicatorId) }}"><i class="bi bi-plus-circle"></i> Add More Responses</a>
-          @endif
-          @if(Gate::allows('create', App\Models\Indicator::class))
-          <a class="btn btn-primary btn-sm mx-2" href="{{ route('indicators.edit', $indicatorId) }}"><i class="bi bi-pencil px-1"></i>Edit Indicator</a>
-          @endif
-          <a href="{{ route('indicators.show', $indicatorId) }}" class="btn btn-primary btn-sm px-3">Indicator Details</a>
-
+        <div class="dropdown btn-group" role="group" aria-label="Administrator Actions">
+          <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="onThisPageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+             Select Action
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="onThisPageDropdown">
+            @if(Gate::allows('create', App\Models\Response::class))
+            <li>
+              <a class="dropdown-item" href="{{ route('indicators.response.create', $indicatorId) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add More Responses To This Indicator.">
+                <i class="bi bi-plus-circle"></i> Add More Responses
+              </a>
+            </li>
+            @endif
+            @if(Gate::allows('create', App\Models\Indicator::class))
+            <li>
+              <a class="dropdown-item" href="{{ route('indicators.edit', $indicatorId) }}">
+                <i class="bi bi-pencil"></i> Edit Indicator
+              </a>
+            </li>
+            @endif
+            <li>
+              <a class="dropdown-item" href="{{ route('indicators.show', $indicatorId) }}">
+                <i class="bi bi-info-circle"></i> Indicator Details
+              </a>
+            </li>
+          </ul>
         </div>
         @endif
       </div>
@@ -145,7 +161,7 @@
               <div class="text-start w-50">
                 <span class="badge bg-success">{{ $response['response_tag_label'] }} from <br></span>
                 {{ $response->user['name'] }}
-  
+
               </div>
               <div class="text-end w-50">
                 <div class="dropdown">
@@ -171,7 +187,7 @@
                     @endif
                   </div>
                 </div>
-  
+
               </div>
             </div>
           </div>
@@ -192,20 +208,20 @@
                       $recommendationsContent = trim(strip_tags($response['recommendations'], '
                     <p><br>'));
                       @endphp
-  
+
                       @if(!empty($notesContent) && $notesContent !== '
                     <p><br></p>')
                     <h5 class="text-success">Notes Taken</h5>
                     <p class="text-success">{!! $response['notes'] !!}</p>
                     <hr>
                     @endif
-  
+
                     @if(!empty($lessonsContent) && $lessonsContent !== '<p><br></p>')
                     <h5 class="text-success">Lessons Learnt</h5>
                     <p class="text-success">{!! $response['lessons'] !!}</p>
                     <hr>
                     @endif
-  
+
                     @if(!empty($recommendationsContent) && $recommendationsContent !== '<p><br></p>')
                     <h5 class="text-success">Recommendations</h5>
                     <p class="text-success">{!! $response['recommendations'] !!}</p>
@@ -214,16 +230,16 @@
                 </div>
               </div>
             </div>
-  
+
             <div class="mt-3">
               <h6>Added on: {{ $response->created_at->format('M d, Y \a\t g:iA') }}</h6>
               <strong>Progress from baseline:</strong> {{ $response['progress'] }}%
-  
+
               @include('layouts.rullerTwo')
-  
+
             </div>
           </div>
-  
+
         </div>
         <div class="modal fade" id="deleteModal{{ $response->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $response->id }}" aria-hidden="true">
           <div class="modal-dialog">
@@ -244,7 +260,7 @@
                   <button type="button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete-form{{ $response->id }}').submit();">Delete</button>
                 </form>
               </div>
-  
+
             </div>
           </div>
         </div>

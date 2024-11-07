@@ -146,6 +146,11 @@
     color: #ffffff !important;
 }
 
+[data-bs-theme="dark"] .btn-group .dropdown-menu .dropdown-item:hover {
+    background-color: #05333e !important;
+    color: #ffffff !important;
+}
+
 [data-bs-theme="dark"] .tab-pane .text-dark {
     color: #eae5e5 !important;
 }

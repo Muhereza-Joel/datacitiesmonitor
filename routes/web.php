@@ -39,9 +39,10 @@ Route::post('/password/update', [ResetPasswordController::class, 'update'])->nam
 
 
 Route::middleware(['auth'])->group(function () {
-
+    
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-
+    
+    Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all')->middleware('role:root');
     Route::resource('/organisations', OrganisationController::class)->middleware('adminPage');
     Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create')->middleware('adminPage');
     Route::resource('/indicators', IndicatorController::class);
@@ -54,8 +55,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/indicators/{id}/responses', [ResponseController::class, 'getResponsesForIndicator'])->name('indicator.responses');
     Route::resource('/users', UserController::class)->middleware('role:root,admin,user');
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
+    Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
+    Route::patch('/user/reset-password', [UserController::class, 'resetPassword'])->name('user.resetPassword');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
 
     Route::resource('/theory', ThoeryOfChangeController::class);
     Route::get('/theory/{id}/indicators', [ThoeryOfChangeController::class, 'getIndicators'])->name('theory.indicators');

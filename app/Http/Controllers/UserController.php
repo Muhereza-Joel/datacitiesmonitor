@@ -6,6 +6,8 @@ use App\Models\Organisation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -165,21 +167,64 @@ class UserController extends Controller
         return response()->json(['message' => 'User role updated successfully.']);
     }
 
-    public function updateEmail(Request $request, $id)
+    public function updateOrganisation(Request $request, $id)
     {
         // Validate the incoming request
         $validated = $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id, // Validate the email, ensuring it's unique except for the current user
+            'organisation_id' => 'string|required|max:36'
         ]);
 
         // Find the user by ID
         $user = User::findOrFail($id); // This will throw a 404 if not found
 
         // Update the user's email
-        $user->email = $validated['email'];
+        $user->organisation_id = $validated['organisation_id'];
         $user->save(); // Save the changes
 
         // Return a success response
-        return response()->json(['message' => 'User email updated successfully.']);
+        return response()->json(['message' => 'User organisation updated successfully.']);
+    }
+
+
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:users,id',
+            'email' => 'required|email|unique:users,email,' . $request->id
+        ]);
+
+        // Find the user by ID
+        $user = User::find($request->id);
+
+        // Update the email address
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Email updated successfully.'
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:users,id',
+            'password' => 'required|min:8|confirmed', // Ensure password confirmation
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Find the user by ID
+        $user = User::findOrFail($request->id);
+
+        // Update the user's password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password has been reset successfully.'
+        ], 200);
     }
 }
