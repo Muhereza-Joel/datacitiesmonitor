@@ -19,11 +19,27 @@
 
             </div>
             <div class="text-end w-50 pt-3">
-                @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Add New Organisation User</a>
-                @endif
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Add New User</a>
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="userActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        On This Page
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="userActionsDropdown">
+                        @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
+                        <li>
+                            <a class="dropdown-item" href="{{ route('users.create') }}">
+                                <i class="bi bi-person-plus"></i> Add New Organisation User
+                            </a>
+                        </li>
+                        @endif
+                        <li>
+                            <a class="dropdown-item" href="{{ route('users.create') }}">
+                                <i class="bi bi-person"></i> Add New User
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+
         </div>
     </div><!-- End Page Title -->
 
