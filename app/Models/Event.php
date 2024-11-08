@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-class Organisation extends Model
+class Event extends Model
 {
     use HasFactory, SoftDeletes, Cachable;
 
@@ -16,9 +16,17 @@ class Organisation extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
 
-    protected $fillable = ['id', 'name', 'logo'];
+    protected $fillable = [
+        'id',
+        'event',
+        'start_date',
+        'end_date',
+        'organisation_id',
+        'user_id',
+        'active',
+        'visibility'
+    ];
 
-    // Automatically generate UUID when creating
     protected static function boot()
     {
         parent::boot();
@@ -30,28 +38,13 @@ class Organisation extends Model
         });
     }
 
-    public function users()
+    public function organisation()
     {
-        return $this->hasMany(User::class, 'organisation_id');
+        return $this->belongsTo(Organisation::class);
     }
 
-    public function theoryOfChange()
+    public function user()
     {
-        return $this->hasMany(TheoryOfChange::class, 'organisation_id');
-    }
-
-    public function archives()
-    {
-        return $this->hasMany(Archive::class);
-    }
-
-    public function files()
-    {
-        return $this->hasMany(Files::class);
-    }
-
-    public function events()
-    {
-        return $this->hasMany(Event::class, 'organisation_id');
+        return $this->belongsTo(User::class);
     }
 }

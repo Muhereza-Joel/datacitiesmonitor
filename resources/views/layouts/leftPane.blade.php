@@ -37,6 +37,20 @@ $other_organizations = session('other_organizations');
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('calendar') }}">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <span>{{ __('Calendar') }}</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('events.index') }}">
+        <img src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">
+        <span>{{ __('Events') }}</span>
+      </a>
+    </li>
+
 
     @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
     <li class="nav-item">
