@@ -64,18 +64,27 @@
                 <div class="card p-2 status-{{ strtolower($indicator->status) }}">
                     <div class="card-title  ms-2 d-flex">
                         <div class="text-start w-75">
+                            @if(session('user.preferences.show_indicator_organisation_logo') === 'true')
                             <img src="{{ asset($indicator->organisation->logo) }}" class="rounded-circle p-1 me-1" width="30px" height="30px" alt="">
+                            @endif
+
+                            @if(session('user.preferences.show_indicator_category') === 'true')
                             @if($indicator->category === "None")
                             <span class="badge bg-success text-light">Un Categorised</span>
                             @else
                             <span class="badge bg-primary text-light">{{ $indicator->category }}</span> indicator
-
+                            @endif
                             @endif
 
+                            @if(session('user.preferences.show_indicator_qualitative_status') === 'true')
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
+                            @endif
+
+                            @if(session('user.preferences.show_indicator_response_count') === 'true')
                             <span class="badge bg-light text-primary">
                                 {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
                             </span>
+                            @endif
                         </div>
                         <div class="text-end w-25">
 
@@ -95,11 +104,15 @@
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
                         <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
+                        
+                        @if(session('user.preferences.show_indicator_create_date') === 'true')
                         <div class="text-muted mt-1">
                             <!-- Format the created_at date using Carbon -->
                             <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
                         </div>
-                        @if($indicator->responses_count > 0)
+                        @endif
+                        
+                        @if(session('user.preferences.show_indicator_ruller') === 'true' && $indicator->responses_count > 0)
                         @include('layouts.ruller')
                         @endif
                     </div>
