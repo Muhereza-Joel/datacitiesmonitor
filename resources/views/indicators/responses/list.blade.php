@@ -339,7 +339,7 @@
 
     $('#responses-table').on('click', '#view-files', function() {
       // Blade directive to check permission and set a JavaScript variable
-      const canDeleteFiles = @json(Gate::allows('delete', App\ Models\ Files::class));
+      const canDeleteFiles = @json(Gate::allows('delete', App\Models\Files::class));
       const responseId = $(this).data('response-id');
       $('#responseFilesModal').modal('show');
 
