@@ -91,7 +91,7 @@
         @if($indicatorId != null)
         <div class="dropdown btn-group" role="group" aria-label="Administrator Actions">
           <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="onThisPageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-             Select Action
+            Select Action
           </button>
           <ul class="dropdown-menu" aria-labelledby="onThisPageDropdown">
             @if(Gate::allows('create', App\Models\Response::class))
@@ -330,6 +330,7 @@
 <script>
   $(document).ready(function() {
 
+
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -337,6 +338,8 @@
     });
 
     $('#responses-table').on('click', '#view-files', function() {
+      // Blade directive to check permission and set a JavaScript variable
+      const canDeleteFiles = @json(Gate::allows('delete', App\ Models\ Files::class));
       const responseId = $(this).data('response-id');
       $('#responseFilesModal').modal('show');
 
@@ -348,23 +351,24 @@
           const filesSection = $('#files-section');
           filesSection.empty(); // Clear previous files
 
+          // Create a panel to hold the files
           const panel = $('<div></div>')
             .addClass('alert alert-light')
-            .css('background-color', '#f8f9fa') // Set background color
+            .css('background-color', '#f8f9fa')
             .append(
               $('<div></div>')
               .addClass('panel-body')
               .append(
-                $('<div></div>')
-                .addClass('list-group')
+                $('<div></div>').addClass('list-group')
               )
             );
 
+          // Iterate over the files and create elements for each
           data.files.forEach(file => {
             const fileNameWithoutExtension = file.original_name.split('.').slice(0, -1).join('.');
             const fileExtension = file.original_name.split('.').pop();
             const cleanedUrl = `{{asset('uploads/files/${file.name}')}}`;
-            const fileSize = (file.size / 1024).toFixed(2) + ' KB'; // Convert size to KB
+            const fileSize = (file.size / 1024).toFixed(2) + ' KB';
 
             // Create the file link
             const fileLink = $('<a></a>')
@@ -373,8 +377,7 @@
               .addClass('alert-link text-primary')
               .on('click', function(event) {
                 event.preventDefault(); // Prevent navigation
-                // Trigger download via JavaScript
-                downloadFile(cleanedUrl, file.original_name);
+                downloadFile(cleanedUrl, file.original_name); // Trigger download
               });
 
             // Create the file info (size and added time)
@@ -383,34 +386,7 @@
               .html(`
             <small class="text-muted">Size: ${fileSize}</small><br>
             <small class="text-muted">Added on: ${moment(file.created_at).format('MMMM Do YYYY')} at ${moment(file.created_at).format('h:mm A')}</small>
-        `);
-
-            // Create the delete button
-            const deleteUrl = `{{ route('files.destroy', ':id') }}`.replace(':id', file.id);
-            const removeButton = $('<button></button>')
-              .text('Delete')
-              .addClass('btn btn-danger btn-sm')
-              .on('click', function() {
-                // Remove file logic here
-                $.ajax({
-                  url: deleteUrl,
-                  type: 'DELETE',
-                  success: function(response) {
-                    // Remove the file link from the list
-                    listItem.remove();
-                    Toastify({
-                      text: response.message || 'File Removed Successfully.',
-                      duration: 5000,
-                      gravity: 'bottom',
-                      position: 'left',
-                      backgroundColor: '#28a745',
-                    }).showToast();
-                  },
-                  error: function(xhr, status, error) {
-                    console.error('Failed to remove file:', error);
-                  }
-                });
-              });
+          `);
 
             // Create a container for file details (link and info)
             const fileDetailsContainer = $('<div></div>')
@@ -418,11 +394,41 @@
               .append(fileLink)
               .append(fileInfo);
 
-            // Create the list item and append file details on the left and delete button on the right
+            // Create the list item
             const listItem = $('<div></div>')
               .addClass('list-group-item d-flex justify-content-between align-items-center')
-              .append(fileDetailsContainer)
-              .append(removeButton);
+              .append(fileDetailsContainer);
+
+            // Check permission and add the delete button if allowed
+            if (canDeleteFiles) {
+              const deleteUrl = `{{ route('files.destroy', ':id') }}`.replace(':id', file.id);
+              const removeButton = $('<button></button>')
+                .text('Delete')
+                .addClass('btn btn-danger btn-sm')
+                .on('click', function() {
+                  // Remove file logic here
+                  $.ajax({
+                    url: deleteUrl,
+                    type: 'DELETE',
+                    success: function(response) {
+                      listItem.remove(); // Remove the file link from the list
+                      Toastify({
+                        text: response.message || 'File Removed Successfully.',
+                        duration: 5000,
+                        gravity: 'bottom',
+                        position: 'left',
+                        backgroundColor: '#28a745',
+                      }).showToast();
+                    },
+                    error: function(xhr, status, error) {
+                      console.error('Failed to remove file:', error);
+                    }
+                  });
+                });
+
+              // Append the delete button to the list item
+              listItem.append(removeButton);
+            }
 
             // Append the list item to the list
             panel.find('.list-group').append(listItem);
@@ -435,16 +441,17 @@
         }
       });
 
+      // Function to trigger file download
       function downloadFile(url, fileName) {
         const link = document.createElement('a');
         link.href = url;
         link.download = fileName;
-        console.log(link);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       }
     });
+
 
     $('#dropArea').on('dragover', function(event) {
       event.preventDefault(); // Prevent default behavior
