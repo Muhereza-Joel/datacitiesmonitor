@@ -4,6 +4,7 @@ use App\Http\Controllers\ArchivesController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\LogController;
@@ -97,6 +98,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/preferences/update', [UserPreferenceController::class, 'updatePreference'])->name('preferences.update');
     Route::get('/email/request-verification/{id}', [EmailVerificationController::class, 'sendVerification'])->name('verification.request');
     Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
+
+    Route::get('/events/calendar', [EventsController::class, 'showCalender'])->name('calendar');
+    Route::get('/events/display/{visibility}', [EventsController::class, 'getEvents'])->name('all-events');
+    Route::resource('/events', EventsController::class)->middleware('role:root,admin');
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

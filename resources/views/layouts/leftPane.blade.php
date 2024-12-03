@@ -37,6 +37,43 @@ $other_organizations = session('other_organizations');
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link d-flex align-items-center justify-content-between" href="{{ route('calendar') }}">
+        <div class="d-flex align-items-center">
+          <img
+            src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}"
+            alt="Profile"
+            class="rounded-circle bg-light p-1 me-1"
+            width="30px"
+            height="30px"
+            style="object-fit: cover; border: 2px solid #fff">
+          <span>{{ __('Calendar') }}</span>
+        </div>
+        <span class="badge bg-success">New</span>
+      </a>
+    </li>
+
+
+    @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
+    <li class="nav-item">
+      <a class="nav-link d-flex align-items-center justify-content-between" href="{{ route('events.index') }}">
+        <div class="d-flex align-items-center">
+          <img
+            src="{{ isset(Auth::user()->organisation->logo) ? asset(Auth::user()->organisation->logo) : asset('assets/img/placeholder.png') }}"
+            alt="Profile"
+            class="rounded-circle bg-light p-1 me-2"
+            width="30px"
+            height="30px"
+            style="object-fit: cover; border: 2px solid #fff">
+          <span>{{ __('Scheduling') }}</span>
+        </div>
+        <span class="badge bg-success">New</span>
+      </a>
+    </li>
+    @endif
+
+
+
 
     @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
     <li class="nav-item">
@@ -53,7 +90,7 @@ $other_organizations = session('other_organizations');
         <span>{{ __('Archives') }}</span>
       </a>
     </li>
-    
+
     @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
     <li class="nav-item">
       <a class="nav-link" href="{{ route('users.index') }}">
@@ -70,14 +107,14 @@ $other_organizations = session('other_organizations');
     </li>
     @endif
 
-    
+
     <li class="nav-heading dashboard-tour-step-4">Publications</li>
     @if(isset($other_organizations) && !$other_organizations->isEmpty())
     @foreach($other_organizations as $row)
     @if (!str_starts_with($row->name, 'Administrator'))
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#org-nav-{{ $row->id }}" data-bs-toggle="collapse" href="#" aria-expanded="false">
-      <img src="{{ isset($row->logo) ? asset($row->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">{{ $row->name }}</span><i class="bi bi-chevron-down ms-auto"></i>
+        <img src="{{ isset($row->logo) ? asset($row->logo) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle bg-light p-1 me-1" width="30px" height="30px" style="object-fit: cover; border: 2px solid #fff">{{ $row->name }}</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="org-nav-{{ $row->id }}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
