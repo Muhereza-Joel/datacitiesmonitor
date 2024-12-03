@@ -62,11 +62,20 @@
                                 @endif
                             </div>
 
-                            @if(Gate::allows('delete', $theory))
                             <div class="w-25 text-end">
-                                <a href="" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}"><i class="bi bi-trash text-danger"></i></a>
+                                @if($theory->revisionHistory->isNotEmpty()) <!-- Check if revisions are available -->
+                                <a href="{{ route('theory.history', $theory->id) }}" title="View Revision History">
+                                    <i class="bi bi-clock-history fs-4"></i> <!-- Same size for all icons -->
+                                </a>
+                                @endif
+
+                                @if(Gate::allows('delete', $theory))
+                                <a href="" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $theory->id }}" class="ms-2" title="Delete ToC">
+                                    <i class="bi bi-trash text-danger fs-4"></i> <!-- Same size for all icons -->
+                                </a>
+                                @endif
                             </div>
-                            @endif
+
 
                         </div>
                     </div>
@@ -100,6 +109,7 @@
                         @if(Gate::allows('view', $theory))
                         <a href="{{ route('theory.indicators', $theory->id) }}" class="btn btn-link btn-sm fw-bold">View Connected Indicators <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
                         @endif
+                        
                         @if(Gate::allows('create', $theory))
                         <a href="{{ route('theory.indicators.create', $theory->id) }}" class="btn btn-link btn-sm fw-bold">Create New Indicator from ToC <i class="bi bi-box-arrow-in-up-right ms-2"></i></a>
                         @endif

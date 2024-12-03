@@ -8,6 +8,9 @@ use App\Models\Organisation;
 use App\Models\TheoryOfChange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jfcherng\Diff\DiffHelper;
+use Jfcherng\Diff\Renderer\Html\Inline;
+use Venturecraft\Revisionable\Revision;
 
 class ThoeryOfChangeController extends Controller
 {
@@ -215,5 +218,58 @@ class ThoeryOfChangeController extends Controller
         event(new UserActionPerformed(Auth::user(), 'visit_toc', 'TheoryOfChange', $id));
 
         return view('theory.createIndicatorForToC', compact('pageTitle', 'myOrganisation', 'theories', 'toc_id'));
+    }
+
+
+    public function getToCHistory($id)
+    {
+        $pageTitle = "Toc History";
+        $toc = TheoryOfChange::findOrFail($id);
+        $revisions = $toc->revisionHistory;
+
+        // Renderer configuration for better diff visualization
+        $rendererOptions = [
+            'detailLevel' => 'word', // Compare at the word level
+            'insertedClass' => 'text-success', // CSS class for inserted text
+            'deletedClass' => 'text-danger',  // CSS class for deleted text
+        ];
+
+        // Add diffs to each revision
+        foreach ($revisions as $revision) {
+            if ($revision->old_value && $revision->new_value) {
+                // Sanitize HTML to extract text content only
+                $oldPlainText = strip_tags($revision->old_value);
+                $newPlainText = strip_tags($revision->new_value);
+
+                $revision->diffHtml = DiffHelper::calculate(
+                    $oldPlainText,
+                    $newPlainText,
+                    'Inline',
+                    $rendererOptions
+                );
+            } else {
+                $revision->diffHtml = null;
+            }
+        }
+
+        return view('theory.revisions', compact('pageTitle', 'toc', 'revisions'));
+    }
+
+    public function revertToCHistory($id, $revisionId)
+    {
+        // Fetch the revision by ID
+        $revision = Revision::findOrFail($revisionId);
+
+        // Get the related TheoryOfChange model
+        $toc = $revision->revisionable; // Assuming the revision is related to the TheoryOfChange model
+
+        // Update the model with the old value from the revision
+        $toc->update([
+            $revision->key => $revision->old_value, // Update the specific field with the old value
+        ]);
+
+        // Optionally, return a success message or redirect
+        return redirect()->route('theory.history', $toc->id)
+            ->with('success', 'Theory of Change has been reverted successfully!');
     }
 }

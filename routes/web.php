@@ -40,9 +40,9 @@ Route::post('/password/update', [ResetPasswordController::class, 'update'])->nam
 
 
 Route::middleware(['auth'])->group(function () {
-    
+
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-    
+
     Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all')->middleware('role:root');
     Route::resource('/organisations', OrganisationController::class)->middleware('adminPage');
     Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create')->middleware('adminPage');
@@ -64,8 +64,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/theory', ThoeryOfChangeController::class);
     Route::get('/theory/{id}/indicators', [ThoeryOfChangeController::class, 'getIndicators'])->name('theory.indicators');
+    Route::get('/theory/{id}/revision/history', [ThoeryOfChangeController::class, 'getToCHistory'])->name('theory.history');
     Route::get('/theory/{id}/indicators/create', [ThoeryOfChangeController::class, 'createIndicatorUsingToC'])->name('theory.indicators.create');
-
+    Route::post('/theory/{id}/revert/{revisionId}', [ThoeryOfChangeController::class, 'revertToCHistory'])
+    ->name('theory.revert');
+    
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     Route::resource('/archives', ArchivesController::class)->middleware('role:root,admin,user,viewer');

@@ -167,7 +167,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Venturecraft\Revisionable\RevisionableServiceProvider::class,
         /*
          * Application Service Providers...
          */
