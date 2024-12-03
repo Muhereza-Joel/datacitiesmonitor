@@ -17,9 +17,20 @@ class EventsController extends Controller
     {
         $pageTitle = "Manage Events";
         $myOrganisation = Auth::user()->organisation;
-        $events = Event::all();
+
+        // Ensure myOrganisation exists to prevent null errors
+        if (!$myOrganisation) {
+            abort(403, "You do not belong to an organisation.");
+        }
+
+        // Filter events by organisation_id and order by created_at
+        $events = Event::where('organisation_id', $myOrganisation->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(4);
+
         return view('events.list', compact('pageTitle', 'myOrganisation', 'action', 'events'));
     }
+
 
 
     public function showCalender()
@@ -35,7 +46,7 @@ class EventsController extends Controller
         $myOrganisation = Auth::user()->organisation;
 
         // Start by querying all events
-        $eventsQuery = Event::with('organisation'); // Eager load the organisation relationship directly
+        $eventsQuery = Event::with('organisation')->where('active', 1); // Eager load the organisation relationship directly
 
         // Apply visibility-based filtering
         if ($visibility === 'all') {
@@ -127,7 +138,9 @@ class EventsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $pageTitle = "Edit Event";
+        $event = Event::findOrFail($id);
+        return view('events.edit', compact('pageTitle', 'event'));
     }
 
     /**
@@ -139,7 +152,18 @@ class EventsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'event' => 'string|required',
+            'visibility' => 'string|required|in:all,internal,external',
+            'active' => 'numeric|required',
+            'start_date' => 'date|required',
+            'end_date' => 'date|required',
+        ]);
+
+        $event = Event::findOrFail($id);
+        $event->update($validated);
+
+        return response()->json(['success' => true, 'event' => $event]);
     }
 
     /**
@@ -150,6 +174,9 @@ class EventsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $event = Event::findOrFail($id);
+        $event->delete();
+
+        return redirect()->back()->with(['success' => 'Event deleted successfully.']);
     }
 }

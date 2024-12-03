@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/events/calendar', [EventsController::class, 'showCalender'])->name('calendar');
     Route::get('/events/display/{visibility}', [EventsController::class, 'getEvents'])->name('all-events');
-    Route::resource('/events', EventsController::class);
+    Route::resource('/events', EventsController::class)->middleware('role:root,admin');
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

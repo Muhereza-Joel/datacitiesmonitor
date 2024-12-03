@@ -171,29 +171,30 @@
             },
             eventDidMount: function(info) {
                 let startDate = moment(info.event.start);
-                let endDate = info.event.end ? moment(info.event.end) : null;
+                let endDate = info.event.end ? moment(info.event.end) : moment(info.event.start); // Use start date if no end date
                 let now = moment();
 
-                let daysRemaining = endDate ? endDate.diff(now, 'days') : null;
-                let daysPassed = startDate.diff(now, 'days');
+                let daysRemaining = endDate.diff(now, 'days');
+                let daysPassed = now.diff(endDate, 'days'); // Difference from now to end date
 
                 let formattedStartDate = startDate.format('MMMM Do YYYY, h:mm a');
-                let formattedEndDate = endDate ? endDate.format('MMMM Do YYYY, h:mm a') : 'No End Date';
+                let formattedEndDate = info.event.end ?
+                    endDate.format('MMMM Do YYYY, h:mm a') :
+                    'No End Date';
 
                 let content = `
-                    <strong>${info.event.title}</strong><br><hr>
-                    <small><strong>Start Time:</strong> ${formattedStartDate}</small><br>
-                    <small><strong>End Time:</strong> ${formattedEndDate}</small><br>
-                `;
+            <strong>${info.event.title}</strong><br><hr>
+            <small><strong>Start Time:</strong> ${formattedStartDate}</small><br>
+            <small><strong>End Time:</strong> ${formattedEndDate}</small><br>
+        `;
 
-                if (daysRemaining !== null) {
+                if (daysRemaining > 0) {
                     content += `<strong>Days Remaining:</strong> ${daysRemaining} days<br>`;
-                } else if (daysPassed < 0) {
-                    content += `<strong>Event hasn't started yet.</strong><br>`;
+                } else if (daysPassed > 0) {
+                    content += `<strong>Event has passed.</strong><br>`;
                 } else {
-                    content += `<strong>Days Passed:</strong> ${daysPassed} days<br>`;
+                    content += `<strong>Event is ongoing.</strong><br>`;
                 }
-
 
                 tippy(info.el, {
                     content: content,
@@ -203,7 +204,6 @@
                     interactive: true,
                     trigger: 'mouseenter focus',
                     hideOnClick: false,
-                    
                 });
 
                 let viewer = info.event.extendedProps.viewer;
@@ -214,8 +214,15 @@
                 } else if (viewer === 'external') {
                     info.el.style.backgroundColor = '#0a4663';
                 }
+
+                // Add a style for past events
+                if (now.isAfter(endDate)) {
+                    info.el.style.opacity = '0.5'; // Dim past events
+                    info.el.style.textDecoration = 'line-through'; // Strike-through text
+                }
             }
         });
+
 
         fetchEvents('all');
 
@@ -270,33 +277,5 @@
         setTimeout(() => {
             calendar.render();
         }, 500);
-    });
-
-    $(document).on('click', '.submit-comment-button', function() {
-        let eventId = $(this).data('event-id');
-        let commentInput = $(`.comment-input[data-event-id="${eventId}"]`);
-        let commentText = commentInput.val();
-
-        if (commentText) {
-            fetch(`/events/${eventId}/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        comment: commentText
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    let commentsList = $(`#comments-list-${eventId}`);
-                    commentsList.append(`<div>${data.comment}</div>`);
-                    commentInput.val('');
-                })
-                .catch(error => {
-                    console.error('Error submitting comment:', error);
-                });
-        }
     });
 </script>
