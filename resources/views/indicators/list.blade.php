@@ -121,7 +121,7 @@
                             @if(session('user.preferences.show_indicator_qualitative_status') === 'true')
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
                             @endif
-                            
+
                             @if(session('user.preferences.show_indicator_response_count') === 'true')
                             <span class="badge bg-light text-primary">
                                 {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
@@ -129,6 +129,11 @@
                             @endif
                         </div>
                         <div class="text-end w-25">
+                            @if($indicator->revisionHistory->isNotEmpty()) <!-- Check if revisions are available -->
+                            <a href="{{ route('indicator.history', $indicator->id) }}" class="icon" title="View Revision History">
+                                <i class="bi bi-clock-history"></i> <!-- Same size for all icons -->
+                            </a>
+                            @endif
                             @if(Gate::allows('update', $indicator))
                             <a href="{{ route('indicators.edit', $indicator->id) }}" class="icon" title="Edit Indicator">
                                 <i class="bi bi-pencil-square"></i>

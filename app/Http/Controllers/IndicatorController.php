@@ -18,7 +18,9 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jfcherng\Diff\DiffHelper;
 use Maatwebsite\Excel\Facades\Excel;
+use Venturecraft\Revisionable\Revision;
 use ZipArchive;
 
 class IndicatorController extends Controller
@@ -233,37 +235,42 @@ class IndicatorController extends Controller
 
             // Recalculate progress for each response
             foreach ($responses as $response) {
+                $progress = 0;
+
                 // Calculate progress based on the formula
                 if ($baseline === $target) {
                     // If baseline equals target, set progress to 100%
-                    $response->progress = 100;
+                    $progress = 100;
                 } else {
                     if ($direction === 'increasing') {
                         // For increasing, calculate progress using (current - baseline) / (target - baseline) * 100
-                        $response->progress = (($response->current - $baseline) / ($target - $baseline)) * 100;
+                        $progress = (($response->current - $baseline) / ($target - $baseline)) * 100;
+
+                        // Ensure that the current value is between baseline and target for increasing direction
+                        if ($response->current < $baseline || $response->current > $target) {
+                            throw new \Exception('Current value ' . $response->current . ' is out of range for increasing direction. It must be between ' . $baseline . ' and ' . $target . '.');
+                        }
                     } elseif ($direction === 'decreasing') {
                         // For decreasing, calculate progress using (baseline - current) / (baseline - target) * 100
-                        $response->progress = (($baseline - $response->current) / ($baseline - $target)) * 100;
+                        $progress = (($baseline - $response->current) / ($baseline - $target)) * 100;
+
+                        // Ensure that the current value is between target and baseline for decreasing direction
+                        if ($response->current > $baseline || $response->current < $target) {
+                            throw new \Exception('Current value ' . $response->current . ' is out of range for decreasing direction. It must be between ' . $target . ' and ' . $baseline . '.');
+                        }
                     }
                 }
 
-                // Validate that the recalculated progress is within bounds
-                if ($response->progress < 0 || $response->progress > 100) {
-                    throw new \Exception('Recalculated progress for response is out of bounds (0-100).');
-                }
+                // Ensure progress is within bounds (0 - 100%)
+                $progress = max(0, min(100, $progress));
 
-                // Check if the recalculated current value falls within the new baseline and target range
-                if ($direction === 'increasing' && ($response->current < $baseline || $response->current > $target)) {
-                    throw new \Exception('Current value ' . $response->current . ' is out of range for increasing direction. It must be between ' . $baseline . ' and ' . $target . '.');
-                } elseif ($direction === 'decreasing' && ($response->current > $baseline || $response->current < $target)) {
-                    throw new \Exception('Current value ' . $response->current . ' is out of range for decreasing direction. It must be between ' . $target . ' and ' . $baseline . '.');
-                }
-
-                // Save the updated response
+                // Save the updated response with the recalculated progress
+                $response->progress = $progress;
                 $response->save();
             }
         });
 
+        // Other logic for returning a response
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
@@ -540,5 +547,80 @@ class IndicatorController extends Controller
 
         // Return the slug
         return strtolower($text);
+    }
+
+    public function getIndicatorHistory($id)
+    {
+        $pageTitle = "Indicator History";
+        $indicator = Indicator::findOrFail($id);
+        $revisions = $indicator->revisionHistory;
+
+        // Renderer configuration for better diff visualization
+        $rendererOptions = [
+            'detailLevel' => 'word', // Compare at the word level
+            'insertedClass' => 'text-success', // CSS class for inserted text
+            'deletedClass' => 'text-danger',  // CSS class for deleted text
+        ];
+
+        // Add diffs to each revision and format keys
+        foreach ($revisions as $revision) {
+            if ($revision->old_value && $revision->new_value) {
+                // Sanitize HTML to extract text content only
+                $oldPlainText = strip_tags($revision->old_value);
+                $newPlainText = strip_tags($revision->new_value);
+
+                $revision->diffHtml = DiffHelper::calculate(
+                    $oldPlainText,
+                    $newPlainText,
+                    'Inline',
+                    $rendererOptions
+                );
+            } else {
+                $revision->diffHtml = null;
+            }
+
+            // Format the keys for display (e.g., 'indicator_title' to 'Indicator Title')
+            if ($revision->key) {
+                $revision->formattedKey = $this->formatKey($revision->key);
+            }
+        }
+
+        return view('indicators.revisions', compact('pageTitle', 'indicator', 'revisions'));
+    }
+
+
+    public function formatKey($key)
+    {
+        // Check if the word 'Indicator' is already in the key
+        if (stripos($key, 'indicator') === false) {
+            // Prefix the key with 'Indicator' if not already present
+            $key = 'indicator_' . $key;
+        }
+
+        // Replace underscores with spaces
+        $formatted = str_replace('_', ' ', $key);
+
+        // Capitalize the first letter of each word
+        $formatted = ucwords($formatted);
+
+        // Special case handling (e.g., 'ID' should be 'ID' instead of 'Id')
+        $formatted = str_replace('Id', 'ID', $formatted);
+
+        return $formatted;
+    }
+
+    public function revertIndicatorHistory($id, $revisionId)
+    {
+
+        $revision = Revision::findOrFail($revisionId);
+
+        $indicator = $revision->revisionable; // Assuming the revision is related to the Indicator model
+
+        $indicator->update([
+            $revision->key => $revision->old_value, // Update the specific field with the old value
+        ]);
+
+        return redirect()->route('indicator.history', $indicator->id)
+            ->with('success', 'Indicator has been reverted successfully!');
     }
 }

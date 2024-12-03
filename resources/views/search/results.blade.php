@@ -87,6 +87,11 @@
                             @endif
                         </div>
                         <div class="text-end w-25">
+                            @if($indicator->revisionHistory->isNotEmpty()) <!-- Check if revisions are available -->
+                            <a href="{{ route('indicator.history', $indicator->id) }}" class="icon" title="View Revision History">
+                                <i class="bi bi-clock-history"></i> <!-- Same size for all icons -->
+                            </a>
+                            @endif
 
                             @if(Gate::allows('update', $indicator))
                             <a href="{{ route('indicators.edit', $indicator->id) }}" class="icon" title="Edit Indicator">
@@ -104,14 +109,14 @@
                     <div class="card-body">
                         <small class="text-success">Indicator Name</small>
                         <a href="{{ route('indicators.show', $indicator->id) }}" class="two-line-truncate btn-link h6 fw-bold">{{ $indicator->name }}</a>
-                        
+
                         @if(session('user.preferences.show_indicator_create_date') === 'true')
                         <div class="text-muted mt-1">
                             <!-- Format the created_at date using Carbon -->
                             <small>Created on: {{ \Carbon\Carbon::parse($indicator->created_at)->format('M d, Y \a\t g:iA') }}</small>
                         </div>
                         @endif
-                        
+
                         @if(session('user.preferences.show_indicator_ruller') === 'true' && $indicator->responses_count > 0)
                         @include('layouts.ruller')
                         @endif

@@ -29,7 +29,7 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1> {{ $toc->title}} Revision History</h1>
+        <h1> {{ $indicator->name}} Indicator Revision History</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -77,7 +77,7 @@
                             <div class="activite-label">{{ $revision->created_at->diffForHumans() }}</div>
                             <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
                             <div class="activity-content">
-                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">Theory of change {{ $revision->key }}</span>
+                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">{{ $revision->formattedKey }}</span>
                                 <hr>
                                 <strong>Changes:</strong><br>
                                 @if (!empty($revision->diffHtml))
@@ -101,7 +101,7 @@
                                 <hr>
                                 @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
                                 <!-- Revert Button -->
-                                <form action="{{ route('theory.revert', ['id' => $toc->id, 'revisionId' => $revision->id]) }}" method="POST">
+                                <form action="{{ route('indicator.revert', ['id' => $indicator->id, 'revisionId' => $revision->id]) }}" method="POST">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" class="btn btn-primary btn-sm mt-2">
@@ -109,6 +109,7 @@
                                     </button>
                                 </form>
                                 @endif
+
                             </div>
                         </div><!-- End activity item-->
                         @endforeach

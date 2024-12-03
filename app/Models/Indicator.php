@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Uuid;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Indicator extends Model
 {
-    use HasFactory, SoftDeletes, Searchable, Cachable;
+    use HasFactory, SoftDeletes, Searchable, Cachable, RevisionableTrait;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -36,6 +37,25 @@ class Indicator extends Model
         'direction',
         'theory_of_change_id',
         'is_manually_updated',  // New field to track manual updates
+    ];
+
+    protected $revisionable = [
+        'category',
+        'name',
+        'indicator_title',
+        'definition',
+        'baseline',
+        'target',
+        'current_state', 
+        'data_source',
+        'frequency',
+        'responsible',
+        'reporting',
+        'status',
+        'qualitative_progress',
+        'direction',
+        'theory_of_change_id',
+        'is_manually_updated',
     ];
 
     // Specify which fields to index for search
