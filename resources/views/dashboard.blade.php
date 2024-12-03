@@ -22,9 +22,24 @@
         </div>
         @endif
 
-        <div class="alert alert-warning">
-            <h5>Welcome back, {{ Auth::User()->name }}, {{ $myOrganisation->name }} is your organisation</h5>
+        <?php
+        // Get the current hour
+        $hour = now()->format('H');
+
+        // Determine the time of day and set the appropriate greeting
+        if ($hour >= 5 && $hour < 12) {
+            $greeting = 'Good Morning';
+        } elseif ($hour >= 12 && $hour < 17) {
+            $greeting = 'Good Afternoon';
+        } else {
+            $greeting = 'Good Evening';
+        }
+        ?>
+
+        <div class="alert alert-warning p-1">
+            <h5>{{ $greeting }}, {{ Auth::User()->name }}. Your account is registered under <span class="badge bg-dark">{{ $myOrganisation->name }}</span> as your organisation</h5>
         </div>
+
 
         @if(session('user.preferences.two_factor_auth') === "true" && empty(session('user.preferences.security_question')))
         <div class="alert alert-danger">

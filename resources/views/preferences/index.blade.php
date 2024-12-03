@@ -127,7 +127,7 @@
 
                                 <!-- Security Question Form -->
                                 <div id="securityQuestionForm" class="mt-3 ms-3 ps-3" style="display: {{ session('user.preferences.auth_method') === 'security_question' && session('user.preferences.two_factor_auth') === 'true' ? 'block' : 'none' }}">
-                                    <div class="alert alert-warning p-2">Please provide a security question and answer to complete the two-factor authentication setup.</div>
+                                    <div class="alert alert-warning p-2">Please provide a security question and its answer to complete the two-factor authentication setup.</div>
 
                                     <!-- Security Question Input -->
                                     <label for="securityQuestion" class="fw-bold">Security Question:</label>
