@@ -54,8 +54,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/indicators/response/update', [ResponseController::class, 'updateResponse'])->name('indicators.response.update');
     Route::delete('/indicators/response/delete/{id}', [ResponseController::class, 'deleteResponse'])->name('indicators.response.destroy');
     Route::get('/indicators/{id}/responses', [ResponseController::class, 'getResponsesForIndicator'])->name('indicator.responses');
+    
+    Route::get('/indicators/response/{id}/revision/history', [ResponseController::class, 'getResponseHistory'])->name('response.history');
+    Route::post('/indicators/response/{id}/revert/{revisionId}', [ResponseController::class, 'revertResponseHistory'])->name('response.revert');
+    
     Route::get('/indicators/{id}/revision/history', [IndicatorController::class, 'getIndicatorHistory'])->name('indicator.history');
     Route::post('/indicators/{id}/revert/{revisionId}', [IndicatorController::class, 'revertIndicatorHistory'])->name('indicator.revert');
+    
     Route::resource('/users', UserController::class)->middleware('role:root,admin,user');
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
     Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');

@@ -7,6 +7,8 @@ use App\Models\Indicator;
 use App\Models\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jfcherng\Diff\DiffHelper;
+use Venturecraft\Revisionable\Revision;
 
 class ResponseController extends Controller
 {
@@ -112,8 +114,6 @@ class ResponseController extends Controller
         $user_id = $currentUser->id;
 
         // Add organisation_id, user_id, and status to the validated data
-        $validated['organisation_id'] = $organisation_id;
-        $validated['user_id'] = $user_id;
         $validated['status'] = $status; // Include the status of the indicator
 
         // Update the response with the validated data including status
@@ -176,5 +176,80 @@ class ResponseController extends Controller
         event(new UserActionPerformed(Auth::user(), 'delete_response', 'Response', $response->id));
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Response deleted successfully');
+    }
+
+    public function getResponseHistory($id)
+    {
+        $pageTitle = "Response History";
+        $response = Response::findOrFail($id);
+        $revisions = $response->revisionHistory;
+
+        // Renderer configuration for better diff visualization
+        $rendererOptions = [
+            'detailLevel' => 'word', // Compare at the word level
+            'insertedClass' => 'text-success', // CSS class for inserted text
+            'deletedClass' => 'text-danger',  // CSS class for deleted text
+        ];
+
+        // Add diffs to each revision and format keys
+        foreach ($revisions as $revision) {
+            if ($revision->old_value && $revision->new_value) {
+                // Sanitize HTML to extract text content only
+                $oldPlainText = strip_tags($revision->old_value);
+                $newPlainText = strip_tags($revision->new_value);
+
+                $revision->diffHtml = DiffHelper::calculate(
+                    $oldPlainText,
+                    $newPlainText,
+                    'Inline',
+                    $rendererOptions
+                );
+            } else {
+                $revision->diffHtml = null;
+            }
+
+            // Format the keys for display (e.g., 'indicator_title' to 'Indicator Title')
+            if ($revision->key) {
+                $revision->formattedKey = $this->formatKey($revision->key);
+            }
+        }
+
+        return view('indicators.responses.revisions', compact('pageTitle', 'response', 'revisions'));
+    }
+
+
+    public function formatKey($key)
+    {
+        // Check if the word 'Indicator' is already in the key
+        if (stripos($key, 'indicator') === false) {
+            // Prefix the key with 'Indicator' if not already present
+            $key = 'indicator_' . $key;
+        }
+
+        // Replace underscores with spaces
+        $formatted = str_replace('_', ' ', $key);
+
+        // Capitalize the first letter of each word
+        $formatted = ucwords($formatted);
+
+        // Special case handling (e.g., 'ID' should be 'ID' instead of 'Id')
+        $formatted = str_replace('Id', 'ID', $formatted);
+
+        return $formatted;
+    }
+
+    public function revertResponseHistory($id, $revisionId)
+    {
+
+        $revision = Revision::findOrFail($revisionId);
+
+        $response = $revision->revisionable; // Assuming the revision is related to the Indicator model
+
+        $response->update([
+            $revision->key => $revision->old_value, // Update the specific field with the old value
+        ]);
+
+        return redirect()->route('response.history', $response->id)
+            ->with('success', 'Response has been reverted successfully!');
     }
 }

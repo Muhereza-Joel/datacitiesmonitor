@@ -163,7 +163,14 @@
                 {{ $response->user['name'] }}
 
               </div>
-              <div class="text-end w-50">
+              <div class="d-flex justify-content-end gap-2 w-50">
+
+                @if($response->revisionHistory->isNotEmpty()) <!-- Check if revisions are available -->
+                <a href="{{ route('response.history', $response->id) }}" class="icon" title="View Revision History">
+                  <i class="bi bi-clock-history fs-4"></i> <!-- Same size for all icons -->
+                </a>
+                @endif
+
                 <div class="dropdown">
                   <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select Action
@@ -339,7 +346,7 @@
 
     $('#responses-table').on('click', '#view-files', function() {
       // Blade directive to check permission and set a JavaScript variable
-      const canDeleteFiles = @json(Gate::allows('delete', App\Models\Files::class));
+      const canDeleteFiles = @json(Gate::allows('delete', App\ Models\ Files::class));
       const responseId = $(this).data('response-id');
       $('#responseFilesModal').modal('show');
 

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Response extends Model
 {
-    use HasFactory, SoftDeletes, Cachable;
+    use HasFactory, SoftDeletes, Cachable, RevisionableTrait;
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -28,6 +29,17 @@ class Response extends Model
         'status',
         'organisation_id',
         'user_id',
+    ];
+
+    protected $revisionable = [
+        'indicator_id',
+        'current',
+        'progress',
+        'notes',
+        'lessons',
+        'recommendations',
+        'status',
+        'organisation_id',
     ];
 
     protected static function boot()

@@ -29,13 +29,37 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1> {{ $toc->title}} ToC Revision History</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">Revision History</li>
-            </ol>
-        </nav>
+        <div class="d-flex">
+            <div class="text-start w-75">
+                <h1> Response Revision History</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Revision History</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="text-end w-25">
+                <div class="dropdown btn-group mt-2" role="group" aria-label="Administrator Actions">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="onThisPageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        On This Page
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="onThisPageDropdown">
+                        
+                        <li>
+                            <a class="dropdown-item" href="{{ route('indicator.responses', $response->indicator->id) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="View Responses For This Indicator.">
+                                <i class="bi bi-list"></i> Go Back To Responses
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('indicators.show', $response->indicator->id) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Go Back To Indicator Details">
+                                <i class="bi bi-list"></i> Go To Indicator Details
+                            </a>
+                        </li>
+                        
+                </div>
+            </div>
+        </div>
     </div><!-- End Page Title -->
 
     @if(session('success'))
@@ -77,7 +101,7 @@
                             <div class="activite-label">{{ $revision->created_at->diffForHumans() }}</div>
                             <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
                             <div class="activity-content">
-                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">Theory of change {{ $revision->key }}</span>
+                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">Response {{ $revision->key }}</span>
                                 <hr>
                                 <strong>Changes:</strong><br>
                                 @if (!empty($revision->diffHtml))
@@ -101,7 +125,7 @@
                                 <hr>
                                 @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
                                 <!-- Revert Button -->
-                                <form action="{{ route('theory.revert', ['id' => $toc->id, 'revisionId' => $revision->id]) }}" method="POST">
+                                <form action="{{ route('response.revert', ['id' => $response->id, 'revisionId' => $revision->id]) }}" method="POST">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" class="btn btn-primary btn-sm mt-2">

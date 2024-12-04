@@ -379,9 +379,6 @@
                 } else {
                     $('#editor-feedback').hide();
 
-                    var current = parseFloat($('#current').val());
-                    var progress = (current - baseline) / (target - baseline) * 100;
-
                     $.ajax({
                         url: '/indicators/response/update',
                         method: 'PUT',
@@ -391,7 +388,7 @@
                             baseline: baseline,
                             current: parseFloat($('#current').val()),
                             target: target,
-                            progress: currentProgress.toFixed(1),
+                            progress: $('#progress').val(),
                             lessons: lessons,
                             notes: notes,
                             recommendations: recommendations,
