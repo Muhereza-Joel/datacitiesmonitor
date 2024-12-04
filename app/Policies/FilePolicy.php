@@ -18,7 +18,7 @@ class FilePolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return in_array($user->role, ['root', 'admin', 'user', 'viewer']);
     }
 
     /**
@@ -30,7 +30,7 @@ class FilePolicy
      */
     public function view(User $user, Files $file)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return in_array($user->role, ['root', 'admin', 'user', 'viewer']);
     }
 
     /**
@@ -41,7 +41,7 @@ class FilePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return in_array($user->role, ['root', 'admin', 'user']);
     }
 
     /**
@@ -53,7 +53,7 @@ class FilePolicy
      */
     public function update(User $user, Files $file)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return in_array($user->role, ['root', 'admin', 'user']);
     }
 
     /**
@@ -63,9 +63,9 @@ class FilePolicy
      * @param  \App\Models\File  $file
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user)
+    public function delete(User $user, Files $file)
     {
-        return in_array($user->role, ['root','admin']);
+        return in_array($user->role, ['root', 'admin']);
     }
 
     /**
@@ -77,7 +77,7 @@ class FilePolicy
      */
     public function restore(User $user, Files $file)
     {
-        return in_array($user->role, ['root','admin']);
+        return in_array($user->role, ['root', 'admin']);
     }
 
     /**

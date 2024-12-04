@@ -346,7 +346,6 @@
 
     $('#responses-table').on('click', '#view-files', function() {
       // Blade directive to check permission and set a JavaScript variable
-      const canDeleteFiles = @json(Gate::allows('delete', App\ Models\ Files::class));
       const responseId = $(this).data('response-id');
       $('#responseFilesModal').modal('show');
 
@@ -405,37 +404,6 @@
             const listItem = $('<div></div>')
               .addClass('list-group-item d-flex justify-content-between align-items-center')
               .append(fileDetailsContainer);
-
-            // Check permission and add the delete button if allowed
-            if (canDeleteFiles) {
-              const deleteUrl = `{{ route('files.destroy', ':id') }}`.replace(':id', file.id);
-              const removeButton = $('<button></button>')
-                .text('Delete')
-                .addClass('btn btn-danger btn-sm')
-                .on('click', function() {
-                  // Remove file logic here
-                  $.ajax({
-                    url: deleteUrl,
-                    type: 'DELETE',
-                    success: function(response) {
-                      listItem.remove(); // Remove the file link from the list
-                      Toastify({
-                        text: response.message || 'File Removed Successfully.',
-                        duration: 5000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#28a745',
-                      }).showToast();
-                    },
-                    error: function(xhr, status, error) {
-                      console.error('Failed to remove file:', error);
-                    }
-                  });
-                });
-
-              // Append the delete button to the list item
-              listItem.append(removeButton);
-            }
 
             // Append the list item to the list
             panel.find('.list-group').append(listItem);
