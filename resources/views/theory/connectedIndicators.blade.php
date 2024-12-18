@@ -140,7 +140,7 @@
                             </a>
                             @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
                             <span class="badge bg-light text-primary">
-                                Last Response Added: {{ $indicator->responses->first()->created_at->diffForHumans() }}
+                                Last Response Added: {{ $indicator->latest_response_date->diffForHumans() }}
                             </span>
                             @endif
                         </div>

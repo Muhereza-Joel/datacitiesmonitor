@@ -76,16 +76,18 @@ class IndicatorController extends Controller
 
         // Transform the collection to add the 'current' value from the latest response
         $indicators->getCollection()->transform(function ($indicator) {
-            // Fetch the latest response based on 'original_created_at' in descending order
+            // Fetch the latest response once
             $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
-            $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
-
-            // Get the last time a response was added based on 'created_at' in descending order
-            $latestResponseDate = $indicator->responses()->orderBy('created_at', 'desc')->first();
-            $indicator->latest_response_date = $latestResponseDate ? $latestResponseDate->created_at : null; // Set the latest response date
-
+        
+            // Set the 'current' value from the latest response
+            $indicator->current = $latestResponse ? $latestResponse->current : null;
+        
+            // Set the 'latest_response_date' from the latest response's created_at
+            $indicator->latest_response_date = $latestResponse ? $latestResponse->created_at : null;
+        
             return $indicator;
         });
+        
 
 
         return view('indicators.list', compact('pageTitle', 'indicators', 'indicatorCounts'));

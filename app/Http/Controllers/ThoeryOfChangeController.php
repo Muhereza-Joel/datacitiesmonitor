@@ -191,9 +191,7 @@ class ThoeryOfChangeController extends Controller
             $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
             $indicator->current = $latestResponse ? $latestResponse->current : null; // Set the latest 'current' value
 
-            // Get the last time a response was added based on 'created_at' in descending order
-            $latestResponseDate = $indicator->responses()->orderBy('created_at', 'desc')->first();
-            $indicator->latest_response_date = $latestResponseDate ? $latestResponseDate->created_at : null; // Set the latest response date
+            $indicator->latest_response_date = $latestResponse ? $latestResponse->created_at : null; // Set the latest response date
 
             return $indicator;
         });
