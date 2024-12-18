@@ -1,4 +1,4 @@
-<div class="mt-3">
+<div class="mt-5">
     <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
         @php
         // Ensure baseline, current, and target are non-negative and valid
@@ -16,19 +16,8 @@
         $currentPosition = (($current - $minValue) / $range) * 100;
         $targetPosition = (($target - $minValue) / $range) * 100;
 
-        // Ensure minimum spacing between markers
-        $minSpacing = 2; // Minimum percentage spacing
-        if (abs($baselinePosition - $currentPosition) < $minSpacing) {
-            $currentPosition = $baselinePosition + $minSpacing;
-        }
-        if (abs($currentPosition - $targetPosition) < $minSpacing) {
-            $targetPosition = $currentPosition + $minSpacing;
-        }
-
-        // Handle case where all values are equal
-        if ($baseline === $current && $current === $target) {
-            $currentPosition = $baselinePosition; // Align current with baseline and target
-        }
+        // Determine progress direction
+        $progressDirection = $indicator->direction === 'increasing' ? '&#x2192;' : '&#x2190;'; // Arrow right for increasing, left for decreasing
         @endphp
 
         <!-- Faint Shade from Baseline to Current (For both directions) -->
@@ -42,6 +31,16 @@
 
         <!-- Target Marker -->
         <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+
+        <!-- Progress Direction Arrow: Baseline to Current -->
+        <small style="position: absolute; left: {{ ($baselinePosition + $currentPosition) / 2 }}%; top: -20px; transform: translateX(-50%); font-size: 10px;">
+            @if ($indicator->direction === 'increasing')
+                Progress direction {!! $progressDirection !!}
+            @else
+                {!! $progressDirection !!} Progress direction
+            @endif
+        </small>
+
     </div>
 
     <div class="px-1" style="position: relative; margin-top: 15px;">

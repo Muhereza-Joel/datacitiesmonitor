@@ -1,4 +1,4 @@
-<div class="mt-3">
+<div class="mt-5">
     <div style="position: relative; height: 20px; background-color: #f0f0f0; border-radius: 5px; border: 1px solid #ccc;">
         @php
         // Ensure baseline, current, and target are non-negative and valid
@@ -15,6 +15,9 @@
         $baselinePosition = (($baseline - $minValue) / $range) * 100;
         $currentPosition = (($current - $minValue) / $range) * 100;
         $targetPosition = (($target - $minValue) / $range) * 100;
+
+        // Determine progress direction
+        $progressDirection = $response->indicator->direction === 'increasing' ? '&#x2192;' : '&#x2190;'; // Arrow right for increasing, left for decreasing
 
         // Ensure minimum spacing between markers
         $minSpacing = 2; // Minimum percentage spacing
@@ -42,6 +45,15 @@
 
         <!-- Target Marker -->
         <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
+
+        <small style="position: absolute; left: {{ ($baselinePosition + $currentPosition) / 2 }}%; top: -20px; transform: translateX(-50%); font-size: 10px;">
+            @if ($response->indicator->direction === 'increasing')
+                Progress direction {!! $progressDirection !!}
+            @else
+                {!! $progressDirection !!} Progress direction
+            @endif
+        </small>
+
     </div>
 
     <div class="px-1" style="position: relative; margin-top: 15px;">
