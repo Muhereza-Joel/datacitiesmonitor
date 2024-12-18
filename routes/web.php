@@ -61,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/indicators/{id}/revision/history', [IndicatorController::class, 'getIndicatorHistory'])->name('indicator.history');
     Route::post('/indicators/{id}/revert/{revisionId}', [IndicatorController::class, 'revertIndicatorHistory'])->name('indicator.revert');
     
-    Route::resource('/users', UserController::class)->middleware('role:root,admin,user');
+    Route::resource('/users', UserController::class)->middleware('role:root,admin');
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
     Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
