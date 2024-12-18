@@ -46,7 +46,7 @@
         <!-- Target Marker -->
         <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
 
-        <small style="position: absolute; left: {{ ($baselinePosition + $currentPosition) / 2 }}%; top: -20px; transform: translateX(-50%); font-size: 10px;">
+        <small style="position: absolute; left: 50%; top: -20px; transform: translateX(-50%); font-size: 10px;">
             @if ($response->indicator->direction === 'increasing')
                 Progress direction {!! $progressDirection !!}
             @else

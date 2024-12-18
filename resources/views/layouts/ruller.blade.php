@@ -33,7 +33,7 @@
         <div style="position: absolute; left: {{ $targetPosition }}%; width: 6px; height: 100%; background-color: red; border-radius: 3px;" title="Target"></div>
 
         <!-- Progress Direction Arrow: Baseline to Current -->
-        <small style="position: absolute; left: {{ ($baselinePosition + $currentPosition) / 2 }}%; top: -20px; transform: translateX(-50%); font-size: 10px;">
+        <small style="position: absolute; left: 50%; top: -20px; transform: translateX(-50%); font-size: 10px;">
             @if ($indicator->direction === 'increasing')
                 Progress direction {!! $progressDirection !!}
             @else
