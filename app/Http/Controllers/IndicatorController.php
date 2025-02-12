@@ -293,7 +293,17 @@ class IndicatorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $indicator = Indicator::find($id);
+
+        if (!$indicator) {
+            return redirect()->back()->with('error', 'Indicator not found');
+        }
+
+        $indicator->delete(); // This will soft delete the record
+
+        event(new UserActionPerformed(Auth::user(), 'delete_indicator', 'Indicator', $indicator->id));
+
+        return redirect()->back()->with('success', 'Indicator deleted successfully');
     }
 
     public function updateStatus(Request $request, $id)
