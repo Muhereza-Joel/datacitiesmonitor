@@ -78,16 +78,16 @@ class IndicatorController extends Controller
         $indicators->getCollection()->transform(function ($indicator) {
             // Fetch the latest response once
             $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
-        
+
             // Set the 'current' value from the latest response
             $indicator->current = $latestResponse ? $latestResponse->current : null;
-        
+
             // Set the 'latest_response_date' from the latest response's created_at
             $indicator->latest_response_date = $latestResponse ? $latestResponse->created_at : null;
-        
+
             return $indicator;
         });
-        
+
 
 
         return view('indicators.list', compact('pageTitle', 'indicators', 'indicatorCounts'));
@@ -624,5 +624,103 @@ class IndicatorController extends Controller
 
         return redirect()->route('indicator.history', $indicator->id)
             ->with('success', 'Indicator has been reverted successfully!');
+    }
+
+    public function moveResponse($id)
+    {
+        $pageTitle = "Move Response";
+        $responseId = $id;
+
+        $currentUser = Auth::user();
+        // Find the related indicator for the given response ID
+        $excludedIndicatorId = Response::where('id', $id)->value('indicator_id');
+
+        // Start the query with the base conditions
+        $query = Indicator::with(['theoryOfChange', 'organisation'])
+            ->withCount('responses') // Add response count
+            ->where('id', '!=', $excludedIndicatorId); // Exclude the related indicator
+
+        // Check if the current user is a root user
+        if ($currentUser->role !== 'root') {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('organisation_id', $organisation_id);
+        }
+
+        // Order the results: those with at least one response first, then by created_at
+        $query->orderByRaw('CASE WHEN responses_count > 0 THEN 0 ELSE 1 END, created_at DESC');
+
+        // Paginate the filtered results
+        $indicators = $query->paginate(24);
+
+        // Transform the collection to add the 'current' value from the latest response
+        $indicators->getCollection()->transform(function ($indicator) {
+            // Fetch the latest response once
+            $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
+
+            // Set the 'current' value from the latest response
+            $indicator->current = $latestResponse ? $latestResponse->current : null;
+
+            // Set the 'latest_response_date' from the latest response's created_at
+            $indicator->latest_response_date = $latestResponse ? $latestResponse->created_at : null;
+
+            return $indicator;
+        });
+
+        return view('indicators.moveResponses', compact('pageTitle', 'indicators', 'responseId'));
+    }
+
+
+    public function saveMovedResponse(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'response_id' => 'required|string|exists:responses,id',
+            'selected_indicator' => 'required|string|exists:indicators,id',
+            'current' => 'required|numeric', // Required current state input
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            // Fetch the response being moved
+            $response = Response::findOrFail($validated['response_id']);
+
+            // Fetch the new indicator where the response is being moved
+            $newIndicator = Indicator::findOrFail($validated['selected_indicator']);
+
+            // Recalculate progress based on the new indicator's direction
+            $baseline = $newIndicator->baseline;
+            $target = $newIndicator->target;
+            $direction = $newIndicator->direction; // Assume this can be 'increase' or 'decrease'
+
+            $current = $validated['current'];
+
+            if ($direction === 'increase') {
+                $progress = ($current - $baseline) / ($target - $baseline) * 100;
+            } elseif ($direction === 'decrease') {
+                $progress = ($baseline - $current) / ($baseline - $target) * 100;
+            } else {
+                $progress = 0; // Default in case of unexpected direction value
+            }
+
+            // Ensure progress stays within 0-100 range
+            $progress = max(0, min(100, $progress));
+
+            // Update response with new indicator_id, recalculated progress, and current value
+            $response->update([
+                'indicator_id' => $newIndicator->id,
+                'progress' => $progress,
+                'current' => $current,
+            ]);
+
+            // Update files table to reflect the new indicator_id
+            DB::table('files')
+                ->where('response_id', $response->id)
+                ->update(['indicator_id' => $newIndicator->id]);
+
+            // Log the action
+            event(new UserActionPerformed(Auth::user(), 'move_response', 'Response', $response->id));
+        });
+
+        return redirect()->route('indicators.index')->with('success', 'Response Moved Successfully');
     }
 }

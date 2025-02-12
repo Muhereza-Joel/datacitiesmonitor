@@ -54,13 +54,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/indicators/response/update', [ResponseController::class, 'updateResponse'])->name('indicators.response.update');
     Route::delete('/indicators/response/delete/{id}', [ResponseController::class, 'deleteResponse'])->name('indicators.response.destroy');
     Route::get('/indicators/{id}/responses', [ResponseController::class, 'getResponsesForIndicator'])->name('indicator.responses');
-    
+
     Route::get('/indicators/response/{id}/revision/history', [ResponseController::class, 'getResponseHistory'])->name('response.history');
     Route::post('/indicators/response/{id}/revert/{revisionId}', [ResponseController::class, 'revertResponseHistory'])->name('response.revert');
-    
+
     Route::get('/indicators/{id}/revision/history', [IndicatorController::class, 'getIndicatorHistory'])->name('indicator.history');
     Route::post('/indicators/{id}/revert/{revisionId}', [IndicatorController::class, 'revertIndicatorHistory'])->name('indicator.revert');
-    
+
     Route::resource('/users', UserController::class)->middleware('role:root,admin');
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
     Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/theory/{id}/revision/history', [ThoeryOfChangeController::class, 'getToCHistory'])->name('theory.history');
     Route::get('/theory/{id}/indicators/create', [ThoeryOfChangeController::class, 'createIndicatorUsingToC'])->name('theory.indicators.create');
     Route::post('/theory/{id}/revert/{revisionId}', [ThoeryOfChangeController::class, 'revertToCHistory'])->name('theory.revert');
-    
+
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     Route::resource('/archives', ArchivesController::class)->middleware('role:root,admin,user,viewer');
@@ -111,6 +111,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events/calendar', [EventsController::class, 'showCalender'])->name('calendar');
     Route::get('/events/display/{visibility}', [EventsController::class, 'getEvents'])->name('all-events');
     Route::resource('/events', EventsController::class)->middleware('role:root,admin');
+    Route::get('/move/{id}/response', [IndicatorController::class, 'moveResponse'])->name('move-response')->middleware('role:root,admin');
+    Route::put('/move/response', [IndicatorController::class, 'saveMovedResponse'])->name('save-moved-response')->middleware('role:root,admin');
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

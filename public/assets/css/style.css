@@ -383,7 +383,7 @@ h6 {
 
 .header {
     transition: all 0.5s;
-    z-index: 997;
+    z-index: 998;
     height: 60px;
     background-color: #05333e;
     padding-left: 20px;
