@@ -65,9 +65,12 @@
     </div><!-- End Page Title -->
 
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
+    @if($errors->isEmpty() && session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
+
 
     <!-- Display validation errors -->
     @if($errors->any())

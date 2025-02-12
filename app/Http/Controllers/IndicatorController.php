@@ -18,6 +18,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Jfcherng\Diff\DiffHelper;
 use Maatwebsite\Excel\Facades\Excel;
 use Venturecraft\Revisionable\Revision;
@@ -677,9 +678,10 @@ class IndicatorController extends Controller
         $validated = $request->validate([
             'response_id' => 'required|string|exists:responses,id',
             'selected_indicator' => 'required|string|exists:indicators,id',
-            'current' => 'required|numeric', // Required current state input
+            'current' => 'required|numeric',
         ]);
 
+        // Start a transaction
         DB::transaction(function () use ($validated) {
             // Fetch the response being moved
             $response = Response::findOrFail($validated['response_id']);
@@ -687,16 +689,25 @@ class IndicatorController extends Controller
             // Fetch the new indicator where the response is being moved
             $newIndicator = Indicator::findOrFail($validated['selected_indicator']);
 
-            // Recalculate progress based on the new indicator's direction
             $baseline = $newIndicator->baseline;
             $target = $newIndicator->target;
-            $direction = $newIndicator->direction; // Assume this can be 'increase' or 'decrease'
-
+            $direction = $newIndicator->direction; // Can be 'increase' or 'decrease'
             $current = $validated['current'];
 
-            if ($direction === 'increase') {
+            // Validate that current is within the acceptable range
+            if (($direction === 'increasing' && ($current < $baseline || $current > $target)) ||
+                ($direction === 'decreasing' && ($current > $baseline || $current < $target))
+            ) {
+                // Redirect back with errors if validation fails
+                return redirect()->back()->withErrors([
+                    'current' => "The current value must be between the baseline ($baseline) and target ($target) based on the indicator direction."
+                ]);
+            }
+
+            // Recalculate progress based on the new indicator's direction
+            if ($direction === 'increasing') {
                 $progress = ($current - $baseline) / ($target - $baseline) * 100;
-            } elseif ($direction === 'decrease') {
+            } elseif ($direction === 'decreasing') {
                 $progress = ($baseline - $current) / ($baseline - $target) * 100;
             } else {
                 $progress = 0; // Default in case of unexpected direction value
@@ -720,7 +731,7 @@ class IndicatorController extends Controller
             // Log the action
             event(new UserActionPerformed(Auth::user(), 'move_response', 'Response', $response->id));
         });
-
+        // Redirect to indicators.index with success message only after successful transaction
         return redirect()->route('indicators.index')->with('success', 'Response Moved Successfully');
     }
 }

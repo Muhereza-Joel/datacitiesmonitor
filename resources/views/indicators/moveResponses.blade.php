@@ -42,6 +42,13 @@
         </div>
         @endif
 
+        @if($errors->has('current'))
+        <div class="alert alert-danger">
+            {{ $errors->first('current') }}
+        </div>
+        @endif
+
+
 
         <section class="section dashboard">
             <div class="alert alert-info">
