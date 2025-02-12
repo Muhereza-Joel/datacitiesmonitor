@@ -184,8 +184,9 @@
                       <i class="bi bi-paperclip"></i> Add Files
                     </a>
                     <a href="{{ route('move-response', $response->id) }}" id="move-response" class="dropdown-item">
-                      <i class="bi bi-paperclip"></i> Move Response
+                      <i class="bi bi-arrows-move"></i> Move Response
                     </a>
+
                     @endif
                     <a href="#reponse-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
                       <i class="bi bi-file-earmark"></i> Response Files
