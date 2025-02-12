@@ -156,6 +156,10 @@
                     @endforeach
                 </div>
                 @endif
+                <!-- Pagination links -->
+                <div class="d-flex justify-content-center">
+                    {{ $indicators->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
+                </div>
             </div>
         </section>
         <!-- Bootstrap Confirmation Modal -->
