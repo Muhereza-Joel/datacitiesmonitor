@@ -13,7 +13,7 @@
                         </a>
                     </div>
                     <!-- End Logo -->
-                    <div class="card-title text-center">M $ E Monitor</div>
+                    <div class="card-title text-center">M $ E Monitor.</div>
                     <div class="card-body">
                         <div class="pt-0 text-center">
                             <p class="small">{{__('Enter your username & password to login.')}}</p>
@@ -97,9 +97,9 @@
                     </div>
                 </div>
 
-                
+
             </div>
-            
+
         </div>
         <div class="d-flex offset-md-1 align-items-center mt-2">
             <div class="alert">
