@@ -13,7 +13,6 @@
                 <!-- End Logo -->
                 <div class="text-center">
                     <div class="card-title">M $ E Account Recouvery.</div>
-                    <h6 class="text-dark">Ooh Sorry for loosing access to your account, please provide your email address you used when creating this account.</h6>
                 </div>
 
                 <div class="card-body">
