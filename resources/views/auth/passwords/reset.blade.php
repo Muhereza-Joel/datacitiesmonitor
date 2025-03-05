@@ -13,13 +13,13 @@
                 <!-- End Logo -->
                 <div class="text-center">
                     <div class="card-title">M $ E Account Recouvery</div>
-
+                    <h6>Ooh Sorry for loosing access to your account, please provide your email address you used when creating this account.</h6>
                 </div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('user.update.password') }}">
                         @csrf
-                        
+
 
                         <input type="hidden" name="token" value="{{ $token }}">
 
