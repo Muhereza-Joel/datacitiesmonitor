@@ -75,7 +75,7 @@
         @endif
 
         <div class="row g-1 mt-4">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="card">
                     <div class="filter">
                         <a class="icon" href="#" data-bs-toggle="dropdown" aria-expanded="false">
