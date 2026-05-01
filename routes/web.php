@@ -15,6 +15,10 @@ use App\Http\Controllers\ThoeryOfChangeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\AreaOfFocusController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportAreaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +46,6 @@ Route::post('/password/update', [ResetPasswordController::class, 'update'])->nam
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-
     Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all')->middleware('role:root');
     Route::resource('/organisations', OrganisationController::class)->middleware('adminPage');
     Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create')->middleware('adminPage');
@@ -113,6 +116,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/events', EventsController::class)->middleware('role:root,admin');
     Route::get('/move/{id}/response', [IndicatorController::class, 'moveResponse'])->name('move-response')->middleware('role:root,admin');
     Route::put('/move/response', [IndicatorController::class, 'saveMovedResponse'])->name('save-moved-response')->middleware('role:root,admin');
+
+
+    Route::resource('/projects', ProjectController::class);
+    Route::resource('/areas-of-focus', AreaOfFocusController::class);
+    Route::resource('/reports', ReportController::class);
+    Route::resource('/report-areas', ReportAreaController::class);
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

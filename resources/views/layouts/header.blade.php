@@ -36,6 +36,11 @@
   <link href="{{ asset('assets/css/dark.css') }}" rel="stylesheet">
 
   <style>
+    .main {
+      padding-left: 30px !important;
+      /* Add some padding around the content */
+    }
+
     #loading-overlay {
       display: none;
       position: fixed;
