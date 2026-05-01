@@ -27,11 +27,11 @@ use \Carbon\Carbon;
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Create Project</h1>
+        <h1>Create Area of Focus</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
-                <li class="breadcrumb-item active">Create Project</li>
+                <li class="breadcrumb-item active">Create Area of Focus</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -54,45 +54,43 @@ use \Carbon\Carbon;
         <div class="row g-1">
             <div class="col-sm-8">
                 <div class="card p-2">
-                    <div class="card-title">Create New Project</div>
-                    <div class="alert alert-warning p-2">This project you are about to create will belong to <span class="badge bg-primary">{{$myOrganisation['name']}}</span></div>
+                    <div class="card-title">Create New Area of Focus</div>
+                    <div class="alert alert-warning p-2">This area of focus you are about to create will belong to <span class="badge bg-primary">{{$myOrganisation['name']}}</span></div>
 
                     <div class="card-body">
-                        <form action="{{ route('projects.store') }}" class="needs-validation" novalidate id="createProjectForm" method="post">
+                        <form action="{{ route('areas-of-focus.store') }}" class="needs-validation" novalidate id="createAreaOfFocusForm" method="post">
                             @csrf
 
                             <div class="form-group my-2">
-                                <label for="name">Name of Project</label>
-                                <textarea placeholder="Project name goes here..." type="text" name="name" required class="form-control">{{ old('name')}}</textarea>
-                                <div class="invalid-feedback">This field is required</div>
-                            </div>
-
-                            <div class="form-group my-2">
-                                <label for="description">Project Description</label>
-                                <textarea placeholder="Project description goes here..." type="text" rows="8" name="description" required class="form-control">{{ old('description')}}</textarea>
-                                <div class="invalid-feedback">This field is required</div>
-                            </div>
-
-                            <div class="form-group my-2">
-                                <label for="startDate" class="form-label">Start Date</label>
-                                <input autocomplete="off" type="text" class="form-control" id="startDate" name="start_date" required>
-                                <div class="invalid-feedback">This field is required</div>
-                            </div>
-                            <div class="form-group my-2">
-                                <label for="endDate" class="form-label">End Date</label>
-                                <input autocomplete="off" type="text" class="form-control" id="endDate" name="end_date" required>
-                                <div class="invalid-feedback">This field is required</div>
-                            </div>
-
-                            <div class="form-group my-2">
-                                <label for="status">Project Status</label>
-                                <select id="status" name="status" class="form-control" required>
-                                    <option value="on hold" {{ old('status') === 'on hold' ? 'selected' : '' }}>On Hold</option>
-                                    <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="planned" {{ old('status') === 'planned' ? 'selected' : '' }}>Planned</option>
-                                    <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                                <label for="name">Project</label>
+                                <select name="project_id" id="project_id" class="form-control" required>
+                                    <option value="">Select Project</option>
+                                    @foreach($myOrganisation->projects as $project)
+                                    <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
+                                    @endforeach
                                 </select>
-                                <div class="invalid-feedback">Please select the project status.</div>
+                                <div class="invalid-feedback">This field is required</div>
+                            </div>
+
+                            <div class="form-group my-2">
+                                <label for="name">Name of Area of Focus</label>
+                                <textarea placeholder="Area of focus name goes here..." type="text" name="name" required class="form-control">{{ old('name')}}</textarea>
+                                <div class="invalid-feedback">This field is required</div>
+                            </div>
+
+                            <div class="form-group my-2">
+                                <label for="description">Area of Focus Description</label>
+                                <textarea placeholder="Area of focus description goes here..." type="text" rows="8" name="description" required class="form-control">{{ old('description')}}</textarea>
+                                <div class="invalid-feedback">This field is required</div>
+                            </div>
+
+                            <div class="form-group my-2">
+                                <label for="status">Status</label>
+                                <select id="status" name="status" class="form-control" required>
+                                    <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                                <div class="invalid-feedback">Please select the status.</div>
                             </div>
 
                             <input type="hidden" value="{{$myOrganisation->id}}" name="organisation_id">
@@ -110,8 +108,8 @@ use \Carbon\Carbon;
                     <div class="card-title">Instructions</div>
                     <div class="card-body">
                         <ul>
-                            <li><strong>Project Name:</strong> Provide a brief and descriptive title for the project.</li>
-                            <li><strong>Project Description:</strong> Explain the purpose and scope of the project.</li>
+                            <li><strong>Area of Focus Name:</strong> Provide a brief and descriptive title for the area of focus.</li>
+                            <li><strong>Area of Focus Description:</strong> Explain the purpose and scope of the area of focus.</li>
                         </ul>
                     </div>
                 </div>
@@ -127,20 +125,14 @@ use \Carbon\Carbon;
 @include('layouts.footer')
 
 <script>
-    var today = new Date();
-    $("#startDate, #endDate").datepicker({
-        minDate: today,
-        dateFormat: 'yy-mm-dd'
-    });
-
-    $('#createProjectForm').on('submit', function(event) {
+    $('#createAreaOfFocusForm').on('submit', function(event) {
         event.preventDefault();
 
         if (this.checkValidity() === true) {
             let fromData = $(this).serialize();
 
             $.ajax({
-                url: '{{ route("projects.store") }}',
+                url: '{{ route("areas-of-focus.store") }}',
                 type: 'POST',
                 data: fromData,
                 headers: {
@@ -149,7 +141,7 @@ use \Carbon\Carbon;
                 success: function(response) {
 
                     Toastify({
-                        text: response.message || "Project Created Successfully",
+                        text: response.message || "Area of Focus Created Successfully",
                         duration: 4000,
                         gravity: 'bottom',
                         position: 'left',
@@ -165,7 +157,7 @@ use \Carbon\Carbon;
 
                     if (jqXHR.status === 500) {
                         Toastify({
-                            text: jqXHR.responseJSON.message || "An error occurred while creating project",
+                            text: jqXHR.responseJSON.message || "An error occurred while creating area of focus",
                             duration: 4000,
                             gravity: 'bottom',
                             position: 'left',

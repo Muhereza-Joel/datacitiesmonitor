@@ -54,4 +54,9 @@ class Organisation extends Model
     {
         return $this->hasMany(Event::class, 'organisation_id');
     }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'organisation_id');
+    }
 }

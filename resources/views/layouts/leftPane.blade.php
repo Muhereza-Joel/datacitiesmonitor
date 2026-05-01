@@ -131,20 +131,23 @@ $other_organizations = session('other_organizations');
 
   <div class="icon-rail">
     <!-- M and E Icon -->
-    <div class="rail-item" data-target="me-menu" title="M and E">
+    <div class="rail-item" data-target="me-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="M and E Module">
       <i class="bi bi-speedometer2"></i>
     </div>
     <!-- Reporting Icon -->
-    <div class="rail-item" data-target="reporting-menu" title="Reporting">
+    <div class="rail-item" data-target="reporting-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Reporting Module">
       <i class="bi bi-file-earmark-bar-graph"></i>
     </div>
-    <div class="rail-item" data-target="org-menu" title="Organizations & Publications">
+    <!-- Organizations Icon -->
+    <div class="rail-item" data-target="org-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Publications Module">
       <i class="bi bi-building"></i>
     </div>
-    <div class="rail-item" data-target="history-menu" title="History & Administration">
+    <!-- History/Admin Icon -->
+    <div class="rail-item" data-target="history-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Administration Module">
       <i class="bi bi-clock-history"></i>
     </div>
-    <div class="rail-item" data-target="support-menu" title="Support">
+    <!-- Support Icon -->
+    <div class="rail-item" data-target="support-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Support Module">
       <i class="bi bi-question-circle"></i>
     </div>
   </div>
@@ -181,7 +184,13 @@ $other_organizations = session('other_organizations');
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
             <i class="bi bi-speedometer2"></i>
-            <span>{{ __('Indicators') }}</span>
+            <span>{{ __('General Indicators') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
+            <i class="bi bi-speedometer2"></i>
+            <span>{{ __('Project Scoped Indicators') }}</span>
           </a>
         </li>
         <li class="nav-item">
@@ -217,7 +226,7 @@ $other_organizations = session('other_organizations');
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('report-areas.index') ? 'active' : '' }}" href="{{ route('report-areas.index') }}">
             <i class="bi bi-geo"></i>
-            <span>{{ __('Report Areas') }}</span>
+            <span>{{ __('Report Submissions') }}</span>
           </a>
         </li>
       </div>
@@ -249,12 +258,7 @@ $other_organizations = session('other_organizations');
       <!-- History/Admin Pane -->
       <div id="history-menu" class="menu-group">
         <li class="nav-heading">System Admin Module</li>
-        @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
-        <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('events.index') ? 'active' : '' }}" href="{{ route('events.index') }}">
-            <i class="bi bi-clock"></i> <span>Scheduling</span>
-          </a>
-        </li>
+
         @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('organisations.index') ? 'active' : '' }}" href="{{ route('organisations.index') }}">
@@ -268,14 +272,20 @@ $other_organizations = session('other_organizations');
             <span>{{ __('Projects') }}</span>
           </a>
         </li>
+        @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('events.index') ? 'active' : '' }}" href="{{ route('events.index') }}">
+            <i class="bi bi-clock"></i> <span>Calendar Management</span>
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">
-            <i class="bi bi-people"></i> <span>Users</span>
+            <i class="bi bi-people"></i> <span>User Accounts</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('logs.index') ? 'active' : '' }}" href="{{ route('logs.index') }}">
-            <i class="bi bi-journal-text"></i> <span>User Activity</span>
+            <i class="bi bi-journal-text"></i> <span>Activity Logs</span>
           </a>
         </li>
         @else
@@ -300,6 +310,12 @@ $other_organizations = session('other_organizations');
     const skeleton = document.getElementById('sidebar-skeleton');
     const sidebarNav = document.getElementById('sidebar-nav');
 
+    // Initialize Bootstrap tooltips for the Nice Admin template[cite: 15]
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
     function switchRail(targetId, saveState = true) {
       railItems.forEach(i => i.classList.remove('active'));
       menuGroups.forEach(group => group.classList.remove('active'));
@@ -313,7 +329,6 @@ $other_organizations = session('other_organizations');
         if (saveState) localStorage.setItem('activeRail', targetId);
       }
 
-      // Swap skeleton for real content after state is determined[cite: 8]
       if (skeleton) skeleton.classList.add('d-none');
       if (sidebarNav) sidebarNav.classList.remove('d-none');
     }
