@@ -13,6 +13,7 @@ $other_organizations = session('other_organizations');
       height: 100vh;
     }
 
+    /* Icon Rail */
     .icon-rail {
       width: 65px;
       background-color: var(--bs-dark-bg-subtle);
@@ -47,6 +48,7 @@ $other_organizations = session('other_organizations');
       color: #fff !important;
     }
 
+    /* Menu Pane */
     .menu-pane {
       flex-grow: 1;
       overflow-y: auto;
@@ -62,6 +64,37 @@ $other_organizations = session('other_organizations');
       display: block;
     }
 
+    /* Skeleton Styles */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bs-secondary-bg) 25%, var(--bs-tertiary-bg) 50%, var(--bs-secondary-bg) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite ease-in-out;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    @keyframes skeleton-loading {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .skeleton-item {
+      width: 100%;
+      height: 35px;
+      margin-bottom: 10px;
+    }
+
+    .skeleton-text {
+      width: 80%;
+      height: 12px;
+    }
+
+    /* Navigation Items */
     .sidebar-nav .nav-link {
       font-size: 14px;
       font-weight: 500;
@@ -117,12 +150,21 @@ $other_organizations = session('other_organizations');
   </div>
 
   <div class="menu-pane">
-    <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Skeleton Placeholder -->
+    <div id="sidebar-skeleton" class="p-3">
+      <div class="skeleton skeleton-text mb-4" style="width: 40%"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-text mt-4 mb-4" style="width: 30%"></div>
+      <div class="skeleton skeleton-item"></div>
+    </div>
+
+    <ul class="sidebar-nav d-none" id="sidebar-nav">
 
       <!-- M and E Pane -->
       <div id="me-menu" class="menu-group">
         <li class="nav-heading">M and E Module</li>
-
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
             <i class="bi bi-eye"></i>
@@ -135,6 +177,7 @@ $other_organizations = session('other_organizations');
             <span>{{ __('Theories of Change') }}</span>
           </a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
             <i class="bi bi-speedometer2"></i>
@@ -158,14 +201,9 @@ $other_organizations = session('other_organizations');
       <!-- Reporting Pane -->
       <div id="reporting-menu" class="menu-group">
         <li class="nav-heading">Reporting Module</li>
+
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('projects') ? 'active' : '' }}" href="{{ route('projects.index') }}">
-            <i class="bi bi-folder"></i>
-            <span>{{ __('Projects') }}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('areas-of-focus') ? 'active' : '' }}" href="{{ route('areas-of-focus.index') }}">
+          <a class="nav-link {{ request()->routeIs('areas-of-focus.*') ? 'active' : '' }}" href="{{ route('areas-of-focus.index') }}">
             <i class="bi bi-book"></i>
             <span>{{ __('Areas of Focus') }}</span>
           </a>
@@ -225,6 +263,12 @@ $other_organizations = session('other_organizations');
         </li>
         @endif
         <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('projects.*') ? 'active' : '' }}" href="{{ route('projects.index') }}">
+            <i class="bi bi-folder"></i>
+            <span>{{ __('Projects') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">
             <i class="bi bi-people"></i> <span>Users</span>
           </a>
@@ -253,6 +297,8 @@ $other_organizations = session('other_organizations');
   document.addEventListener('DOMContentLoaded', function() {
     const railItems = document.querySelectorAll('.rail-item');
     const menuGroups = document.querySelectorAll('.menu-group');
+    const skeleton = document.getElementById('sidebar-skeleton');
+    const sidebarNav = document.getElementById('sidebar-nav');
 
     function switchRail(targetId, saveState = true) {
       railItems.forEach(i => i.classList.remove('active'));
@@ -266,6 +312,10 @@ $other_organizations = session('other_organizations');
         targetMenu.classList.add('active');
         if (saveState) localStorage.setItem('activeRail', targetId);
       }
+
+      // Swap skeleton for real content after state is determined[cite: 8]
+      if (skeleton) skeleton.classList.add('d-none');
+      if (sidebarNav) sidebarNav.classList.remove('d-none');
     }
 
     railItems.forEach(item => {
@@ -285,7 +335,6 @@ $other_organizations = session('other_organizations');
     } else if (savedRail) {
       switchRail(savedRail, false);
     } else {
-      // Default to M and E
       switchRail('me-menu', false);
     }
   });
