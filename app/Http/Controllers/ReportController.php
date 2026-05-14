@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Organisation;
+use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -23,7 +26,12 @@ class ReportController extends Controller
      */
     public function create()
     {
-        //
+        $pageTitle = "Create Report";
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
+        $myOrganisation = Organisation::findOrFail($organisation_id);
+
+        return view('reports.create', compact('pageTitle', 'myOrganisation'));
     }
 
     /**
@@ -34,7 +42,19 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'reporting_month' => 'required|date_format:Y-m-d',
+            'status' => 'required|in:draft,submitted',
+            'organisation_id' => 'required|exists:organisations,id',
+        ]);
+
+        $validatedData['prepared_by'] = Auth::id();
+
+        // Create the report
+        $report = Report::create($validatedData);
+
+        return redirect()->route('reports.show', $report->id)->with('success', 'Report created successfully.');
     }
 
     /**

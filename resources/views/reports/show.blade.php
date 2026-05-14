@@ -29,20 +29,16 @@ use \Carbon\Carbon;
     <div class="pagetitle">
         <div class="d-flex">
             <div class="text-start w-50">
-                <h1>Manage Reports</h1>
+                <h1>Report Details</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
-                        <li class="breadcrumb-item active">Manage Reports</li>
+                        <li class="breadcrumb-item active">Report Details</li>
                     </ol>
                 </nav>
 
             </div>
-            <div class="text-end w-50 pt-3">
 
-                <a href="{{ route('reports.create') }}" class="btn btn-primary btn-sm">Create New Report</a>
-
-            </div>
         </div>
     </div><!-- End Page Title -->
     @if(session('success'))
