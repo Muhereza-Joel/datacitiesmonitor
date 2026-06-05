@@ -18,8 +18,8 @@ class Report extends Model
     protected $fillable = [
         "id",
         "project_id",
-        "reporting_month ",
-        "prepared_by ",
+        "reporting_month",
+        "prepared_by",
         "status",
         "organisation_id",
     ];
