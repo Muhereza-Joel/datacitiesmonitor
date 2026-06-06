@@ -69,8 +69,6 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
     Route::patch('/user/reset-password', [UserController::class, 'resetPassword'])->name('user.resetPassword');
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-
 
     Route::resource('/theory', ThoeryOfChangeController::class);
     Route::get('/theory/{id}/indicators', [ThoeryOfChangeController::class, 'getIndicators'])->name('theory.indicators');
