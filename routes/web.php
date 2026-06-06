@@ -20,6 +20,7 @@ use App\Http\Controllers\AreaOfFocusController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportAreaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
     Route::patch('/user/reset-password', [UserController::class, 'resetPassword'])->name('user.resetPassword');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
 
     Route::resource('/theory', ThoeryOfChangeController::class);
     Route::get('/theory/{id}/indicators', [ThoeryOfChangeController::class, 'getIndicators'])->name('theory.indicators');
@@ -126,6 +129,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/reports/{report}/areas/create', [ReportAreaController::class, 'create'])->name('reports.areas.create');
     Route::post('/reports/{report}/areas', [ReportAreaController::class, 'store'])->name('reports.areas.store');
+
+    Route::resource('roles', RoleController::class)->except(['show']);
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

@@ -267,6 +267,11 @@ $other_organizations = session('other_organizations');
 
         @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
         <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+            <i class="bi bi-person-badge"></i> <span>Roles</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('organisations.index') ? 'active' : '' }}" href="{{ route('organisations.index') }}">
             <i class="bi bi-bank"></i> <span>Organisations</span>
           </a>
