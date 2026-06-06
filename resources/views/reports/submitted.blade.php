@@ -61,7 +61,7 @@ use \Carbon\Carbon;
     <div class="pagetitle mt-4">
         <div class="d-flex">
             <div class="text-start w-50">
-                <h1 class="text-body-emphasis">Your Reports</h1>
+                <h1 class="text-body-emphasis">All Reports</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
@@ -71,9 +71,7 @@ use \Carbon\Carbon;
             </div>
 
             <div class="text-end w-50 pt-3">
-                <a href="{{ route('reports.create') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle"></i> Create New Report
-                </a>
+
             </div>
         </div>
     </div>
@@ -158,14 +156,10 @@ use \Carbon\Carbon;
                     </div>
 
                     <div class="card-actions bg-body-tertiary">
-                        <a href="{{ route('reports.show', $report->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
+                        <a href="{{ route('reports.showSubmittedReports', $report->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>
-                        @if(strtolower($report->status) === 'draft')
-                        <a href="{{ route('reports.edit', $report->id) }}" class="btn btn-outline-warning btn-sm" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        @endif
+
                     </div>
                 </div>
             </div>

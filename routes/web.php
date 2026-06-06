@@ -120,6 +120,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/projects', ProjectController::class);
     Route::resource('/areas-of-focus', AreaOfFocusController::class);
+    Route::get('/my-submitted-reports', [ReportController::class, 'mySubmittedReports'])->name('reports.mySubmittedReports');
+    Route::get('/submitted-reports', [ReportController::class, 'submittedReports'])->name('reports.submittedReports');
+    Route::get('/submitted/reports/{id}/view', [ReportController::class, 'showSubmitted'])->name('reports.showSubmittedReports');
     Route::resource('/reports', ReportController::class);
     Route::resource('/report-areas', ReportAreaController::class);
 

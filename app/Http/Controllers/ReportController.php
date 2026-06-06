@@ -21,11 +21,42 @@ class ReportController extends Controller
 
         // Fetch reports using pagination to handle large datasets seamlessly
         $reports = Report::where('organisation_id', $organisation_id)
+            ->where('status', 'draft')
             ->with('preparedBy') // Eager load relation to prevent N+1 query performance hits
             ->orderBy('created_at', 'desc')
             ->paginate(12); // Displays 12 reports per page
 
         return view('reports.list', compact('reports'));
+    }
+
+    public function mySubmittedReports()
+    {
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
+
+        // Fetch reports using pagination to handle large datasets seamlessly
+        $reports = Report::where('organisation_id', $organisation_id)
+            ->where('status', 'submitted') // Filter to only show submitted reports
+            ->with('preparedBy') // Eager load relation to prevent N+1 query performance hits
+            ->orderBy('created_at', 'desc')
+            ->paginate(12); // Displays 12 reports per page
+
+        return view('reports.submitted', compact('reports'));
+    }
+
+    public function submittedReports()
+    {
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
+
+        // Fetch reports using pagination to handle large datasets seamlessly
+        $reports = Report::where('organisation_id', $organisation_id)
+            ->where('status', 'submitted') // Filter to only show submitted reports
+            ->with('preparedBy') // Eager load relation to prevent N+1 query performance hits
+            ->orderBy('created_at', 'desc')
+            ->paginate(12); // Displays 12 reports per page
+
+        return view('reports.submitted', compact('reports'));
     }
 
     /**
@@ -84,6 +115,19 @@ class ReportController extends Controller
         ])->findOrFail($id);
 
         return view('reports.show', compact('report'));
+    }
+
+    public function showSubmitted(string $id)
+    {
+        // Eager load everything in one database step
+        $report = Report::with([
+            'project',
+            'organisation',
+            'preparedBy',
+            'reportAreas.areaOfFocus'
+        ])->findOrFail($id);
+
+        return view('reports.showSubmitted', compact('report'));
     }
 
     /**

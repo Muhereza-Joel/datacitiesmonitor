@@ -220,11 +220,17 @@ $other_organizations = session('other_organizations');
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
             <i class="bi bi-file-text"></i>
-            <span>{{ __('My Reports') }}</span>
+            <span>{{ __('My Draft Reports') }}</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('report-areas.index') ? 'active' : '' }}" href="{{ route('report-areas.index') }}">
+          <a class="nav-link {{ request()->routeIs('reports.mySubmittedReports') ? 'active' : '' }}" href="{{ route('reports.mySubmittedReports') }}">
+            <i class="bi bi-file-text"></i>
+            <span>{{ __('My Submitted Reports') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('reports.submittedReports') ? 'active' : '' }}" href="{{ route('reports.submittedReports') }}">
             <i class="bi bi-geo"></i>
             <span>{{ __('Submitted Reports') }}</span>
           </a>
