@@ -20,9 +20,11 @@
                 </nav>
             </div>
             <div>
+                @can('view', $report)
                 <a href="{{ route('reports.show', $report->id) }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Cancel and Return
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -130,13 +132,15 @@
                                 <div class="quill-editor" id="stakeholder-editor" style="height: 160px;"></div>
                             </div>
 
+                            @can('create', \App\Models\ReportArea::class)
                             <div class="border-top pt-3 d-flex align-items-center justify-content-end gap-2">
                                 <a href="{{ route('reports.show', $report->id) }}" class="btn btn-outline-secondary px-4">Discard</a>
                                 <button id="discardData" type="button" class="btn btn-danger px-3" style="display: none;">Discard Autosave</button>
                                 <button type="submit" class="btn btn-primary px-4">
-                                    <i class="bi bi-check-circle me-1"></i> Save Focus Metrics Block
+                                    <i class="bi bi-check-circle me-1"></i> Save
                                 </button>
                             </div>
+                            @endcan
                         </form>
                     </div>
                 </div>

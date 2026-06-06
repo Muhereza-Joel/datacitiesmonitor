@@ -130,7 +130,9 @@ $existingYear = old('year', $existingDate ? $existingDate->format('Y') : '');
 
                             <div class="text-start mt-4">
                                 <button type="submit" class="btn btn-primary px-4">Update</button>
+                                @can('update', $report)
                                 <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary px-3 ms-1">Cancel</a>
+                                @endcan
                             </div>
                         </form>
                     </div>

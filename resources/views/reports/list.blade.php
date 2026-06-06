@@ -71,9 +71,11 @@ use \Carbon\Carbon;
             </div>
 
             <div class="text-end w-50 pt-3">
+                @can('create', \App\Models\Report::class)
                 <a href="{{ route('reports.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Create New Report
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -158,13 +160,17 @@ use \Carbon\Carbon;
                     </div>
 
                     <div class="card-actions bg-body-tertiary">
+                        @can('view', $report)
                         <a href="{{ route('reports.show', $report->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>
+                        @endcan
                         @if(strtolower($report->status) === 'draft')
+                        @can('update', $report)
                         <a href="{{ route('reports.edit', $report->id) }}" class="btn btn-outline-warning btn-sm" title="Edit">
                             <i class="bi bi-pencil"></i>
                         </a>
+                        @endcan
                         @endif
                     </div>
                 </div>
@@ -184,9 +190,11 @@ use \Carbon\Carbon;
                         <p class="text-secondary mx-auto mb-4" style="max-width: 450px;">
                             You have not logged any operational monthly statements yet. Generate your first performance report to keep project documented properly.
                         </p>
+                        @can('create', \App\Models\Report::class)
                         <a href="{{ route('reports.create') }}" class="btn btn-primary px-4">
                             <i class="bi bi-plus-circle me-1"></i> Create Your First Report
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>

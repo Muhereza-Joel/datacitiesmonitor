@@ -49,12 +49,17 @@ use \Carbon\Carbon;
                 </nav>
             </div>
             <div>
+                @can('update', $report)
                 <a href="{{ route('reports.edit', $report->id) }}" class="btn btn-warning btn-sm me-2">
                     <i class="bi bi-pencil"></i> Edit Report Meta
                 </a>
+                @endcan
+
+                @can('view', $report)
                 <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Back to List
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -139,9 +144,11 @@ use \Carbon\Carbon;
 
                         </div>
 
+                        @can('create', \App\Models\ReportArea::class)
                         <a href="{{ route('reports.areas.create', $report->id) }}" class="btn btn-primary btn-sm px-3 shadow-sm">
                             <i class="bi bi-plus-circle me-1"></i> Add Submission
                         </a>
+                        @endcan
                     </div>
 
                     <div class="card-body pt-3">

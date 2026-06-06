@@ -126,7 +126,9 @@ use \Carbon\Carbon;
                             <input type="hidden" value="{{$myOrganisation->id}}" name="organisation_id">
 
                             <div class="text-start">
-                                <button type="submit" class="btn btn-sm btn-primary">Save Report</button>
+                                @can('create', \App\Models\Report::class)
+                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                @endcan
                             </div>
                         </form>
                     </div>

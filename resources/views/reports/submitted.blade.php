@@ -156,9 +156,11 @@ use \Carbon\Carbon;
                     </div>
 
                     <div class="card-actions bg-body-tertiary">
+                        @can('view', $report)
                         <a href="{{ route('reports.showSubmittedReports', $report->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>
+                        @endcan
 
                     </div>
                 </div>
@@ -178,9 +180,7 @@ use \Carbon\Carbon;
                         <p class="text-secondary mx-auto mb-4" style="max-width: 450px;">
                             You have not logged any operational monthly statements yet. Generate your first performance report to keep project documented properly.
                         </p>
-                        <a href="{{ route('reports.create') }}" class="btn btn-primary px-4">
-                            <i class="bi bi-plus-circle me-1"></i> Create Your First Report
-                        </a>
+
                     </div>
                 </div>
             </div>
