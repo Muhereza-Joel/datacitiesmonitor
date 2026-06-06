@@ -76,7 +76,9 @@ use \Carbon\Carbon;
                             </div>
                         </div>
                         <div class="text-end">
+                            @can('update', $areaOfFocus)
                             <a href="{{ route('areas-of-focus.edit', $areaOfFocus->id) }}" class="btn btn-primary btn-sm">Edit Area of Focus</a>
+                            @endcan
                         </div>
                     </div>
                 </div>

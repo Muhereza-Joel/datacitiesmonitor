@@ -63,9 +63,11 @@ use \Carbon\Carbon;
             </div>
 
             <div class="text-end w-50 pt-3">
+                @can('create', \App\Models\AreaOfFocus::class)
                 <a href="{{ route('areas-of-focus.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Create Area Of Focus
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -121,12 +123,16 @@ use \Carbon\Carbon;
                         </div>
 
                         <div class="card-actions bg-body-tertiary">
+                            @can('view', $item)
                             <a href="{{ route('areas-of-focus.show', $item->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                                 <i class="bi bi-eye"></i>
                             </a>
+                            @endcan
+                            @can('update', $item)
                             <a href="{{ route('areas-of-focus.edit', $item->id) }}" class="btn btn-outline-warning btn-sm" title="Edit">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -144,9 +150,11 @@ use \Carbon\Carbon;
                 <p class="text-secondary mx-auto mb-4" style="max-width: 420px;">
                     It looks like there is no data recorded yet. Areas of Focus help track critical segments of your projects. Get started by creating your very first entry.
                 </p>
+                @can('create', \App\Models\AreaOfFocus::class)
                 <a href="{{ route('areas-of-focus.create') }}" class="btn btn-primary px-4">
-                    <i class="bi bi-plus-circle me-1"></i> Create First Area of Focus
+                    <i class="bi bi-plus-circle me-1"></i> Create Your First Area of Focus
                 </a>
+                @endcan
             </div>
         </div>
         @endforelse

@@ -89,8 +89,9 @@ use \Carbon\Carbon;
                                     <option value="inactive" {{ $areaOfFocus->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                 </select>
                             </div>
-
-                            <button type="submit" class="btn btn-sm btn-primary">Update Changes</button>
+                            @can('update', $areaOfFocus)
+                            <button type="submit" class="btn btn-sm btn-primary">Save Changes</button>
+                            @endcan
                         </form>
                     </div>
                 </div>
