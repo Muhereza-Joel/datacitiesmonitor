@@ -63,6 +63,11 @@ use \Carbon\Carbon;
                     <div class="card-body">
                         <form action="{{ route('reports.store') }}" class="needs-validation" novalidate id="createReportForm" method="post">
                             @csrf
+                            <div class="form-group my-2">
+                                <label for="description">Report Description</label>
+                                <textarea placeholder="Report description goes here..." type="text" rows="8" name="description" required class="form-control">{{ old('description')}}</textarea>
+                                <div class="invalid-feedback">This field is required</div>
+                            </div>
 
                             <div class="form-group my-2">
                                 <label for="project_id">Project</label>
@@ -133,6 +138,7 @@ use \Carbon\Carbon;
                     <div class="card-title">Submission Guide</div>
                     <div class="card-body">
                         <ul>
+                            <li><strong>Report Description:</strong> Provide a detailed description of the report.</li>
                             <li><strong>Project:</strong> Select the specific project this report applies to.</li>
                             <li><strong>Reporting Date:</strong> Select the exact day, month, and year for the record. This is saved as a complete date string.</li>
                             <li><strong>Status:</strong>Reports are by default draft until submission is added</li>

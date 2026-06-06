@@ -11,6 +11,8 @@ class ReportArea extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'report_areas';
+
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'uuid';
@@ -43,5 +45,20 @@ class ReportArea extends Model
                 $model->id = Uuid::uuid4();
             }
         });
+    }
+
+    public function report()
+    {
+        return $this->belongsTo(Report::class, 'report_id', 'id');
+    }
+
+    public function areaOfFocus()
+    {
+        return $this->belongsTo(AreaOfFocus::class, 'area_of_focus_id', 'id');
+    }
+
+    public function organisation()
+    {
+        return $this->belongsTo(Organisation::class, 'organisation_id', 'id');
     }
 }

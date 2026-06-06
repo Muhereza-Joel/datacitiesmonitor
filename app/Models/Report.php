@@ -17,6 +17,7 @@ class Report extends Model
 
     protected $fillable = [
         "id",
+        "description",
         "project_id",
         "reporting_month",
         "prepared_by",
@@ -33,5 +34,26 @@ class Report extends Model
                 $model->id = Uuid::uuid4();
             }
         });
+    }
+
+    public function reportAreas()
+    {
+        // Maps a single report submission to multiple operational granular areas
+        return $this->hasMany(ReportArea::class, 'report_id', 'id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id', 'id');
+    }
+
+    public function organisation()
+    {
+        return $this->belongsTo(Organisation::class, 'organisation_id', 'id');
+    }
+
+    public function preparedBy()
+    {
+        return $this->belongsTo(User::class, 'prepared_by', 'id');
     }
 }

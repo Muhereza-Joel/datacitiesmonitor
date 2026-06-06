@@ -138,13 +138,13 @@ $other_organizations = session('other_organizations');
     <div class="rail-item" data-target="reporting-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Reporting Module">
       <i class="bi bi-file-earmark-bar-graph"></i>
     </div>
-    <!-- Organizations Icon -->
-    <div class="rail-item" data-target="org-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Publications Module">
-      <i class="bi bi-building"></i>
-    </div>
     <!-- History/Admin Icon -->
     <div class="rail-item" data-target="history-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Administration Module">
       <i class="bi bi-clock-history"></i>
+    </div>
+    <!-- Organizations Icon -->
+    <div class="rail-item" data-target="org-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Publications Module">
+      <i class="bi bi-building"></i>
     </div>
     <!-- Support Icon -->
     <div class="rail-item" data-target="support-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="Support Module">
@@ -220,13 +220,13 @@ $other_organizations = session('other_organizations');
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
             <i class="bi bi-file-text"></i>
-            <span>{{ __('Reports') }}</span>
+            <span>{{ __('My Reports') }}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('report-areas.index') ? 'active' : '' }}" href="{{ route('report-areas.index') }}">
             <i class="bi bi-geo"></i>
-            <span>{{ __('Report Submissions') }}</span>
+            <span>{{ __('Submitted Reports') }}</span>
           </a>
         </li>
       </div>

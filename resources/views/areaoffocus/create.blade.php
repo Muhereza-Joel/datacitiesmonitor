@@ -54,7 +54,6 @@ use \Carbon\Carbon;
         <div class="row g-1">
             <div class="col-sm-8">
                 <div class="card p-2">
-                    <div class="card-title">Create New Area of Focus</div>
                     <div class="alert alert-warning p-2">This area of focus you are about to create will belong to <span class="badge bg-primary">{{$myOrganisation['name']}}</span></div>
 
                     <div class="card-body">

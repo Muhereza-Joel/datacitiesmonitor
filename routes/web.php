@@ -122,6 +122,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/areas-of-focus', AreaOfFocusController::class);
     Route::resource('/reports', ReportController::class);
     Route::resource('/report-areas', ReportAreaController::class);
+
+    Route::get('/reports/{report}/areas/create', [ReportAreaController::class, 'create'])->name('reports.areas.create');
+    Route::post('/reports/{report}/areas', [ReportAreaController::class, 'store'])->name('reports.areas.store');
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');
