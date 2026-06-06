@@ -48,9 +48,21 @@ class RoleController extends Controller
             'permissions.*' => 'string|exists:permissions,name'
         ]);
 
+        $newName = strtolower(trim($request->name));
+
+        // Prevent renaming a role to 'super-admin' if a super-admin already exists (and it's not the current role)
+        if ($newName === 'super-admin' && Role::where('name', 'super-admin')->where('id', '!=', $role->id)->exists()) {
+            return redirect()->back()->withErrors(['name' => 'A super-admin role already exists. Only one super-admin is allowed.'])->withInput();
+        }
+
+        // Prevent renaming a role to 'admin' if an admin already exists (and it's not the current role)
+        if ($newName === 'admin' && Role::where('name', 'admin')->where('id', '!=', $role->id)->exists()) {
+            return redirect()->back()->withErrors(['name' => 'An admin role already exists. Only one admin role is allowed.'])->withInput();
+        }
+
         // Protect administrative system handles from changes
         if (!in_array($role->name, ['admin', 'super-admin'])) {
-            $role->name = strtolower(trim($request->name));
+            $role->name = $newName;
         }
 
         $role->save();
@@ -62,7 +74,6 @@ class RoleController extends Controller
         return redirect()->route('roles.index')
             ->with('success', "Role Authorization configurations modified successfully.");
     }
-
 
     /**
      * Show form to create roles with dynamically generated permission checkboxes.
@@ -103,9 +114,21 @@ class RoleController extends Controller
             'permissions.*' => 'string|exists:permissions,name'
         ]);
 
+        $name = strtolower(trim($request->name));
+
+        // Guard: only one super-admin role may exist
+        if ($name === 'super-admin' && Role::where('name', 'super-admin')->exists()) {
+            return redirect()->back()->withErrors(['name' => 'A super-admin role already exists. Only one super-admin is allowed.'])->withInput();
+        }
+
+        // Guard: only one admin role may exist
+        if ($name === 'admin' && Role::where('name', 'admin')->exists()) {
+            return redirect()->back()->withErrors(['name' => 'An admin role already exists. Only one admin role is allowed.'])->withInput();
+        }
+
         // Create the Spatie access control record
         $role = Role::create([
-            'name' => strtolower(trim($request->name)),
+            'name' => $name,
             'guard_name' => 'web'
         ]);
 

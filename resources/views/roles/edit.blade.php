@@ -121,7 +121,8 @@
                     </div>
                     <div class="col-md-6 text-md-end mt-3 mt-md-0">
                         <a href="{{ route('roles.index') }}" class="btn btn-link text-secondary text-decoration-none me-2">Cancel</a>
-                        <button type="submit" class="btn btn-warning px-4 shadow-sm text-dark fw-bold">
+                        @php $isSuperAdmin = ($role->name === 'super-admin'); @endphp
+                        <button type="submit" class="btn btn-warning px-4 shadow-sm text-dark fw-bold" {{ $isSuperAdmin ? 'disabled title="Super‑admin permissions cannot be modified"' : '' }}>
                             <i class="bi bi-shield-check me-2"></i>Update Capabilities
                         </button>
                     </div>
@@ -162,10 +163,10 @@
 
                             <h6 class="fw-bold mb-3 text-body">Bulk Modifications</h6>
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleAllGlobal(true)">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleAllGlobal(true)" {{ $isSuperAdmin ? 'disabled' : '' }}>
                                     <i class="bi bi-check2-all me-1"></i> Check Entire Map Matrix
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleAllGlobal(false)">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleAllGlobal(false)" {{ $isSuperAdmin ? 'disabled' : '' }}>
                                     <i class="bi bi-x-circle me-1"></i> Wipe Active Checked Toggles
                                 </button>
                             </div>
@@ -210,10 +211,10 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="badge rounded-pill bg-body-secondary text-body-secondary border model-count-badge" style="font-size: 0.65rem;">0 Selected</span>
                                     <div class="btn-group btn-group-sm ms-2 shadow-sm">
-                                        <button type="button" class="btn btn-light btn-sm border" title="All" onclick="toggleModelGroup('{{ $snakeModel }}', true)">
+                                        <button type="button" class="btn btn-light btn-sm border" title="All" onclick="toggleModelGroup('{{ $snakeModel }}', true)" {{ $isSuperAdmin ? 'disabled' : '' }}>
                                             <i class="bi bi-plus-lg text-success"></i>
                                         </button>
-                                        <button type="button" class="btn btn-light btn-sm border" title="None" onclick="toggleModelGroup('{{ $snakeModel }}', false)">
+                                        <button type="button" class="btn btn-light btn-sm border" title="None" onclick="toggleModelGroup('{{ $snakeModel }}', false)" {{ $isSuperAdmin ? 'disabled' : '' }}>
                                             <i class="bi bi-dash text-danger"></i>
                                         </button>
                                     </div>
@@ -259,7 +260,8 @@
                                                                 value="{{ $permissionName }}"
                                                                 data-parent-model="{{ $snakeModel }}"
                                                                 id="sw-{{ $permissionName }}"
-                                                                {{ $hasPermission ? 'checked' : '' }}>
+                                                                {{ $hasPermission ? 'checked' : '' }}
+                                                                {{ $isSuperAdmin ? 'disabled' : '' }}>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -283,6 +285,7 @@
         const checkboxes = document.querySelectorAll('.shield-checkbox');
         const globalCounter = document.getElementById('global-counter');
         const searchInput = document.getElementById('modelSearch');
+        const isSuperAdmin = @json($isSuperAdmin);
 
         function updateCounters() {
             const totalChecked = document.querySelectorAll('.shield-checkbox:checked').length;
@@ -306,11 +309,13 @@
         checkboxes.forEach(cb => cb.addEventListener('change', updateCounters));
 
         window.toggleAllGlobal = function(state) {
+            if (isSuperAdmin) return;
             checkboxes.forEach(cb => cb.checked = state);
             updateCounters();
         };
 
         window.toggleModelGroup = function(modelSlug, state) {
+            if (isSuperAdmin) return;
             document.querySelectorAll(`.shield-checkbox[data-parent-model="${modelSlug}"]`)
                 .forEach(cb => cb.checked = state);
             updateCounters();
