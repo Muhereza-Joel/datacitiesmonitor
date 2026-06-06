@@ -1,9 +1,6 @@
 @include('layouts.header')
-
 @include('layouts.topBar');
-
 @include('layouts.leftPane');
-
 
 <main id="main" class="main">
 
@@ -15,13 +12,12 @@
                 <li class="breadcrumb-item active">Create User</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
+    </div>
 
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Display validation errors -->
     @if($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -37,18 +33,17 @@
             <div class="col-sm-5">
                 <div class="card p-2">
                     <div class="card-title">Create New Organisation User</div>
-
                     <div class="card-body">
                         <div id="invalid-registration" class="alert alert-danger alert-dismissible fade d-none p-1" role="alert">
                             <span class="text-center"></span>
                         </div>
-                        <form id="registration-form" action="{{ route('users.store')}}" method="post" class="row g-3 needs-validation" novalidate>
+                        <form id="registration-form" action="{{ route('users.store') }}" method="post" class="row g-3 needs-validation" novalidate>
                             @csrf
 
                             <div class="col-12">
                                 <label for="yourEmail" class="form-label">Email Address of User</label><br>
                                 <small class="text-success">Note that the email should be valid, because its used during password resets.</small>
-                                <input value="{{ old('email') }}" type="email" name="email" class="form-control" id="yourEmail" required placeholder="Please Enter Email adddress Here">
+                                <input value="{{ old('email') }}" type="email" name="email" class="form-control" id="yourEmail" required placeholder="Please Enter Email address Here">
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
 
@@ -71,12 +66,11 @@
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     <option value="">Select user role</option>
-                                    @if(Auth::user()->role === 'root')
-                                    <option value="root" {{ old('role') == 'root' ? 'selected' : '' }}>Super User</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                                    @endif
-                                    <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
-                                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                                    @foreach($roles as $role)
+                                    <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
+                                        {{ ucfirst($role->name) }}
+                                    </option>
+                                    @endforeach
                                 </select>
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
@@ -85,7 +79,6 @@
                                 <label for="organisation">Organization</label>
                                 <select name="organisation_id" id="organisation" class="form-control" required>
                                     <option value="">Select organisation</option>
-
                                     @foreach($organisations as $row)
                                     @if($row->active == 'true')
                                     <option value="{{ $row->id }}" {{ old('organisation_id') == $row->id ? 'selected' : '' }}>{{ $row['name'] }}</option>
@@ -95,11 +88,9 @@
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
 
-
                             <div class="col-12">
                                 <button id="submit-button" class="btn btn-primary btn-sm" type="submit">Create User</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -116,19 +107,16 @@
 
                         <h5 class="card-title">Viewers</h5>
                         <p class="card-text">Viewers can view all data (indicators, responses, user profiles) but cannot add, modify, or delete any data.</p>
-
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-</main><!-- End #main -->
+</main>
 
 @include('layouts.footer')
 
 <script>
-    $(document).ready(function() {
-
-    })
+    $(document).ready(function() {});
 </script>

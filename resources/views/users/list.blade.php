@@ -1,7 +1,5 @@
 @include('layouts.header')
-
 @include('layouts.topBar');
-
 @include('layouts.leftPane');
 
 <main id="main" class="main">
@@ -16,14 +14,13 @@
                         <li class="breadcrumb-item active">Users</li>
                     </ol>
                 </nav>
-
             </div>
             <div class="dropdown text-end w-50 pt-3">
                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="userActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     On This Page
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="userActionsDropdown">
-                    @if (Auth::user()->role == "root")
+                    @if (Auth::user()->hasRole('root'))
                     <li>
                         <a class="dropdown-item" href="{{ route('organisation.user.create') }}">
                             <i class="bi bi-person-plus"></i> Add New Organisation User
@@ -37,15 +34,13 @@
                     </li>
                 </ul>
             </div>
-
         </div>
-    </div><!-- End Page Title -->
+    </div>
 
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Display validation errors -->
     @if($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -58,24 +53,21 @@
 
     <section class="section dashboard">
         <div class="row p-2">
-
             <div class="card pt-4">
                 <div class="card-body">
-                    <!-- Table with stripped rows -->
                     <table id="users-table" class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Organisation</th>
                                 <th>Username</th>
                                 <th>Email</th>
-                                <th>Prevellage</th>
+                                <th>Privilege</th>
                                 <th>Email Verified</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $user)
-
                             <tr>
                                 <td>
                                     <div style="display: flex; align-items: center;">
@@ -83,72 +75,54 @@
                                         <span>{{ $user->organisation->name ?? 'N/A' }}</span>
                                     </div>
                                 </td>
-
                                 <td style="display: flex; align-items: center;">
                                     <img src="{{ isset($user->profile->image_url) ? asset($user->profile->image_url) : asset('assets/img/placeholder.png') }}"
                                         alt="Profile" class="rounded-circle profileImage" width="35px" height="35px"
                                         style="margin-right: 8px; cursor: pointer;">
                                     <span>{{ $user->name ?? 'N/A' }}</span>
                                 </td>
-
-                                <td>{{$user->email}}</td>
-                                <td>{{$user->role}}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->roles->pluck('name')->first() ?? 'No role' }}</td>
                                 <td>
                                     <span class="badge {{ $user->email_verified_at ? 'bg-success' : 'bg-danger' }}">
                                         {{ $user->email_verified_at ? 'Yes' : 'No' }}
                                     </span>
                                 </td>
-
-
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-outline btn-sm dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Select Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="actionDropdown">
-
                                             <a class="dropdown-item" href="{{ route('users.show', $user->id) }}">
                                                 <i class="bi bi-eye"></i> View User Details
                                             </a>
-
-                                            @if(Gate::allows('create', $user))
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateRoleModal" data-user-id="{{ $user->id }}" data-user-role="{{ $user->role }}">
+                                            @can('create', $user) <!-- or Gate::allows, adjust as needed -->
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateRoleModal" data-user-id="{{ $user->id }}" data-user-role="{{ $user->roles->pluck('name')->first() }}">
                                                 <i class="bi bi-pencil-square mr-2"></i> Update User Role
                                             </a>
-
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateEmailModal" data-user-id="{{ $user->id }}" data-user-email="{{ $user->email }}">
                                                 <i class="bi bi-pencil-square mr-2"></i> Update User Email
                                             </a>
-
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateOrganisationModal" data-user-id="{{ $user->id }}" data-user-organisation="{{ $user->organisation }}">
                                                 <i class="bi bi-pencil-square mr-2"></i> Update User Organisation
                                             </a>
-
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#resetPasswordModal" data-user-id="{{ $user->id }}">
                                                 <i class="bi bi-key mr-2"></i> Reset User Password
                                             </a>
-
-
-                                            <a class="dropdown-item text-danger" href="#">
-                                                <i class="bi bi-slash-circle"></i> Block User
-                                            </a>
-
                                             <a class="dropdown-item text-danger delete-user" href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ $user->id }}">
                                                 <i class="bi bi-trash"></i> Delete User
                                             </a>
-                                            @endif
-
+                                            @endcan
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-
                             @endforeach
-
-
                         </tbody>
                     </table>
-                    <!-- Modal -->
+
+                    <!-- Image Modal -->
                     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -159,15 +133,11 @@
                         </div>
                     </div>
 
-                    <!-- End Table with stripped rows -->
-                    <!-- Pagination links -->
                     <div class="d-flex justify-content-center">
-                        {{ $users->links('pagination::bootstrap-4') }} <!-- Use Bootstrap 4 Pagination -->
+                        {{ $users->links('pagination::bootstrap-4') }}
                     </div>
-
                 </div>
             </div>
-
         </div>
     </section>
 
@@ -187,12 +157,7 @@
                         <div class="mb-3">
                             <label for="userRole" class="form-label">Role</label>
                             <select class="form-select" id="userRole" name="role" required>
-                                @if(Auth::user()->role === 'root')
-                                <option value="root">Super User</option>
-                                <option value="admin">Administrator</option>
-                                @endif
-                                <option value="user">User</option>
-                                <option value="viewer">Viewer</option>
+                                <!-- Options will be loaded dynamically via AJAX -->
                             </select>
                         </div>
                     </div>
@@ -219,7 +184,7 @@
                     <div class="modal-body">
                         <input type="hidden" name="id" id="modalUserId">
                         <div class="mb-3">
-                            <label for="userOrganisation" class="form-label">Role</label>
+                            <label for="userOrganisation" class="form-label">Organisation</label>
                             <select class="form-select" id="userOrganisation" name="organisation_id" required>
                                 <option value="">Select Organisation</option>
                             </select>
@@ -234,7 +199,7 @@
         </div>
     </div>
 
-    <!-- Modal for updating email -->
+    <!-- Update Email Modal -->
     <div class="modal fade" id="updateEmailModal" tabindex="-1" aria-labelledby="updateEmailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -261,7 +226,7 @@
         </div>
     </div>
 
-    <!-- Modal for Resetting User Password -->
+    <!-- Reset Password Modal -->
     <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -311,39 +276,51 @@
         </div>
     </div>
 
-
-
-</main><!-- End #main -->
+</main>
 
 @include('layouts.footer')
 
 <script>
     $(document).ready(function() {
-        var updateRoleModal = $('#updateRoleModal');
+        // Fetch all roles once and cache them
+        let rolesList = [];
+        $.ajax({
+            url: '{{ route("roles.all") }}', // You need to create this route or use an existing one
+            method: 'GET',
+            async: false,
+            success: function(data) {
+                rolesList = data.roles; // expects [{id:1, name:'root'}, ...]
+            },
+            error: function() {
+                console.error('Could not load roles');
+            }
+        });
 
-        updateRoleModal.on('show.bs.modal', function(event) {
+        // Update Role Modal
+        $('#updateRoleModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var userId = button.data('user-id');
             var userRole = button.data('user-role');
-
-            var modalUserId = $('#modalUserId');
-            var modalUserRole = $('#userRole');
-
-            modalUserId.val(userId);
-            modalUserRole.val(userRole);
+            var modal = $(this);
+            modal.find('#modalUserId').val(userId);
+            var roleSelect = modal.find('#userRole');
+            roleSelect.empty();
+            $.each(rolesList, function(index, role) {
+                var selected = (role.name === userRole) ? 'selected' : '';
+                roleSelect.append('<option value="' + role.name + '" ' + selected + '>' + role.name.charAt(0).toUpperCase() + role.name.slice(1) + '</option>');
+            });
         });
 
         $('#updateRoleForm').on('submit', function(event) {
             event.preventDefault();
             var formData = $(this).serialize();
             var userId = $('#modalUserId').val();
-
             $.ajax({
-                url: '{{ url("users") }}/' + userId + '/role', // Update role route
-                type: 'PATCH', // Use PATCH for partial updates
+                url: '{{ url("users") }}/' + userId + '/role',
+                type: 'PATCH',
                 data: formData,
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
                     Toastify({
@@ -351,111 +328,33 @@
                         duration: 3000,
                         gravity: 'bottom',
                         position: 'left',
-                        backgroundColor: '#05333e',
+                        backgroundColor: '#05333e'
                     }).showToast();
-
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 3000);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-
-
-
-        let userId; // Variable to hold the user ID to be deleted
-
-        // When the delete user link is clicked, store the user ID
-        $(document).on('click', '.delete-user', function(event) {
-            userId = $(this).data('user-id');
-        });
-
-        // When the confirm delete button is clicked
-        $('#confirmDeleteUser').on('click', function() {
-            $.ajax({
-                url: '{{ url("users") }}/' + userId,
-                type: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token
-                },
-                success: function(response) {
-                    Toastify({
-                        text: response.message,
-                        duration: 3000,
-                        gravity: 'bottom',
-                        position: 'left',
-                        backgroundColor: '#05333e',
-                    }).showToast();
-
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 3000);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-
-            // Hide the modal after the delete request
-            $('#deleteUserModal').modal('hide');
-        });
-
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        // Use event delegation to handle clicks on images within the table
-        $('#users-table').on('click', '.profileImage', function() {
-            // Get the source of the clicked image
-            var imgSrc = $(this).attr('src');
-
-            // Set the source of the modal image
-            $('#enlargedImage').attr('src', imgSrc);
-
-            // Show the modal
-            $('#imageModal').modal('show');
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        // When the modal is about to be shown
-        $('#updateOrganisationModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('user-id'); // Extract user ID from data attributes
-
-            // Set the hidden input value
-            $('#modalUserId').val(userId);
-
-            // Make the AJAX request to fetch organizations
-            $.ajax({
-                url: '{{ route("organisations.all") }}', // Update with your API endpoint
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
-                },
-                success: function(data) {
-                    // Clear existing options and add a default one
-                    console.log(data);
-
-                    $('#userOrganisation').html('<option value="">Select Organisation</option>');
-
-                    // Populate the dropdown with the received data using HTML tags
-                    var optionsHtml = '';
-                    $.each(data.organisations, function(index, organisation) {
-                        optionsHtml += '<option value="' + organisation.id + '">' + organisation.name + '</option>';
-                    });
-
-                    // Append the generated HTML to the dropdown
-                    $('#userOrganisation').append(optionsHtml);
+                    setTimeout(() => window.location.reload(), 3000);
                 },
                 error: function(xhr) {
-                    console.error("Error fetching organizations: ", xhr.responseText);
+                    console.error(xhr);
+                }
+            });
+        });
+
+        // Update Organisation Modal (same as before, uses existing route)
+        $('#updateOrganisationModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
+            $('#modalUserId').val(userId);
+            $.ajax({
+                url: '{{ route("organisations.all") }}',
+                method: 'GET',
+                success: function(data) {
+                    var select = $('#userOrganisation');
+                    select.html('<option value="">Select Organisation</option>');
+                    $.each(data.organisations, function(i, org) {
+                        select.append('<option value="' + org.id + '">' + org.name + '</option>');
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr);
                 }
             });
         });
@@ -464,13 +363,12 @@
             event.preventDefault();
             var formData = $(this).serialize();
             var userId = $('#modalUserId').val();
-
             $.ajax({
-                url: '{{ url("users") }}/' + userId + '/organisation', // Update organisation route
-                type: 'PATCH', // Use PATCH for partial updates
+                url: '{{ url("users") }}/' + userId + '/organisation',
+                type: 'PATCH',
                 data: formData,
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
                     Toastify({
@@ -478,24 +376,21 @@
                         duration: 3000,
                         gravity: 'bottom',
                         position: 'left',
-                        backgroundColor: '#05333e',
+                        backgroundColor: '#05333e'
                     }).showToast();
-
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 3000);
+                    setTimeout(() => window.location.reload(), 3000);
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+                error: function(xhr) {
+                    console.error(xhr);
                 }
             });
         });
 
+        // Update Email Modal
         $('#updateEmailModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('user-id'); // Extract user ID from data attributes
-            var userEmail = button.data('user-email'); // Extract user email from data attributes
-
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
+            var userEmail = button.data('user-email');
             $('#modalEmailUserId').val(userId);
             $('#userEmail').val(userEmail);
         });
@@ -504,10 +399,9 @@
             event.preventDefault();
             var formData = $(this).serialize();
             var userId = $('#modalEmailUserId').val();
-
             $.ajax({
                 url: '{{ url("users") }}/' + userId + '/email',
-                type: 'PATCH', // Use PATCH for partial updates
+                type: 'PATCH',
                 data: formData,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -518,71 +412,91 @@
                         duration: 3000,
                         gravity: 'bottom',
                         position: 'left',
-                        backgroundColor: '#05333e',
+                        backgroundColor: '#05333e'
                     }).showToast();
-
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 3000);
+                    setTimeout(() => window.location.reload(), 3000);
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+                error: function(xhr) {
+                    console.error(xhr);
                 }
             });
         });
 
+        // Reset Password Modal
         $('#resetPasswordModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('user-id'); // Extract user ID from data attributes
-
-            // Set the hidden input value for user ID
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
             $('#modalResetPasswordUserId').val(userId);
         });
 
-        // Handle form submission using AJAX
         $('#resetPasswordForm').on('submit', function(event) {
             event.preventDefault();
-
-            var form = $(this);
-            var formData = form.serialize();
-
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(this).serialize(),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-
                     Toastify({
                         text: response.message,
                         duration: 3000,
                         gravity: 'bottom',
                         position: 'left',
-                        backgroundColor: '#05333e',
+                        backgroundColor: '#05333e'
                     }).showToast();
-
                     $('#resetPasswordModal').modal('hide');
-                    form[0].reset();
+                    $('#resetPasswordForm')[0].reset();
                 },
                 error: function(xhr) {
-                    // Handle errors
-                    var errors = xhr.responseJSON.errors;
-                    var errorMessages = '';
-                    $.each(errors, function(key, value) {
-                        errorMessages += value[0] + '\n';
-                    });
-
+                    let errors = xhr.responseJSON.errors;
+                    let msg = '';
+                    $.each(errors, (k, v) => msg += v[0] + '\n');
                     Toastify({
-                        text: "Error: \n" + errorMessages,
+                        text: msg,
                         duration: 3000,
                         gravity: 'bottom',
                         position: 'left',
-                        backgroundColor: '#ff4d4d',
+                        backgroundColor: '#ff4d4d'
                     }).showToast();
                 }
             });
+        });
+
+        // Delete User
+        let userIdToDelete;
+        $(document).on('click', '.delete-user', function() {
+            userIdToDelete = $(this).data('user-id');
+        });
+        $('#confirmDeleteUser').on('click', function() {
+            $.ajax({
+                url: '{{ url("users") }}/' + userIdToDelete,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    Toastify({
+                        text: response.message,
+                        duration: 3000,
+                        gravity: 'bottom',
+                        position: 'left',
+                        backgroundColor: '#05333e'
+                    }).showToast();
+                    setTimeout(() => window.location.reload(), 3000);
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                }
+            });
+            $('#deleteUserModal').modal('hide');
+        });
+
+        // Profile image enlarge
+        $('#users-table').on('click', '.profileImage', function() {
+            $('#enlargedImage').attr('src', $(this).attr('src'));
+            $('#imageModal').modal('show');
         });
     });
 </script>

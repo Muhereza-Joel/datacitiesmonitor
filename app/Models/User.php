@@ -64,6 +64,13 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
+    public function scopeWithoutSuperAdmin($query)
+    {
+        return $query->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'super-admin');
+        });
+    }
+
     public function organisation()
     {
         return $this->belongsTo(Organisation::class);

@@ -1,9 +1,6 @@
 @include('layouts.header')
-
 @include('layouts.topBar');
-
 @include('layouts.leftPane');
-
 
 <main id="main" class="main">
 
@@ -21,7 +18,6 @@
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Display validation errors -->
     @if($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -42,7 +38,7 @@
                         <div id="invalid-registration" class="alert alert-danger alert-dismissible fade d-none p-1" role="alert">
                             <span class="text-center"></span>
                         </div>
-                        <form id="registration-form" action="{{ route('users.store')}}" method="post" class="row g-3 needs-validation" novalidate>
+                        <form id="registration-form" action="{{ route('users.store') }}" method="post" class="row g-3 needs-validation" novalidate>
                             @csrf
                             <input type="hidden" name="organisation_id" value="{{ $myOrganisation->id }}">
                             <div class="col-12">
@@ -71,21 +67,18 @@
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     <option value="">Select user role</option>
-                                    @if(Auth::user()->role === 'root')
-                                    <option value="root" {{ old('role') == 'root' ? 'selected' : '' }}>Super User</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                                    @endif
-                                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
-                                    <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
+                                    @foreach($roles as $role)
+                                    <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
+                                        {{ ucfirst($role->name) }}
+                                    </option>
+                                    @endforeach
                                 </select>
                                 <div class="invalid-feedback">This value is required</div>
                             </div>
 
-
                             <div class="col-12">
                                 <button id="submit-button" class="btn btn-primary btn-sm" type="submit">Create User</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -99,19 +92,16 @@
 
                         <h5 class="card-title">Viewers</h5>
                         <p class="card-text">Viewers can view all data (indicators, responses, user profiles) but cannot add, modify, or delete any data.</p>
-
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-</main><!-- End #main -->
+</main>
 
 @include('layouts.footer')
 
 <script>
-    $(document).ready(function() {
-
-    })
+    $(document).ready(function() {});
 </script>

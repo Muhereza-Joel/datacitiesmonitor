@@ -8,13 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role; // optional, used for validation
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -22,72 +21,67 @@ class UserController extends Controller
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
 
-        // Check if the current user is a root user
-        if ($currentUser->role === 'root') {
-            // Fetch all users with organisation and profile if the role is root
-            $users = User::with(['organisation', 'profile'])->paginate(25);
+        // Check if the current user has the 'root' role (Spatie)
+        if ($currentUser->hasRole('super-admin')) {
+            $users = User::with(['organisation', 'profile', 'roles'])
+                ->withoutSuperAdmin()
+                ->paginate(25);
         } else {
-            // Load users with organisation and profile for the current user's organization
-            $users = User::with(['organisation', 'profile'])
+            $users = User::with(['organisation', 'profile', 'roles'])
                 ->where('organisation_id', $organisation_id)
+                ->withoutSuperAdmin()
                 ->paginate(25);
         }
 
         return view('users.list', compact('pageTitle', 'users'));
     }
 
-
-
-
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
         $pageTitle = 'Create User';
-        $currentUser = Auth::user(); // Get the currently authenticated user
-        $organisation_id = $currentUser->organisation_id; // Get the organization ID associated with the user
-
-        // Find the organization using the organization ID
+        $currentUser = Auth::user();
+        $organisation_id = $currentUser->organisation_id;
         $myOrganisation = Organisation::findOrFail($organisation_id);
+        $roles = Role::whereRaw('LOWER(name) != ?', ['super-admin'])->get();
 
-        return view('users.create', compact('pageTitle', 'myOrganisation'));
+        return view('users.create', compact('pageTitle', 'myOrganisation', 'roles'));
     }
-
 
     public function create_organisation_user()
     {
         $pageTitle = 'Create User';
         $organisations = Organisation::all();
+        $roles = Role::whereRaw('LOWER(name) != ?', ['super-admin'])->get();
 
-        return view('users.createOrganisationUser', compact('pageTitle', 'organisations'));
+        return view('users.createOrganisationUser', compact('pageTitle', 'organisations', 'roles'));
     }
-
-
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'string|required|max:30|unique:users,name',
             'email' => 'string|required|max:50|unique:users,email',
-            'role' => 'required|string|in:root,admin,user,viewer',
-            'password' => 'string|required|min:8', // Ensure the password is at least 8 characters
+            'role' => 'required|string|exists:roles,name', // role must exist in Spatie roles table
+            'password' => 'string|required|min:8',
             'organisation_id' => 'string|required|exists:organisations,id',
         ]);
 
-        // Hash the password before storing it
+        // Hash the password
         $validated['password'] = bcrypt($validated['password']);
+        $roleName = $validated['role'];
+        unset($validated['role']); // remove role from data – we'll assign it via Spatie
 
-        // Create the user with the validated data
-        User::create($validated);
+        // Create the user
+        $user = User::create($validated);
+
+        // Assign the Spatie role
+        $user->assignRole($roleName);
 
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
@@ -97,12 +91,8 @@ class UserController extends Controller
             ->with(['success' => 'User Created Successfully', 'myOrganisation' => $myOrganisation]);
     }
 
-
     /**
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
@@ -113,79 +103,67 @@ class UserController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        //
+        // Not implemented
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        // Not implemented
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Remove the specified resource from storage (soft delete).
      */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete(); // Soft delete the user
+        $user->delete();
 
         return response()->json(['message' => 'User deleted successfully.']);
     }
 
-
+    /**
+     * Update a user's role using Spatie.
+     */
     public function updateRole(Request $request, $id)
     {
-        // Validate the incoming request
         $validated = $request->validate([
-            'role' => 'required|string|in:root,admin,user,viewer', // Validate the role
+            'role' => 'required|string|exists:roles,name',
         ]);
 
-        // Find the user by ID
-        $user = User::findOrFail($id); // This will throw a 404 if not found
+        $user = User::findOrFail($id);
 
-        // Update the user's role
-        $user->role = $validated['role'];
-        $user->save(); // Save the changes
+        // Sync the role (assuming a user has only one role – adjust if multiple are allowed)
+        $user->syncRoles([$validated['role']]);
 
-        // Return a success response
         return response()->json(['message' => 'User role updated successfully.']);
     }
 
+    /**
+     * Update a user's organisation.
+     */
     public function updateOrganisation(Request $request, $id)
     {
-        // Validate the incoming request
         $validated = $request->validate([
-            'organisation_id' => 'string|required|max:36'
+            'organisation_id' => 'string|required|max:36|exists:organisations,id'
         ]);
 
-        // Find the user by ID
-        $user = User::findOrFail($id); // This will throw a 404 if not found
-
-        // Update the user's email
+        $user = User::findOrFail($id);
         $user->organisation_id = $validated['organisation_id'];
-        $user->save(); // Save the changes
+        $user->save();
 
-        // Return a success response
         return response()->json(['message' => 'User organisation updated successfully.']);
     }
 
-
+    /**
+     * Update a user's email address.
+     */
     public function updateEmail(Request $request)
     {
         $request->validate([
@@ -193,38 +171,31 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $request->id
         ]);
 
-        // Find the user by ID
         $user = User::find($request->id);
-
-        // Update the email address
         $user->email = $request->email;
         $user->save();
 
-        return response()->json([
-            'message' => 'Email updated successfully.'
-        ]);
+        return response()->json(['message' => 'Email updated successfully.']);
     }
 
+    /**
+     * Reset a user's password.
+     */
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:users,id',
-            'password' => 'required|min:8|confirmed', // Ensure password confirmation
+            'password' => 'required|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Find the user by ID
         $user = User::findOrFail($request->id);
-
-        // Update the user's password
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return response()->json([
-            'message' => 'Password has been reset successfully.'
-        ], 200);
+        return response()->json(['message' => 'Password has been reset successfully.'], 200);
     }
 }

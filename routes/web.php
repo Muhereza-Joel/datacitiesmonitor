@@ -131,6 +131,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reports/{report}/areas', [ReportAreaController::class, 'store'])->name('reports.areas.store');
 
     Route::resource('roles', RoleController::class)->except(['show']);
+    Route::get('/roles/all', function () {
+        return response()->json([
+            'roles' => Spatie\Permission\Models\Role::whereRaw('LOWER(name) != ?', ['super-admin'])
+                ->get(['id', 'name'])
+        ]);
+    })->name('roles.all');
 });
 
 Route::get('/verify-security-question', [LoginController::class, 'verifySecurityQuestion'])->name('verify.security_question');

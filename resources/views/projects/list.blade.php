@@ -126,12 +126,16 @@ use \Carbon\Carbon;
                     </div>
 
                     <div class="card-actions bg-body-tertiary">
+                        @can('view', $project)
                         <a href="{{ route('projects.show', $project->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>
+                        @endcan
+                        @can('update', $project)
                         <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-outline-warning btn-sm" title="Edit">
                             <i class="bi bi-pencil"></i>
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>
