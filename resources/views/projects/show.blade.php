@@ -63,7 +63,9 @@ use \Carbon\Carbon;
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-primary btn-sm">Edit Project</a>
+                        @can('update', $project)
+                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-primary btn-sm">Edit Project Details</a>
+                        @endcan
                     </div>
                 </div>
             </div>

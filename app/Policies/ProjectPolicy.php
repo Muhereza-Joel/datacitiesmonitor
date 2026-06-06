@@ -18,7 +18,7 @@ class ProjectPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_project');
+        return $user->can('view_any_project');
     }
 
     /**

@@ -58,9 +58,11 @@ use \Carbon\Carbon;
             </div>
 
             <div class="text-end w-50 pt-3">
+                @can('create', \App\Models\Project::class)
                 <a href="{{ route('projects.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Create New Project
                 </a>
+                @endcan
             </div>
         </div>
     </div>@if(session('success'))
@@ -126,7 +128,7 @@ use \Carbon\Carbon;
                     </div>
 
                     <div class="card-actions bg-body-tertiary">
-                        @can('view', $project)
+                        @can('viewAny', $project)
                         <a href="{{ route('projects.show', $project->id) }}" class="btn btn-outline-info btn-sm" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>

@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Project::class, 'project');
-    }
 
     /**
      * Display a listing of the resource.
@@ -21,6 +17,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
+
+        $this->authorize('view_project');
+
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
 
@@ -40,6 +39,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
+        $this->authorize('create_project');
+
         $pageTitle = "Create Project";
         $currentUser = Auth::user();
         $organisation_id = $currentUser->organisation_id;
@@ -78,6 +79,8 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('view_project');
+
         $project = Project::findOrFail($id);
         return view('projects.show', compact('project'));
     }
@@ -90,6 +93,8 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('update_project');
+
         $project = Project::findOrFail($id);
         return view('projects.update', compact('project'));
     }

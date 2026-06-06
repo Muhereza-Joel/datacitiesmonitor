@@ -27,11 +27,11 @@ use \Carbon\Carbon;
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Update Project</h1>
+        <h1>Update Project Details</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
-                <li class="breadcrumb-item active">Update Project</li>
+                <li class="breadcrumb-item active">Edit</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -94,7 +94,9 @@ use \Carbon\Carbon;
                                 </select>
                                 <div class="invalid-feedback">This field is required</div>
 
-                                <button type="submit" class="btn btn-sm btn-primary mt-3">Update Project</button>
+                                @can('update', $project)
+                                <button type="submit" class="btn btn-sm btn-primary mt-3">Save Changes</button>
+                                @endcan
                         </form>
                     </div>
                 </div>
