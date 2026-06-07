@@ -286,7 +286,7 @@ $other_organizations = session('other_organizations');
         @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('events.index') ? 'active' : '' }}" href="{{ route('events.index') }}">
-            <i class="bi bi-clock"></i> <span>Calendar Management</span>
+            <i class="bi bi-clock"></i> <span>Reminders</span>
           </a>
         </li>
         <li class="nav-item">

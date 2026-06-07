@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('view_any_user');
     }
 
     /**
@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('view_user');
     }
 
     /**
@@ -40,7 +40,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('create_user');
     }
 
     /**
@@ -52,7 +52,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('update_user');
     }
 
     /**
@@ -64,7 +64,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('delete_user');
     }
 
     /**
@@ -76,7 +76,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('restore_user');
     }
 
     /**
@@ -88,6 +88,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        return in_array($user->role, ['root']);
+        return $user->can('force_delete_user');
     }
 }

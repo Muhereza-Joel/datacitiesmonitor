@@ -20,18 +20,21 @@
                     On This Page
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="userActionsDropdown">
-                    @if (Auth::user()->hasRole('root'))
+                    @if (Auth::user()->hasRole('super-admin'))
                     <li>
                         <a class="dropdown-item" href="{{ route('organisation.user.create') }}">
                             <i class="bi bi-person-plus"></i> Add New Organisation User
                         </a>
                     </li>
                     @endif
+
+                    @can('create', \App\Models\Project::class)
                     <li>
                         <a class="dropdown-item" href="{{ route('users.create') }}">
                             <i class="bi bi-person-plus-fill"></i> Add New User
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
@@ -97,7 +100,7 @@
                                             <a class="dropdown-item" href="{{ route('users.show', $user->id) }}">
                                                 <i class="bi bi-eye"></i> View User Details
                                             </a>
-                                            @can('create', $user) <!-- or Gate::allows, adjust as needed -->
+                                            @can('update', $user) <!-- or Gate::allows, adjust as needed -->
                                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateRoleModal" data-user-id="{{ $user->id }}" data-user-role="{{ $user->roles->pluck('name')->first() }}">
                                                 <i class="bi bi-pencil-square mr-2"></i> Update User Role
                                             </a>
