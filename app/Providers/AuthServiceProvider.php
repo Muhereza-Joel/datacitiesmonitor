@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Archive;
 use App\Models\AreaOfFocus;
+use App\Models\Event;
 use App\Models\Files;
 use App\Models\Indicator;
 use App\Models\Organisation;
@@ -15,6 +16,7 @@ use App\Models\TheoryOfChange;
 use App\Models\User;
 use App\Policies\ArchivePolicy;
 use App\Policies\AreaOfFocusPolicy;
+use App\Policies\EventPolicy;
 use App\Policies\FilePolicy;
 use App\Policies\IndicatorPolicy;
 use App\Policies\OrganisationPolicy;
@@ -48,6 +50,7 @@ class AuthServiceProvider extends ServiceProvider
         AreaOfFocus::class => AreaOfFocusPolicy::class,
         Report::class => ReportPolicy::class,
         ReportArea::class => ReportAreaPolicy::class,
+        Event::class => EventPolicy::class,
     ];
 
     /**

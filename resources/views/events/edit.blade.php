@@ -56,9 +56,9 @@ use \Carbon\Carbon;
                                 <label for="visibility">Visible To</label><br>
                                 <select name="visibility" id="visibility" required class="form-control">
                                     <option value="">Choose who sees your event</option>
-                                    <option value="all" {{ $event->visibility == 'all' ? 'selected' : '' }} >All Users</option>
-                                    <option value="internal" {{ $event->visibility == 'internal' ? 'selected' : '' }} >Members of my organisation</option>
-                                    <option value="external" {{ $event->visibility == 'external' ? 'selected' : '' }} >Only members of other organisations</option>
+                                    <option value="all" {{ $event->visibility == 'all' ? 'selected' : '' }}>All Users</option>
+                                    <option value="internal" {{ $event->visibility == 'internal' ? 'selected' : '' }}>Members of my organisation</option>
+                                    <option value="external" {{ $event->visibility == 'external' ? 'selected' : '' }}>Only members of other organisations</option>
                                 </select>
                                 <div class="invalid-feedback">This field is required</div>
                                 <hr>
@@ -93,8 +93,8 @@ use \Carbon\Carbon;
                                 <label for="active">Show Event On Calendar</label>
                                 <select name="active" id="active" class="form-control" required>
                                     <option value="">Select Activation Status.</option>
-                                    <option value="1" {{ $event->active == 1 ? 'selected' : '' }} >Yes</option>
-                                    <option value="0" {{ $event->active == 0 ? 'selected' : '' }} >No</option>
+                                    <option value="1" {{ $event->active == 1 ? 'selected' : '' }}>Yes</option>
+                                    <option value="0" {{ $event->active == 0 ? 'selected' : '' }}>No</option>
                                 </select>
                                 <div class="invalid-feedback">This field is required</div>
                             </div>
@@ -109,7 +109,9 @@ use \Carbon\Carbon;
                                 <input autocomplete="off" type="text" class="form-control" id="endDate" value="{{ $event->end_date }}" name="end_date" required>
                                 <div class="invalid-feedback">This field is required</div>
                             </div>
+                            @can('create', \App\Models\Event::class)
                             <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            @endcan
                         </form>
 
                     </div>
@@ -196,7 +198,7 @@ use \Carbon\Carbon;
         });
 
 
-       
+
     });
 
     $(document).ajaxStart(function() {
@@ -206,7 +208,4 @@ use \Carbon\Carbon;
     $(document).ajaxStop(function() {
         $("#loader").addClass('d-none');
     });
-
-
-   
 </script>

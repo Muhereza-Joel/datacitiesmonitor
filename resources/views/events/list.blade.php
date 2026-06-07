@@ -128,7 +128,9 @@ use \Carbon\Carbon;
                                 <input autocomplete="off" type="text" class="form-control" id="endDate" name="end_date" required>
                                 <div class="invalid-feedback">This field is required</div>
                             </div>
+                            @can('create', \App\Models\Event::class)
                             <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            @endcan
                         </form>
 
                     </div>
@@ -161,10 +163,15 @@ use \Carbon\Carbon;
                                         </span>
 
                                         <div class="d-flex ps-1">
+                                            @can('update', $event)
                                             <a href="{{ route('events.edit', $event->id) }}" class="me-1">
                                                 <i class="bi bi-pencil-square"></i> <!-- Edit icon -->
                                             </a>
+                                            @endcan
+
+                                            @can('delete', $event)
                                             <a href="" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $event->id }}"><i class="bi bi-trash text-danger"></i></a>
+                                            @endcan
                                         </div>
                                     </div>
 
@@ -277,7 +284,7 @@ use \Carbon\Carbon;
                     success: function(response) {
 
                         Toastify({
-                            text: response.message || "Row Created Successfully",
+                            text: response.message || "Event Created Successfully",
                             duration: 4000,
                             gravity: 'bottom',
                             position: 'left',
