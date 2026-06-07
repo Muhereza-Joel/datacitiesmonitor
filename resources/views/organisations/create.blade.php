@@ -57,7 +57,9 @@
                             </div>
 
                             <div class="text-start mt-3">
+                                @can('create', \App\Models\Organisation::class)
                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                @endcan
                             </div>
                         </form>
                     </div>
@@ -92,8 +94,13 @@
 
                                     </div>
                                     <div class="d-flex justify-content-between">
+                                        @can('update', $row)
                                         <a href="{{ route('organisations.edit', $row->id) }}" class="btn btn-primary btn-sm flex-fill me-1">Edit</a>
+                                        @endcan
+
+                                        @can('delete', $row)
                                         <button class="btn btn-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $row->id }}">Delete</button>
+                                        @endcan
                                     </div>
 
                                     <div class="modal fade" id="deleteModal{{ $row->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $row->id }}" aria-hidden="true">

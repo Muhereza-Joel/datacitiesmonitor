@@ -22,7 +22,7 @@
                 <div class="card p-2">
                     <div class="card-title">Update Organisation Details</div>
                     <div class="card-body">
-                        
+
                         <form id="organization-registration-form" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -45,7 +45,9 @@
                             </div>
 
                             <div class="text-start mt-3">
+                                @can('update', $organisation)
                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                @endcan
                             </div>
                         </form>
                     </div>

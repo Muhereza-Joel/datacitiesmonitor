@@ -6,6 +6,7 @@ use App\Models\Archive;
 use App\Models\AreaOfFocus;
 use App\Models\Files;
 use App\Models\Indicator;
+use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\Report;
 use App\Models\ReportArea;
@@ -16,6 +17,7 @@ use App\Policies\ArchivePolicy;
 use App\Policies\AreaOfFocusPolicy;
 use App\Policies\FilePolicy;
 use App\Policies\IndicatorPolicy;
+use App\Policies\OrganisationPolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\ReportAreaPolicy;
 use App\Policies\ReportPolicy;
@@ -34,6 +36,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
 
+        Organisation::class => OrganisationPolicy::class,
         Indicator::class => IndicatorPolicy::class,
         TheoryOfChange::class => TheoriesOfChangePolicy::class,
         Response::class => ResponsePolicy::class,
