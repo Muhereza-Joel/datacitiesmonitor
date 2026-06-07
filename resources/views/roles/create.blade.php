@@ -124,10 +124,14 @@
                         </nav>
                     </div>
                     <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                        @can('viewAny', \Spatie\Permission\Models\Role::class)
                         <a href="{{ route('roles.index') }}" class="btn btn-link text-secondary text-decoration-none me-2">Cancel</a>
+                        @endcan
+                        @can('create', \Spatie\Permission\Models\Role::class)
                         <button type="submit" class="btn btn-primary px-4 shadow-sm">
                             <i class="bi bi-shield-lock-fill me-2"></i>Save Role and Permissions
                         </button>
+                        @endcan
                     </div>
                 </div>
             </div>

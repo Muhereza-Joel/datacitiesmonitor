@@ -22,6 +22,7 @@ use App\Policies\ProjectPolicy;
 use App\Policies\ReportAreaPolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\ResponsePolicy;
+use App\Policies\RolePolicy;
 use App\Policies\TheoriesOfChangePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -35,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-
+        \Spatie\Permission\Models\Role::class => RolePolicy::class,
         Organisation::class => OrganisationPolicy::class,
         Indicator::class => IndicatorPolicy::class,
         TheoryOfChange::class => TheoriesOfChangePolicy::class,

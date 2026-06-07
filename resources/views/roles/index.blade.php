@@ -7,7 +7,7 @@
     <div class="pagetitle mt-4">
         <div class="d-flex align-items-center justify-content-between">
             <div class="text-start">
-                <h1 class="text-body-emphasis">Roles & Permissions System</h1>
+                <h1 class="text-body-emphasis">Roles & Permissions Management</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
@@ -16,9 +16,11 @@
                 </nav>
             </div>
             <div>
+                @can('create', \Spatie\Permission\Models\Role::class)
                 <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm px-3 shadow-sm">
                     <i class="bi bi-shield-plus me-1"></i> Create New Role
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -66,11 +68,13 @@
                         </div>
 
                         <div class="border-top pt-3 d-flex align-items-center justify-content-end gap-2">
-                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning btn-sm px-3">
+                            @can('update', $role)
+                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-success btn-sm px-3">
                                 <i class="bi bi-pencil me-1"></i> Adjust Matrix
                             </a>
+                            @endcan
 
-                            @if(!in_array($role->name, ['admin', 'super-admin']))
+                            @can('delete', $role)
                             <form action="{{ route('roles.destroy', $role->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to completely decommission this system role? Permissions will be unassigned from users.');">
                                 @csrf
                                 @method('DELETE')
@@ -78,7 +82,8 @@
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
-                            @endif
+                            @endcan
+
                         </div>
                     </div>
                 </div>
@@ -88,10 +93,11 @@
                 <div class="text-center py-5 card border border-dashed shadow-sm">
                     <i class="bi bi-shield-slash text-muted display-3 d-block mb-3"></i>
                     <h5 class="fw-bold text-body-emphasis">No Custom Roles Configured</h5>
-
+                    @can('create', \Spatie\Permission\Models\Role::class)
                     <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm px-4">
                         <i class="bi bi-shield-plus me-1"></i> Provision First Role
                     </a>
+                    @endcan
                 </div>
             </div>
             @endforelse

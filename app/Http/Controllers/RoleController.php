@@ -141,24 +141,28 @@ class RoleController extends Controller
     }
 
     /**
-     * Scan App Directory to pull all active models
+     * Scan App Directory to pull all active models and include Spatie Role
      */
     private function getSystemModels(): array
     {
         $modelPath = app_path('Models');
-        if (!File::isDirectory($modelPath)) {
-            return [];
-        }
-
-        $files = File::files($modelPath);
         $models = [];
 
-        foreach ($files as $file) {
-            $filename = $file->getFilenameWithoutExtension();
-            // Exclude base or pivot configurations if any exist
-            if ($filename !== 'Pivot') {
-                $models[] = $filename;
+        if (File::isDirectory($modelPath)) {
+            $files = File::files($modelPath);
+
+            foreach ($files as $file) {
+                $filename = $file->getFilenameWithoutExtension();
+                // Exclude base or pivot configurations if any exist
+                if ($filename !== 'Pivot') {
+                    $models[] = $filename;
+                }
             }
+        }
+
+        // Explicitly inject 'Role' into the system models matrix if not already listed
+        if (!in_array('Role', $models)) {
+            $models[] = 'Role';
         }
 
         return $models;
