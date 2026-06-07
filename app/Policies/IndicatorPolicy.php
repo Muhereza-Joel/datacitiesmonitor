@@ -18,7 +18,7 @@ class IndicatorPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return $user->can('view_any_indicator');
     }
 
     /**
@@ -30,7 +30,7 @@ class IndicatorPolicy
      */
     public function view(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return $user->can('view_indicator');
     }
 
     /**
@@ -41,7 +41,7 @@ class IndicatorPolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return $user->can('create_indicator');
     }
 
     /**
@@ -53,7 +53,7 @@ class IndicatorPolicy
      */
     public function update(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return $user->can('update_indicator');
     }
 
     /**
@@ -65,7 +65,7 @@ class IndicatorPolicy
      */
     public function delete(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['root','admin']) && in_array($indicator->status, ['draft', 'review']);
+        return $user->can('delete_indicator') && in_array($indicator->status, ['draft', 'review']);
     }
 
     /**
@@ -77,7 +77,7 @@ class IndicatorPolicy
      */
     public function restore(User $user, Indicator $indicator)
     {
-        return in_array($user->role, ['root','admin']);
+        return $user->can('restore_indicator');
     }
 
     /**
@@ -89,6 +89,6 @@ class IndicatorPolicy
      */
     public function forceDelete(User $user, Indicator $indicator)
     {
-        //
+        return $user->can('force_delete_indicator');
     }
 }

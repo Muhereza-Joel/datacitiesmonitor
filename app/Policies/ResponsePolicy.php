@@ -18,7 +18,7 @@ class ResponsePolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return $user->can('view_any_response');
     }
 
     /**
@@ -30,7 +30,7 @@ class ResponsePolicy
      */
     public function view(User $user, Response $response)
     {
-        return in_array($user->role, ['root','admin', 'user', 'viewer']);
+        return $user->can('view_response');
     }
 
     /**
@@ -41,7 +41,7 @@ class ResponsePolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return $user->can('create_response');
     }
 
     /**
@@ -53,7 +53,7 @@ class ResponsePolicy
      */
     public function update(User $user, Response $response)
     {
-        return in_array($user->role, ['root','admin', 'user']);
+        return $user->can('update_response');
     }
 
     /**
@@ -65,7 +65,7 @@ class ResponsePolicy
      */
     public function delete(User $user, Response $response)
     {
-        return in_array($user->role, ['root','admin']) && in_array($response->status, ['draft', 'review']);
+        return $user->can('delete_response') && in_array($response->status, ['draft', 'review']);
     }
 
     /**
@@ -77,7 +77,7 @@ class ResponsePolicy
      */
     public function restore(User $user, Response $response)
     {
-        return in_array($user->role, ['root','admin']);
+        return $user->can('restore_response');
     }
 
     /**
@@ -89,6 +89,6 @@ class ResponsePolicy
      */
     public function forceDelete(User $user, Response $response)
     {
-        //
+        return $user->can('force_delete_response');
     }
 }
