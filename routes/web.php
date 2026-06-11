@@ -47,9 +47,9 @@ Route::post('/password/update', [ResetPasswordController::class, 'update'])->nam
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all')->middleware('role:root');
-    Route::resource('/organisations', OrganisationController::class)->middleware('adminPage');
-    Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create')->middleware('adminPage');
+    Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all');
+    Route::resource('/organisations', OrganisationController::class);
+    Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create');
     Route::resource('/indicators', IndicatorController::class);
     Route::patch('/indicators/{id}/response/status/update', [IndicatorController::class, 'updateStatus'])->name('indicators.status.update');
     Route::get('/indicators/{id}/response/create', [ResponseController::class, 'createResponse'])->name('indicators.response.create');
@@ -65,9 +65,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/indicators/{id}/revision/history', [IndicatorController::class, 'getIndicatorHistory'])->name('indicator.history');
     Route::post('/indicators/{id}/revert/{revisionId}', [IndicatorController::class, 'revertIndicatorHistory'])->name('indicator.revert');
 
-    Route::resource('/users', UserController::class)->middleware('role:root,admin');
+    Route::resource('/users', UserController::class);
     Route::patch('users/{id}/role', [UserController::class, 'updateRole'])->name('users.update.role');
-    Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation')->middleware('role:root');
+    Route::patch('users/{id}/organisation', [UserController::class, 'updateOrganisation'])->name('users.update.organisation');
     Route::patch('users/{id}/email', [UserController::class, 'updateEmail'])->name('users.update.email');
     Route::patch('/user/reset-password', [UserController::class, 'resetPassword'])->name('user.resetPassword');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -81,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-    Route::resource('/archives', ArchivesController::class)->middleware('role:root,admin,user,viewer');
+    Route::resource('/archives', ArchivesController::class);
     Route::get('/organisation/archives', [ArchivesController::class, 'getArchives'])->name('organisation.archives.get');
     Route::get('/publications/{id}/listing', [IndicatorController::class, 'getOrganisationPublications'])->name('organisation.publications');
 
@@ -95,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/password/check', [UserProfileController::class, 'checkCurrentPassword'])->name('password.check');
     Route::patch('/password/update', [UserProfileController::class, 'updatePassword'])->name('password.update');
 
-    Route::resource('logs', LogController::class)->middleware('role:root,admin');
+    Route::resource('logs', LogController::class);
     Route::resource('/files', FilesController::class);
     Route::get('/response/files/{responseId}', [FilesController::class, 'getResponseFiles'])->name('reponse.files');
 
@@ -114,9 +114,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/events/calendar', [EventsController::class, 'showCalender'])->name('calendar');
     Route::get('/events/display/{visibility}', [EventsController::class, 'getEvents'])->name('all-events');
-    Route::resource('/events', EventsController::class)->middleware('role:root,admin');
-    Route::get('/move/{id}/response', [IndicatorController::class, 'moveResponse'])->name('move-response')->middleware('role:root,admin');
-    Route::put('/move/response', [IndicatorController::class, 'saveMovedResponse'])->name('save-moved-response')->middleware('role:root,admin');
+    Route::resource('/events', EventsController::class);
+    Route::get('/move/{id}/response', [IndicatorController::class, 'moveResponse'])->name('move-response');
+    Route::put('/move/response', [IndicatorController::class, 'saveMovedResponse'])->name('save-moved-response');
 
 
     Route::resource('/projects', ProjectController::class);
