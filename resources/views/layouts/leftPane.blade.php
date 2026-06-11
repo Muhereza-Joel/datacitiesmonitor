@@ -174,67 +174,91 @@ $other_organizations = session('other_organizations');
             <span>{{ __('Overview') }}</span>
           </a>
         </li>
+
+        @can('viewAny', \App\Models\TheoryOfChange::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('theory.*') ? 'active' : '' }}" href="{{ route('theory.index') }}">
             <i class="bi bi-diagram-3"></i>
             <span>{{ __('Theories of Change') }}</span>
           </a>
         </li>
+        @endcan
 
+        @can('viewAny', \App\Models\Indicator::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
             <i class="bi bi-speedometer2"></i>
             <span>{{ __('General Indicators') }}</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewAny', \App\Models\Indicator::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
             <i class="bi bi-speedometer2"></i>
             <span>{{ __('Project Scoped Indicators') }}</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewAny', \App\Models\Event::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('calendar') ? 'active' : '' }}" href="{{ route('calendar') }}">
             <i class="bi bi-calendar3"></i>
             <span>{{ __('Calendar') }}</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewAny', \App\Models\Archive::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('archives.index') ? 'active' : '' }}" href="{{ route('archives.index') }}">
             <i class="bi bi-archive"></i>
             <span>{{ __('Archives') }}</span>
           </a>
         </li>
+        @endcan
       </div>
 
       <!-- Reporting Pane -->
       <div id="reporting-menu" class="menu-group">
         <li class="nav-heading">Reporting Module</li>
 
+        @can('viewAny', \App\Models\AreaOfFocus::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('areas-of-focus.*') ? 'active' : '' }}" href="{{ route('areas-of-focus.index') }}">
             <i class="bi bi-book"></i>
             <span>{{ __('Areas of Focus') }}</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewMy', \App\Models\Report::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
             <i class="bi bi-file-text"></i>
             <span>{{ __('My Draft Reports') }}</span>
           </a>
         </li>
+        @endcan
+        @can('viewMySubmited', \App\Models\Report::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('reports.mySubmittedReports') ? 'active' : '' }}" href="{{ route('reports.mySubmittedReports') }}">
             <i class="bi bi-file-text"></i>
             <span>{{ __('My Submitted Reports') }}</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewMySubmited', \App\Models\Report::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('reports.submittedReports') ? 'active' : '' }}" href="{{ route('reports.submittedReports') }}">
             <i class="bi bi-geo"></i>
             <span>{{ __('Submitted Reports') }}</span>
           </a>
         </li>
+        @endcan
       </div>
 
       <!-- Organizations Pane -->
@@ -265,43 +289,56 @@ $other_organizations = session('other_organizations');
       <div id="history-menu" class="menu-group">
         <li class="nav-heading">System Admin Module</li>
 
-        @if (str_starts_with(Auth::user()->organisation->name, 'Administrator'))
+
+        @can('viewAny', \App\Models\Role::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}" href="{{ route('roles.index') }}">
             <i class="bi bi-person-badge"></i> <span>Roles and Permissions</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewAny', \App\Models\Organisation::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('organisations.index') ? 'active' : '' }}" href="{{ route('organisations.index') }}">
             <i class="bi bi-bank"></i> <span>Organisations</span>
           </a>
         </li>
-        @endif
+        @endcan
+
+        @can('viewAny', \App\Models\Project::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('projects.*') ? 'active' : '' }}" href="{{ route('projects.index') }}">
             <i class="bi bi-folder"></i>
             <span>{{ __('Projects') }}</span>
           </a>
         </li>
-        @if( Auth::user()->role === 'admin' || Auth::user()->role === 'root')
+        @endcan
+
+
+        @can('create', \App\Models\Event::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('events.index') ? 'active' : '' }}" href="{{ route('events.index') }}">
             <i class="bi bi-clock"></i> <span>Reminders</span>
           </a>
         </li>
+        @endcan
+        @can('create', \App\Models\User::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">
             <i class="bi bi-people"></i> <span>User Accounts</span>
           </a>
         </li>
+        @endcan
+
+        @can('viewAny', \App\Models\UserActionLog::class)
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('logs.index') ? 'active' : '' }}" href="{{ route('logs.index') }}">
             <i class="bi bi-journal-text"></i> <span>Activity Logs</span>
           </a>
         </li>
-        @else
-        <li class="px-3 small text-muted">Administrative access restricted.</li>
-        @endif
+        @endcan
+
       </div>
 
       <div id="support-menu" class="menu-group">

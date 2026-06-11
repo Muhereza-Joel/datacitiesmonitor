@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
-
     /**
      * Display a listing of roles.
      */
@@ -29,10 +28,13 @@ class RoleController extends Controller
         $models = $this->getSystemModels();
         $prefixes = ['view_any', 'view', 'create', 'update', 'delete', 'restore', 'force_delete'];
 
+        // Extra permissions per model
+        $extraPermissionsMap = $this->getModelPermissionMap();
+
         // Pluck existing assigned permission keys to safely map state in blade lookups
         $assignedPermissions = $role->permissions->pluck('name')->toArray();
 
-        return view('roles.edit', compact('role', 'models', 'prefixes', 'assignedPermissions'));
+        return view('roles.edit', compact('role', 'models', 'prefixes', 'extraPermissionsMap', 'assignedPermissions'));
     }
 
     /**
@@ -95,12 +97,25 @@ class RoleController extends Controller
                     'guard_name' => 'web'
                 ]);
             }
+
+            // Handle extra permissions per model
+            $extraPermissions = $this->getModelPermissionMap()[$model] ?? [];
+            foreach ($extraPermissions as $extra) {
+                $permissionName = $extra . '_' . Str::snake($model);
+                Permission::firstOrCreate([
+                    'name' => $permissionName,
+                    'guard_name' => 'web'
+                ]);
+            }
         }
 
         // 4. Fetch all permissions cleanly chunked by resource group
         $allPermissions = Permission::where('guard_name', 'web')->get();
 
-        return view('roles.create', compact('models', 'prefixes', 'allPermissions'));
+        // Pass extra permissions map to view for grouping
+        $extraPermissionsMap = $this->getModelPermissionMap();
+
+        return view('roles.create', compact('models', 'prefixes', 'allPermissions', 'extraPermissionsMap'));
     }
 
     /**
@@ -141,31 +156,35 @@ class RoleController extends Controller
     }
 
     /**
-     * Scan App Directory to pull all active models and include Spatie Role
+     * Scan App Directory to pull all active models
      */
     private function getSystemModels(): array
     {
         $modelPath = app_path('Models');
+        if (!File::isDirectory($modelPath)) {
+            return [];
+        }
+
+        $files = File::files($modelPath);
         $models = [];
 
-        if (File::isDirectory($modelPath)) {
-            $files = File::files($modelPath);
-
-            foreach ($files as $file) {
-                $filename = $file->getFilenameWithoutExtension();
-                // Exclude base or pivot configurations if any exist
-                if ($filename !== 'Pivot') {
-                    $models[] = $filename;
-                }
+        foreach ($files as $file) {
+            $filename = $file->getFilenameWithoutExtension();
+            // Exclude base or pivot configurations if any exist
+            if ($filename !== 'Pivot') {
+                $models[] = $filename;
             }
         }
 
-        // Explicitly inject 'Role' into the system models matrix if not already listed
-        if (!in_array('Role', $models)) {
-            $models[] = 'Role';
-        }
-
         return $models;
+    }
+
+    /**
+     * Extra permissions per model.
+     */
+    private function getModelPermissionMap(): array
+    {
+        return config('permission.extra_permissions', []);
     }
 
     /**

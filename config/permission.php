@@ -203,4 +203,17 @@ return [
 
         'store' => 'default',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Extra Permissions per Model
+    |--------------------------------------------------------------------------
+    |
+    | Define any additional permissions beyond the standard CRUD+ set.
+    | Format: 'ModelName' => ['permission1', 'permission2', ...]
+    |
+    */
+    'extra_permissions' => [
+        'Report'    => ['viewmysubmited', 'viewmy', 'viewsubmited'],
+    ],
 ];

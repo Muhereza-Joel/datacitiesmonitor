@@ -48,7 +48,7 @@ class ShieldGenerateRootRole extends Command
         $this->info('Ensuring all system permissions exist in the database...');
         $permissionNames = [];
 
-        // 2. Generate permissions for each model chunk
+        // 2. Generate permissions for each model chunk (standard CRUD)
         foreach ($models as $model) {
             foreach ($prefixes as $prefix) {
                 $permissionName = $prefix . '_' . Str::snake($model);
@@ -62,7 +62,28 @@ class ShieldGenerateRootRole extends Command
             }
         }
 
-        // 3. Synchronize all permissions to the root role
+        // 2b. Extra permissions from config file
+        $extraPermissionsMap = config('permission.extra_permissions', []);
+        foreach ($extraPermissionsMap as $model => $extras) {
+            // Only add extra permissions if the model exists in our discovered models list
+            if (!in_array($model, $models)) {
+                $this->warn("Model '{$model}' has extra permissions defined but was not found in app/Models. Skipping.");
+                continue;
+            }
+
+            foreach ($extras as $extra) {
+                $permissionName = $extra . '_' . Str::snake($model);
+
+                Permission::firstOrCreate([
+                    'name' => $permissionName,
+                    'guard_name' => 'web'
+                ]);
+
+                $permissionNames[] = $permissionName;
+            }
+        }
+
+        // 3. Synchronize all permissions (standard + extra) to the root role
         $role->syncPermissions($permissionNames);
 
         $this->line('');

@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Report;
 use App\Models\User;
+use App\Models\UserActionLog;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ReportPolicy
+class UserActionLogPolicy
 {
     use HandlesAuthorization;
 
@@ -18,35 +18,19 @@ class ReportPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_report');
-    }
-
-
-    public function viewMy(User $user)
-    {
-        return $user->can('viewmy_report');
-    }
-
-    public function viewMySubmited(User $user)
-    {
-        return $user->can('viewmysubmited_report');
-    }
-
-    public function viewSubmited(User $user)
-    {
-        return $user->can('viewsubmited_report');
+        return $user->can('view_any_user_action_log');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Report  $report
+     * @param  \App\Models\UserActionLog  $userActionLog
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Report $report)
+    public function view(User $user, UserActionLog $userActionLog)
     {
-        return $user->can('view_report');
+        return $user->can('view_user_action_log');
     }
 
     /**
@@ -57,54 +41,54 @@ class ReportPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_report');
+        return $user->can('create_user_action_log');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Report  $report
+     * @param  \App\Models\UserActionLog  $userActionLog
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Report $report)
+    public function update(User $user, UserActionLog $userActionLog)
     {
-        return $user->can('update_report');
+        return $user->can('update_user_action_log');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Report  $report
+     * @param  \App\Models\UserActionLog  $userActionLog
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Report $report)
+    public function delete(User $user, UserActionLog $userActionLog)
     {
-        return $user->can('delete_report');
+        return $user->can('delete_user_action_log');
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Report  $report
+     * @param  \App\Models\UserActionLog  $userActionLog
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Report $report)
+    public function restore(User $user, UserActionLog $userActionLog)
     {
-        return $user->can('restore_report');
+        return $user->can('restore_user_action_log');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Report  $report
+     * @param  \App\Models\UserActionLog  $userActionLog
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Report $report)
+    public function forceDelete(User $user, UserActionLog $userActionLog)
     {
-        return $user->can('force_delete_report');
+        return $user->can('force_delete_user_action_log');
     }
 }

@@ -266,6 +266,36 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
+
+                                                {{-- Extra permissions for this model --}}
+                                                @if(isset($extraPermissionsMap[$model]))
+                                                @foreach($extraPermissionsMap[$model] as $extra)
+                                                @php
+                                                $permissionName = $extra . '_' . $snakeModel;
+                                                $badgeColor = 'text-bg-secondary';
+                                                $hasPermission = in_array($permissionName, $assignedPermissions);
+                                                @endphp
+                                                <tr class="permission-row">
+                                                    <td class="ps-4">
+                                                        <span class="badge {{ $badgeColor }} badge-permission mb-1 opacity-75">{{ $extra }}</span>
+                                                        <div class="small fw-medium text-body">Can {{ $extra }} records</div>
+                                                    </td>
+                                                    <td><code class="small text-primary">{{ $permissionName }}</code></td>
+                                                    <td class="text-end pe-4">
+                                                        <div class="form-check form-switch d-inline-block">
+                                                            <input class="form-check-input shield-checkbox"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="{{ $permissionName }}"
+                                                                data-parent-model="{{ $snakeModel }}"
+                                                                id="sw-{{ $permissionName }}"
+                                                                {{ $hasPermission ? 'checked' : '' }}
+                                                                {{ $isSuperAdmin ? 'disabled' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
