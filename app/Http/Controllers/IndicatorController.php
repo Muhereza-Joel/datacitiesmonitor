@@ -40,8 +40,12 @@ class IndicatorController extends Controller
         $query = Indicator::with(['theoryOfChange', 'organisation'])
             ->withCount('responses'); // Add response count
 
-        $organisation_id = $currentUser->organisation_id;
-        $query->where('organisation_id', $organisation_id);
+        // Check if the current user is a root user
+        if (! $currentUser->hasRole('super-admin')) {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('organisation_id', $organisation_id);
+        }
 
         // Apply filters if they are present in the request
         if ($request->filled('status')) {
@@ -178,7 +182,13 @@ class IndicatorController extends Controller
 
         // Start the query to find the indicator
         $query = Indicator::where('id', $id);
-        $query->where('organisation_id', $organisation_id);
+
+        // Check if the current user is a root user
+        if ($currentUser->role !== 'root') {
+            // If not root, ensure the indicator belongs to the current user's organisation
+            $query->where('organisation_id', $organisation_id);
+        }
+
         // Find the indicator
         $indicator = $query->firstOrFail();
 
