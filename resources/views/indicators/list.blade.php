@@ -127,7 +127,7 @@
 
                             @if(session('user.preferences.show_indicator_response_count') === 'true')
                             <span class="badge bg-light text-primary">
-                                {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
+                                {{ $indicator->responses_count }} activit{{ $indicator->responses_count !== 1 ? 'ies' : 'y' }}
                             </span>
                             @endif
                         </div>
@@ -170,16 +170,16 @@
                     <div class="card-footer p-0 py-2">
                         <div class="text-start">
                             @if(Gate::allows('create', App\Models\Response::class))
-                            <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add Response
+                            <a href="{{ route('indicators.response.create', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">Add activity
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
                             @endif
-                            <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View Responses
+                            <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-link btn-sm fw-bold">View activities
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
                             @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
                             <span class="badge bg-light text-primary">
-                                Last Response Added: {{ $indicator->latest_response_date->diffForHumans() }}
+                                Last Activity Added: {{ $indicator->latest_response_date->diffForHumans() }}
                             </span>
                             @endif
                         </div>

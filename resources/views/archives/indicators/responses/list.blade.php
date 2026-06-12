@@ -78,12 +78,12 @@
 <main id="main" class="main">
 
   <div class="pagetitle mt-3">
-    <h1>All Responses</h1>
+    <h1>All Activities</h1>
     <div class="d-flex align-items-center">
       <nav class="d-flex align-self-center w-50">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ route('dashboard' )}}">Home</a></li>
-          <li class="breadcrumb-item active">Responses</li>
+          <li class="breadcrumb-item active">Activities</li>
         </ol>
       </nav>
 
@@ -155,7 +155,7 @@
                       <i class="bi bi-info-circle"></i> Indicator Details
                     </a>
                     <a href="#response-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
-                      <i class="bi bi-file-earmark"></i> Response Files
+                      <i class="bi bi-file-earmark"></i> Activity Files
                     </a>
 
 
@@ -222,7 +222,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                Are you sure you want to delete this response?
+                Are you sure you want to delete this activity?
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
@@ -253,11 +253,11 @@
       </div>
       <div class="modal-body">
         <h6 class="text-dark">Are you sure you want to execute this action?</h6>
-        <div class="alert alert-warning p-2 mt-2">Note that this action will delete this response. Please continue with caution because the action is undoable</div>
+        <div class="alert alert-warning p-2 mt-2">Note that this action will delete this activity. Please continue with caution because the action is undoable</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" id="cancel-btn" data-dismiss="modal">Cancel</button>
-        <button type="button" id="confirmDeleteBtn" class="btn btn-danger btn-sm">Yes, Delete Response</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger btn-sm">Yes, Delete Activity</button>
       </div>
     </div>
   </div>
@@ -297,7 +297,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="responseFilesModalLabel">Response Files</h5>
+        <h5 class="modal-title" id="responseFilesModalLabel">Activity Files</h5>
         <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

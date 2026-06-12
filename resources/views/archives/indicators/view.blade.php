@@ -86,7 +86,7 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a class="dropdown-item" href="{{ route('archives.indicator.responses', $indicator->indicator_id) }}">
-                                <i class="bi bi-list-ul me-2"></i>Indicator Responses
+                                <i class="bi bi-list-ul me-2"></i>Indicator Activities
                             </a>
                         </li>
                         <li>

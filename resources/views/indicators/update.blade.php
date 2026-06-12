@@ -21,10 +21,10 @@
             <div class="text-end w-50 pt-2">
                 <div>
                     @if(Gate::allows('create', App\Models\Response::class))
-                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Add Responses To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Responses</a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Add Activities To This Indicator." class="btn btn-primary btn-sm" href="{{ route('indicators.response.create', $indicator->id) }}"><i class="bi bi-plus-circle"></i> Add Activities</a>
                     @endif
                     <a href="{{ route('indicators.show', $indicator->id) }}" class="btn btn-primary btn-sm px-3">Indicator Details</a>
-                    <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-primary btn-sm px-3">View Indicator Responses</a>
+                    <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-primary btn-sm px-3">View Indicator Activities</a>
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
                             <input type="hidden" value="{{$myOrganisation->id}}" name="organisation_id">
 
                             <div class="text-start">
-                
+
                                 @if(Gate::allows('create', $indicator))
                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
                                 @endif

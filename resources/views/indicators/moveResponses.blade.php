@@ -9,7 +9,7 @@
         <div class="pagetitle">
             <div class="row">
                 <div class="col-sm-2">
-                    <h1>Move responses.</h1>
+                    <h1>Move activities.</h1>
                     <nav>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -23,7 +23,7 @@
                     <div class="text-end pt-2">
                         @if(Gate::allows('create', App\Models\Indicator::class))
                         <button type="button" class="btn btn-primary mt-3" id="openModalButton">
-                            Move Response
+                            Move Activity
                         </button>
                         @endif
                     </div>
@@ -54,10 +54,10 @@
             <div class="alert alert-info">
                 <strong>Take a breath! {{ Auth::user()->name }}</strong>
                 <p class="m-0">
-                    Please choose an indicator from the list below where you want to move this response to.
+                    Please choose an indicator from the list below where you want to move this activity to.
                 </p>
                 <small class="mb-2">
-                    Note that you will also have to provide the current state as your moving this response because progress will be recalculated due to this operation
+                    Note that you will also have to provide the current state as your moving this activity because progress will be recalculated due to this operation
                 </small><br>
 
             </div>
@@ -98,7 +98,7 @@
 
                                     @if(session('user.preferences.show_indicator_response_count') === 'true')
                                     <span class="badge bg-light text-primary">
-                                        {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
+                                        {{ $indicator->responses_count }} activit{{ $indicator->responses_count !== 1 ? 'ies' : 'y' }}
                                     </span>
                                     @endif
                                 </div>
@@ -143,7 +143,7 @@
                                     <input type="radio" name="selected_indicator" value="{{ $indicator->id }}" required style="z-index: 997;transform: scale(2.7); position:absolute; top: 50%; left: -10px">
                                     @if($indicator->responses->isNotEmpty() && $indicator->responses->first()->created_at)
                                     <span class="badge bg-light text-primary">
-                                        Last Response Added: {{ $indicator->latest_response_date->diffForHumans() }}
+                                        Last Activity Added: {{ $indicator->latest_response_date->diffForHumans() }}
                                     </span>
                                     @endif
                                 </div>
@@ -171,7 +171,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Are you sure you want to move this response? Please enter the current state before proceeding.</p>
+                        <p>Are you sure you want to move this activity? Please enter the current state before proceeding.</p>
                         <div class="alert alert-info">
 
                             <p class="m-0">

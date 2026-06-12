@@ -31,7 +31,7 @@
     <div class="pagetitle">
         <div class="d-flex">
             <div class="text-start w-75">
-                <h1> Response Revision History</h1>
+                <h1> Activity Revision History</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -45,10 +45,10 @@
                         On This Page
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="onThisPageDropdown">
-                        
+
                         <li>
-                            <a class="dropdown-item" href="{{ route('indicator.responses', $response->indicator->id) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="View Responses For This Indicator.">
-                                <i class="bi bi-list"></i> Go Back To Responses
+                            <a class="dropdown-item" href="{{ route('indicator.responses', $response->indicator->id) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="View Activities For This Indicator.">
+                                <i class="bi bi-list"></i> Go Back To Activities
                             </a>
                         </li>
                         <li>
@@ -56,7 +56,7 @@
                                 <i class="bi bi-list"></i> Go To Indicator Details
                             </a>
                         </li>
-                        
+
                 </div>
             </div>
         </div>
@@ -101,7 +101,7 @@
                             <div class="activite-label">{{ $revision->created_at->diffForHumans() }}</div>
                             <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
                             <div class="activity-content">
-                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">Response {{ $revision->key }}</span>
+                                <strong>{{ $revision->userResponsible()->name }} updated field:</strong> <span class="text-success">Activity {{ $revision->key }}</span>
                                 <hr>
                                 <strong>Changes:</strong><br>
                                 @if (!empty($revision->diffHtml))

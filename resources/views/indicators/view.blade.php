@@ -101,9 +101,9 @@
                         </li>
                         <li>
                             <a class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="left"
-                                title="Add Responses to this Indicator"
+                                title="Add Activities to this Indicator"
                                 href="{{ route('indicators.response.create', $indicator->id) }}">
-                                <i class="bi bi-plus-circle me-2"></i>Add Responses
+                                <i class="bi bi-plus-circle me-2"></i>Add activities
                             </a>
                         </li>
                         @endif
@@ -118,7 +118,7 @@
 
                         <li>
                             <a class="dropdown-item" href="{{ route('indicator.responses', $indicator->id) }}">
-                                <i class="bi bi-list-ul me-2"></i>View Indicator Responses
+                                <i class="bi bi-list-ul me-2"></i>View Indicator Activities
                             </a>
                         </li>
                     </ul>

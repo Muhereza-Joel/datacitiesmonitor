@@ -137,7 +137,7 @@
 
                             <span class="badge bg-secondary text-light">{{$indicator->qualitative_progress}}</span>
                             <span class="badge bg-light text-primary">
-                                {{ $indicator->responses_count }} response{{ $indicator->responses_count !== 1 ? 's' : '' }}
+                                {{ $indicator->responses_count }} activit{{ $indicator->responses_count !== 1 ? 'y' : 'ies' }}
                             </span>
                         </div>
                         <div class="text-end w-25">
@@ -161,7 +161,7 @@
                     <div class="card-footer p-0 py-2">
 
                         <div class="text-start">
-                            <a href="{{ route('archives.indicator.responses', $indicator->indicator_id) }}" class="btn btn-link btn-sm fw-bold">View Responses
+                            <a href="{{ route('archives.indicator.responses', $indicator->indicator_id) }}" class="btn btn-link btn-sm fw-bold">View Activities
                                 <i class="bi bi-box-arrow-in-up-right ms-2"></i>
                             </a>
                         </div>

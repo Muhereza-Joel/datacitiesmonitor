@@ -7,17 +7,17 @@
     <div class="pagetitle">
         <div class="d-flex">
             <div class="text-start w-50">
-                <h1>Edit Response details</h1>
+                <h1>Edit activity details</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active">Edit Response</li>
+                        <li class="breadcrumb-item active">Edit Activity</li>
                     </ol>
                 </nav>
 
             </div>
             <div class="text-end w-50 mt-3">
-                <a href="{{ route('indicator.responses', $response->indicator->id) }}" class="btn btn-primary btn-sm">Go back to responses</a>
+                <a href="{{ route('indicator.responses', $response->indicator->id) }}" class="btn btn-primary btn-sm">Go back to activities</a>
             </div>
         </div>
     </div><!-- End Page Title -->
@@ -39,7 +39,7 @@
                             <div class="alert alert-warning">The target for this indicator was achieved..</div>
                             @else
                             <div class="alert alert-secondary">
-                                <h4>You are editing a response for</h4>
+                                <h4>You are editing an activity for</h4>
                                 <i class="fw-bold">>>>> {{$response->indicator['indicator_title']}} indicator <<<< </i>
                             </div>
 
@@ -51,8 +51,8 @@
                                 <input id="baseline" name="baseline" required readonly type="number" value="{{$response->indicator['baseline']}}" class="form-control">
                             </div>
                             <div class="form-group my-2 alert alert-info">
-                                <label for="">Previous state entered for last response</label>
-                                <input type="text" class="form-control" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No response added yet' }}">
+                                <label for="">Previous state entered for last activity</label>
+                                <input type="text" class="form-control" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No activity added yet' }}">
                             </div>
 
                             <div class="form-group my-2">
@@ -120,7 +120,7 @@
                                     </h2>
                                     <div id="collapseNotes" class="accordion-collapse collapse show" aria-labelledby="headingNotes" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add notes to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add notes to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="notes-editor-container" style="height: 300px;">{!! $response->notes !!}</div>
                                         </div>
@@ -136,10 +136,10 @@
                                     </h2>
                                     <div id="collapseLessons" class="accordion-collapse collapse" aria-labelledby="headingLessons" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add lessons learnt to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add lessons learnt to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="editor-container" style="height: 300px;">{!! $response->lessons !!}</div>
-                                            <div class="invalid-feedback d-block text-dark fw-bold" id="editor-feedback" style="display: none;">Please note that lessons are required to add this response</div>
+                                            <div class="invalid-feedback d-block text-dark fw-bold" id="editor-feedback" style="display: none;">Please note that lessons are required to add this activity</div>
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +153,7 @@
                                     </h2>
                                     <div id="collapseRecommendations" class="accordion-collapse collapse" aria-labelledby="headingRecommendations" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add recommendations to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add recommendations to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="recommendations-editor-container" style="height: 300px;">{!! $response->recommendations !!}</div>
                                         </div>
@@ -164,7 +164,7 @@
 
                             <br>
                             <div class="text-start">
-                                <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Update Response Details</button>
+                                <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Update Activity Details</button>
                                 <button id="discardData" type="button" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
                             </div>
                             @endif
@@ -185,7 +185,7 @@
 
         var baseline = parseFloat($('input[name="baseline"]').val()) || 0;
         var target = parseFloat($('input[name="target"]').val()) || 100;
-        var lastCurrentState = parseFloat($('input[name="last_current_state"]').val())|| baseline;
+        var lastCurrentState = parseFloat($('input[name="last_current_state"]').val()) || baseline;
         var direction = $('#direction').val();
         var currentProgress = 0; // Store the progress to prevent recalculation on submit
 
@@ -356,8 +356,8 @@
         $('#add-response-form').submit(function(event) {
             event.preventDefault();
 
-             // Check if the current value is valid before submitting
-             if ($('#current').hasClass('is-invalid')) {
+            // Check if the current value is valid before submitting
+            if ($('#current').hasClass('is-invalid')) {
                 showToast("Please correct the current state value before submitting.", '#ff8282');
                 return; // Prevent submission if the current value is invalid
             }
@@ -398,7 +398,7 @@
                         },
                         success: function(response) {
                             Toastify({
-                                text: "Response updated successfully!",
+                                text: "Activity updated successfully!",
                                 duration: 3000,
                                 gravity: 'bottom', // Position the toast at the bottom
                                 position: 'left', // Align toast to the left
@@ -475,7 +475,7 @@
                 if (savedData['indicator-id'] && savedData['indicator-id'] === indicatorId) {
 
                     Toastify({
-                        text: "You have unsaved response data for this indicator, it has been restored for you.",
+                        text: "You have unsaved activity data for this indicator, it has been restored for you.",
                         duration: 90000,
                         gravity: 'top',
                         position: 'center',
@@ -522,7 +522,7 @@
 
             localStorage.removeItem('monitorresponsedata' + indicatorId);
             Toastify({
-                text: "Response data discarded successfully!",
+                text: "Activity data discarded successfully!",
                 duration: 3000,
                 gravity: 'bottom',
                 position: 'left',

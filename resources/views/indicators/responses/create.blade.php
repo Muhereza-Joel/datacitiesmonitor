@@ -7,11 +7,11 @@
     <div class="pagetitle">
         <div class="d-flex">
             <div class="text-start w-50">
-                <h1>Add Response To Indicator</h1>
+                <h1>Add Activity To Indicator</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active">Add Response</li>
+                        <li class="breadcrumb-item active">Add Activity</li>
                     </ol>
                 </nav>
 
@@ -19,7 +19,7 @@
             <div class="text-end w-50 pt-2">
                 <div>
                     <a href="{{ route('indicators.show', $indicator->id) }}" class="btn btn-primary btn-sm px-3">Indicator Details</a>
-                    <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-primary btn-sm px-3">Indicator Responses</a>
+                    <a href="{{ route('indicator.responses', $indicator->id) }}" class="btn btn-primary btn-sm px-3">Activities</a>
                 </div>
             </div>
 
@@ -41,7 +41,7 @@
                             <div class="alert alert-warning">The target for this indicator was achieved..</div>
                             @else
                             <div class="alert alert-secondary">
-                                <h4>You are adding a response to</h4>
+                                <h4>You are adding an activity to</h4>
                                 <i class="fw-bold">>>>> {{$indicator['indicator_title']}} indicator <<<< </i>
                             </div>
 
@@ -58,7 +58,7 @@
                                 <!-- Previous State Section -->
                                 <div class="form-group mb-3 alert alert-info">
                                     <label for="previous-state">Previous State Entered</label>
-                                    <input type="text" class="form-control" id="previous-state" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No response added yet' }}">
+                                    <input type="text" class="form-control" id="previous-state" readonly value="{{ isset($lastCurrentState['last_current_state']) ? $lastCurrentState['last_current_state'] : 'No activities added yet' }}">
                                 </div>
 
                                 <!-- Enter Current State Section -->
@@ -104,7 +104,7 @@
                                     </h2>
                                     <div id="collapseNotes" class="accordion-collapse collapse show" aria-labelledby="headingNotes" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add notes to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add notes to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="notes-editor-container" style="height: 300px;"></div>
                                         </div>
@@ -120,10 +120,10 @@
                                     </h2>
                                     <div id="collapseLessons" class="accordion-collapse collapse" aria-labelledby="headingLessons" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add lessons learnt to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add lessons learnt to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="editor-container" style="height: 300px;"></div>
-                                            <div class="invalid-feedback d-block text-dark fw-bold" id="editor-feedback" style="display: none;">Please note that lessons are required to add this response</div>
+                                            <div class="invalid-feedback d-block text-dark fw-bold" id="editor-feedback" style="display: none;">Please note that lessons are required to add this activity</div>
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
                                     </h2>
                                     <div id="collapseRecommendations" class="accordion-collapse collapse" aria-labelledby="headingRecommendations" data-bs-parent="#responseAccordion">
                                         <div class="accordion-body">
-                                            <small class="text-success">Please use the editor to add recommendations to this response. You can bold, create lists and even add external links to other resources in case you need them.</small>
+                                            <small class="text-success">Please use the editor to add recommendations to this activity. You can bold, create lists and even add external links to other resources in case you need them.</small>
                                             <hr>
                                             <div class="quill-editor" id="recommendations-editor-container" style="height: 300px;"></div>
                                         </div>
@@ -148,7 +148,7 @@
 
                             <br>
                             <div class="text-start">
-                                <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Submit Response</button>
+                                <button id="create-response-btn" type="submit" class="btn btn-sm btn-primary">Submit Activity</button>
                                 <button id="discardData" type="button" class="btn btn-danger btn-sm">Discard Auto Saved Data</button>
                             </div>
                             @endif
@@ -384,7 +384,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
                     },
                     success: function(response) {
-                        showToast("Response added successfully!", '#28a745');
+                        showToast("Activity added successfully!", '#28a745');
                         localStorage.removeItem('monitorresponsedata' + indicatorId);
 
                         setTimeout(function() {
@@ -411,8 +411,8 @@
         editors.forEach(function(editor) {
             editor.on('text-change', function(delta, oldDelta, source) {
                 if (autoSaveEnabled) {
-                saveFormData();
-            }
+                    saveFormData();
+                }
             });
         });
 
@@ -450,7 +450,7 @@
                 if (savedData['indicator-id'] && savedData['indicator-id'] === indicatorId) {
 
                     Toastify({
-                        text: "You have unsaved response data for this indicator, it has been restored for you.",
+                        text: "You have unsaved activity data for this indicator, it has been restored for you.",
                         duration: 90000,
                         gravity: 'top',
                         position: 'center',
@@ -496,7 +496,7 @@
 
             // Show toast notification
             Toastify({
-                text: "Response data discarded successfully!",
+                text: "Activity data discarded successfully!",
                 duration: 3000,
                 gravity: 'bottom',
                 position: 'left',

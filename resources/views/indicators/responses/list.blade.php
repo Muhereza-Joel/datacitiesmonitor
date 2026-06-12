@@ -78,12 +78,12 @@
 <main id="main" class="main">
 
   <div class="pagetitle mt-3">
-    <h1>All Responses</h1>
+    <h1>All activities</h1>
     <div class="d-flex align-items-center">
       <nav class="d-flex align-self-center w-50">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ route('dashboard' )}}">Home</a></li>
-          <li class="breadcrumb-item active">Responses</li>
+          <li class="breadcrumb-item active">Activities</li>
         </ol>
       </nav>
 
@@ -96,8 +96,8 @@
           <ul class="dropdown-menu" aria-labelledby="onThisPageDropdown">
             @if(Gate::allows('create', App\Models\Response::class))
             <li>
-              <a class="dropdown-item" href="{{ route('indicators.response.create', $indicatorId) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add More Responses To This Indicator.">
-                <i class="bi bi-plus-circle"></i> Add More Responses
+              <a class="dropdown-item" href="{{ route('indicators.response.create', $indicatorId) }}" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Add More Activities To This Indicator.">
+                <i class="bi bi-plus-circle"></i> Add activities
               </a>
             </li>
             @endif
@@ -178,22 +178,22 @@
                   <div class="dropdown-menu" aria-labelledby="actionDropdown">
                     @if(Gate::allows('create', $response))
                     <a href="{{ route('indicators.response.edit', $response->id) }}" class="dropdown-item">
-                      <i class="bi bi-pencil"></i> Edit Response
+                      <i class="bi bi-pencil"></i> Edit Activity
                     </a>
                     <a href="#add-files" id="add-file" class="dropdown-item" data-response-id="{{$response['id']}}" data-indicator-id="{{ $response->indicator->id }}" data-organisation-id="{{ $response->indicator->organisation_id }}" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
                       <i class="bi bi-paperclip"></i> Add Files
                     </a>
                     <a href="{{ route('move-response', $response->id) }}" id="move-response" class="dropdown-item">
-                      <i class="bi bi-arrows-move"></i> Move Response
+                      <i class="bi bi-arrows-move"></i> Move Activity
                     </a>
 
                     @endif
                     <a href="#reponse-files" id="view-files" class="dropdown-item" data-response-id="{{$response['id']}}">
-                      <i class="bi bi-file-earmark"></i> Response Files
+                      <i class="bi bi-file-earmark"></i> Activity Files
                     </a>
                     @if(Gate::allows('delete', $response))
                     <a href="" class="dropdown-item text-danger" id="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $response->id }}">
-                      <i class="bi bi-trash"></i> Delete Response
+                      <i class="bi bi-trash"></i> Delete Activity
                     </a>
                     @endif
                   </div>
@@ -260,8 +260,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                Are you sure you want to delete this response?
-                <div class="alert alert-warning p-2 mt-2">Note that this action will delete this response. Please continue with caution because the action is undoable</div>
+                Are you sure you want to delete this activity?
+                <div class="alert alert-warning p-2 mt-2">Note that this action will delete this activity. Please continue with caution because the action is undoable</div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
@@ -320,7 +320,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="responseFilesModalLabel">Response Files</h5>
+        <h5 class="modal-title" id="responseFilesModalLabel">Activity Files</h5>
         <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
