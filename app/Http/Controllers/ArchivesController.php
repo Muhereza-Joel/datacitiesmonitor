@@ -233,6 +233,7 @@ class ArchivesController extends Controller
                 'archive_id' => $archive_id,
                 'qualitative_progress' => $indicator->qualitative_progress,
                 'is_manually_updated' => $indicator->is_manually_updated,
+                'project_id' => $indicator->project_id,
                 'theory_of_change_id' => $indicator->theory_of_change_id,
                 'original_created_at' => $indicator->created_at,
             ]);

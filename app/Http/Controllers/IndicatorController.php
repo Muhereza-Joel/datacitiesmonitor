@@ -10,6 +10,7 @@ use App\Jobs\IndexIndicatorJob;
 use App\Models\Archive;
 use App\Models\Indicator;
 use App\Models\Organisation;
+use App\Models\Project;
 use App\Models\Response;
 use App\Models\TheoryOfChange;
 use Barryvdh\DomPDF\PDF;
@@ -38,7 +39,70 @@ class IndicatorController extends Controller
 
         // Start the query with the base conditions
         $query = Indicator::with(['theoryOfChange', 'organisation'])
-            ->withCount('responses'); // Add response count
+            ->withCount('responses')->whereNull('project_id'); // Add response count
+
+        // Check if the current user is a root user
+        if (! $currentUser->hasRole('super-admin')) {
+            // Filter by organization for non-root users
+            $organisation_id = $currentUser->organisation_id;
+            $query->where('organisation_id', $organisation_id);
+        }
+
+        // Apply filters if they are present in the request
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('qualitative_progress')) {
+            $query->where('qualitative_progress', $request->input('qualitative_progress'));
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', 'like', '%' . $request->input('category') . '%');
+        }
+
+        // Calculate the counts for all indicators before pagination
+        $indicatorCounts = [
+            'total' => $query->count(),
+            'draft' => (clone $query)->where('status', 'draft')->count(),
+            'review' => (clone $query)->where('status', 'review')->count(),
+            'public' => (clone $query)->where('status', 'public')->count(),
+            'archived' => (clone $query)->where('status', 'archived')->count(),
+        ];
+
+        // Order the results: those with at least one response first, then by created_at
+        $query->orderByRaw('CASE WHEN responses_count > 0 THEN 0 ELSE 1 END, created_at DESC');
+
+        // Paginate the filtered results
+        $indicators = $query->paginate(24);
+
+        // Transform the collection to add the 'current' value from the latest response
+        $indicators->getCollection()->transform(function ($indicator) {
+            // Fetch the latest response once
+            $latestResponse = $indicator->responses()->orderBy('created_at', 'desc')->first();
+
+            // Set the 'current' value from the latest response
+            $indicator->current = $latestResponse ? $latestResponse->current : null;
+
+            // Set the 'latest_response_date' from the latest response's created_at
+            $indicator->latest_response_date = $latestResponse ? $latestResponse->created_at : null;
+
+            return $indicator;
+        });
+
+
+
+        return view('indicators.list', compact('pageTitle', 'indicators', 'indicatorCounts'));
+    }
+
+    public function scopedIndicators(Request $request)
+    {
+        $pageTitle = "All Indicators";
+        $currentUser = Auth::user();
+
+        // Start the query with the base conditions
+        $query = Indicator::with(['theoryOfChange', 'organisation'])
+            ->withCount('responses')->whereNotNull('project_id'); // Add response count
 
         // Check if the current user is a root user
         if (! $currentUser->hasRole('super-admin')) {
@@ -109,8 +173,12 @@ class IndicatorController extends Controller
         $myOrganisation = Organisation::findOrFail($organisation_id);
 
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
+        // ⬇️ NEW: Fetch active projects associated with the organization
+        $projectQuery = Project::where('status', 'active')->where('organisation_id', $organisation_id);
 
-        return view('indicators.create', compact('pageTitle', 'myOrganisation', 'theories'));
+        $projects = $projectQuery->get();
+
+        return view('indicators.create', compact('pageTitle', 'myOrganisation', 'theories', 'projects'));
     }
 
     /**
@@ -122,6 +190,7 @@ class IndicatorController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'project_id' => 'exists:projects,id',
             'category' => 'string|required',
             'name' => 'string|required',
             'theory_of_change_id' => 'string|required|exists:theory_of_changes,id',
@@ -195,7 +264,12 @@ class IndicatorController extends Controller
         // Fetch theories of change associated with the organization
         $theories = TheoryOfChange::with('organisation')->where('organisation_id', $organisation_id)->get();
 
-        return view('indicators.update', compact('pageTitle', 'myOrganisation', 'indicator', 'theories'));
+        // ⬇️ NEW: Fetch active projects associated with the organization
+        $projectQuery = Project::where('status', 'active')->where('organisation_id', $organisation_id);
+
+        $projects = $projectQuery->get();
+
+        return view('indicators.update', compact('pageTitle', 'myOrganisation', 'indicator', 'theories', 'projects'));
     }
 
 
@@ -743,5 +817,22 @@ class IndicatorController extends Controller
         });
         // Redirect to indicators.index with success message only after successful transaction
         return redirect()->route('indicators.index')->with('success', 'Response Moved Successfully');
+    }
+
+    public function attachProject(Request $request, Indicator $indicator)
+    {
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+        ]);
+
+        // Assuming your indicators table has a nullable 'project_id' foreign key mapping
+        $indicator->update([
+            'project_id' => $request->project_id
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project has been attached to this indicator successfully!'
+        ]);
     }
 }

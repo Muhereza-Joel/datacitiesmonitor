@@ -37,6 +37,7 @@ class Indicator extends Model
         'direction',
         'theory_of_change_id',
         'is_manually_updated',  // New field to track manual updates
+        'project_id'
     ];
 
     protected $revisionable = [
@@ -46,7 +47,7 @@ class Indicator extends Model
         'definition',
         'baseline',
         'target',
-        'current_state', 
+        'current_state',
         'data_source',
         'frequency',
         'responsible',

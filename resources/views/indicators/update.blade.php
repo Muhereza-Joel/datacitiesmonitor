@@ -212,7 +212,7 @@
                         </form>
                     </div>
                 </div>
-
+                <x-attach-project :indicator="$indicator" :projects="$projects" />
                 <div class="card p-2">
                     <div class="card-title ps-4">Guide For Creating Indicators</div>
                     <div class="card-body">
@@ -288,6 +288,55 @@
         // Revalidate when direction changes
         $('#direction').on('change', function() {
             validateBaselineTarget();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#attach-project-form').on('submit', function(e) {
+            e.preventDefault();
+
+            let btn = $('#btn-attach-project');
+            let spinner = btn.find('.spinner-border');
+            let projectId = $('#project_id').val();
+
+            // Disable button and show spinner
+            btn.prop('disabled', true);
+            spinner.removeClass('d-none');
+
+            $.ajax({
+                url: "{{ route('indicators.attach-project', $indicator->id) }}",
+                method: "PATCH",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    project_id: projectId
+                },
+                success: function(response) {
+                    Toastify({
+                        text: response.message || "Project attached successfully!",
+                        duration: 5000,
+                        gravity: 'bottom',
+                        position: 'left',
+                        backgroundColor: '#28a745',
+                    }).showToast();
+                },
+                error: function(xhr) {
+                    let errorMsg = xhr.responseJSON?.message || "An error occurred while attaching the project.";
+                    Toastify({
+                        text: errorMsg,
+                        duration: 5000,
+                        gravity: 'bottom',
+                        position: 'left',
+                        backgroundColor: '#dc3545',
+                    }).showToast();
+                },
+                complete: function() {
+                    // Re-enable button and hide spinner
+                    btn.prop('disabled', false);
+                    spinner.addClass('d-none');
+                }
+            });
         });
     });
 </script>

@@ -195,7 +195,7 @@ $other_organizations = session('other_organizations');
 
         @can('viewAny', \App\Models\Indicator::class)
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('indicators.*') ? 'active' : '' }}" href="{{ route('indicators.index') }}">
+          <a class="nav-link {{ request()->routeIs('scoped/indicators') ? 'active' : '' }}" href="{{ route('scopedIndicators') }}">
             <i class="bi bi-speedometer2"></i>
             <span>{{ __('Project Scoped Indicators') }}</span>
           </a>

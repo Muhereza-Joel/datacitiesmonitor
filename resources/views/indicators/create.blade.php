@@ -37,13 +37,30 @@
             <div class="col-sm-8">
                 <div class="card p-2">
                     <div class="card-title">Create New Indicator</div>
-                    <div class="alert alert-warning p-2">This indicator you are about to create will belong to <span class="badge bg-primary">{{$myOrganisation['name']}}</span></div>
+                    <div class="alert alert-warning p-2">
+                        This indicator you are about to create will belong to
+                        <span class="badge bg-primary">{{$myOrganisation['name']}}</span>
+                    </div>
                     <div class="card-body">
                         <form action="{{ route('indicators.store') }}" class="needs-validation" novalidate id="create-indicator-form" method="post">
                             @csrf
+
+
+                            <div class="form-group my-2">
+                                <label for="indicator-title">Attach To Project</label>
+                                <select name="project_id" id="" class="form-control">
+                                    <option value="">Select Project</option>
+                                    @foreach($projects as $project)
+                                    <option value="{{ $project->id}}">{{ $project->name}}</option>
+
+                                    @endforeach
+                                </select>
+                                <small class="text-danger">Please only attach the project if you want to scope this indicator to that particular project and move it from general indicators.</small>
+                            </div>
+
                             <div class="form-group my-2">
                                 <label for="indicator-title">Indicator Category</label>
-                                <!-- <small class="text-success">This value is optional, because you can add  it later</small> -->
+
                                 <select name="category" id="" class="form-control" required>
                                     <option value="">Select category</option>
                                     <option value="Outcome">Outcome Indicator</option>
@@ -64,7 +81,6 @@
 
                             <div class="form-group my-2">
                                 <label for="indicator-title">Theory Of Change</label>
-                                <!-- <small class="text-success">This value is optional, because you can add  it later</small> -->
                                 <select name="theory_of_change_id" id="" class="form-control" required>
                                     <option value="">Select Theory Of Change</option>
                                     @foreach($theories as $theory)

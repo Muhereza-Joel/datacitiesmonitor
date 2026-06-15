@@ -50,6 +50,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organisations/all', [OrganisationController::class, 'getOrganisations'])->name('organisations.all');
     Route::resource('/organisations', OrganisationController::class);
     Route::get('/organisation/users/create', [UserController::class, 'create_organisation_user'])->name('organisation.user.create');
+    Route::patch('/indicators/{indicator}/attach-project', [IndicatorController::class, 'attachProject'])
+        ->name('indicators.attach-project');
+    Route::get('/scoped/indicators', [IndicatorController::class, 'scopedIndicators'])->name('scopedIndicators');
     Route::resource('/indicators', IndicatorController::class);
     Route::patch('/indicators/{id}/response/status/update', [IndicatorController::class, 'updateStatus'])->name('indicators.status.update');
     Route::get('/indicators/{id}/response/create', [ResponseController::class, 'createResponse'])->name('indicators.response.create');
@@ -58,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/indicators/response/update', [ResponseController::class, 'updateResponse'])->name('indicators.response.update');
     Route::delete('/indicators/response/delete/{id}', [ResponseController::class, 'deleteResponse'])->name('indicators.response.destroy');
     Route::get('/indicators/{id}/responses', [ResponseController::class, 'getResponsesForIndicator'])->name('indicator.responses');
+
 
     Route::get('/indicators/response/{id}/revision/history', [ResponseController::class, 'getResponseHistory'])->name('response.history');
     Route::post('/indicators/response/{id}/revert/{revisionId}', [ResponseController::class, 'revertResponseHistory'])->name('response.revert');

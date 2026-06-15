@@ -39,6 +39,7 @@ class ArchivedIndicator extends Model
         'theory_of_change_id',
         'is_manually_updated',  // New field to track manual updates
         'original_created_at',
+        'project_id'
     ];
 
     // Specify which fields to index for search
