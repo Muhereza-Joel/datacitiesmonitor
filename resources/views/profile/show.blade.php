@@ -61,7 +61,7 @@
                     <img src="{{ isset($userDetails->profile->image_url) ? asset($userDetails->profile->image_url) : asset('assets/img/placeholder.png') }}" alt="Profile" class="rounded-circle" width="300px" height="300px" style="border: 3px solid #999; object-fit: cover;">
 
                     <br><br>
-                    <span class="text-secondary"><strong>Your Role : </strong> {{ Auth::user()->role}}</span>
+                    <span class="text-secondary"><strong>Your Role : </strong> {{ Auth::user()->getRoleNames()->implode(', ') }}</span>
                     <div>
                         <button type="button" class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#basicModal">
                             Update Your Photo
@@ -585,7 +585,7 @@
                     if (response.success) {
                         $('#alert-password-change-success').removeClass('d-none').show();
                         $('#alert-password-change-error').addClass('d-none');
-                        
+
                     } else {
                         $('#alert-password-change-error span').text(response.message);
                         $('#alert-password-change-error').removeClass('d-none').show();
