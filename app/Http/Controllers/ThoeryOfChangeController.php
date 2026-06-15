@@ -25,7 +25,7 @@ class ThoeryOfChangeController extends Controller
         $currentUser = Auth::user();
 
         // Check if the current user is a root user
-        if ($currentUser->role === 'root') {
+        if ($currentUser->hasRole('super-admin')) {
             // Fetch all theories of change if the role is root
             $theories = TheoryOfChange::with('organisation')
                 ->withCount('indicators') // Include the count of related indicators
