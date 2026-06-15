@@ -21,6 +21,7 @@ class ReportController extends Controller
 
         // Fetch reports using pagination to handle large datasets seamlessly
         $reports = Report::where('organisation_id', $organisation_id)
+            ->where('prepared_by', $currentUser->id)
             ->where('status', 'draft')
             ->with('preparedBy') // Eager load relation to prevent N+1 query performance hits
             ->orderBy('created_at', 'desc')
@@ -36,6 +37,7 @@ class ReportController extends Controller
 
         // Fetch reports using pagination to handle large datasets seamlessly
         $reports = Report::where('organisation_id', $organisation_id)
+            ->where('prepared_by', $currentUser->id)
             ->where('status', 'submitted') // Filter to only show submitted reports
             ->with('preparedBy') // Eager load relation to prevent N+1 query performance hits
             ->orderBy('created_at', 'desc')
